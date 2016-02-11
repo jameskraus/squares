@@ -1,0 +1,21 @@
+{
+  "name": "squares",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nikolaydyankov/squares",
+  "authors": [
+    "dyankov <dyankov.nikolay@gmail.com>"
+  ],
+  "description": "Interactive and embeddable HTML content builder.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0"
+  }
+}

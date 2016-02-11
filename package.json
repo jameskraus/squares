@@ -1,0 +1,22 @@
+{
+  "name": "squares",
+  "version": "0.0.1",
+  "description": "Interactive and embeddable HTML content builder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nikolaydyankov/squares.git"
+  },
+  "author": "Nikolay Dyankov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nikolaydyankov/squares/issues"
+  },
+  "homepage": "https://github.com/nikolaydyankov/squares",
+  "dependencies": {
+    "grunt": "^0.4.5"
+  }
+}
