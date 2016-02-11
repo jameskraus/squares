@@ -1,7 +1,5 @@
-<snippet>
-  <content><![CDATA[
-# ${1:Project Name}
-TODO: Write a project description
+# Squares
+Interactive and embeddable HTML content builder.
 ## Installation
 TODO: Describe the installation process
 ## Usage
@@ -18,6 +16,3 @@ TODO: Write history
 TODO: Write credits
 ## License
 The MIT License (MIT). For more information, check LICENSE.txt.
-]]></content>
-  <tabTrigger>readme</tabTrigger>
-</snippet>
