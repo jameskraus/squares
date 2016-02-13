@@ -1,0 +1,95 @@
+.clear {
+    clear: both;
+}
+
+.squares, .squares * {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.sq-root-container {
+    position: relative;
+}
+.sq-add-container {
+    position: relative;
+    text-align: center;
+    height: 44px;
+    min-width: 44px;
+    line-height: 44px;
+    font-size: 24px;
+    margin: 10px;
+    border: 1px dashed #ccc;
+    color: #ccc;
+    cursor: pointer;
+}
+.sq-container {
+    border: 1px solid #ccc;
+    min-height: 44px;
+    margin: 10px 0;
+}
+.sq-container:first-child {
+    margin-top: 0;
+}
+.sq-add-elements {
+    position: absolute;
+    right: 0;
+    top: -54px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #ccc;
+    color: #ccc;
+    background: white;
+    text-align: center;
+    line-height: 44px;
+    font-size: 24px;
+    cursor: pointer;
+}
+.sq-window {
+    position: absolute;
+    left: 110%;
+    top: 0;
+    background: white;
+    border: 1px solid #ccc;
+    display: none;
+}
+.sq-window-header {
+    background: #f3f3f3;
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+}
+.sq-window-title {
+    font-size: 24px;
+    margin: 5px;
+}
+.sq-window-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 78px;
+    height: 78px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 78px;
+    cursor: pointer;
+}
+.sq-window-container {
+    padding: 20px;
+}
+.sq-element-thumb {
+    width: 64px;
+    height: 64px;
+    float: left;
+    line-height: 64px;
+    font-size: 36px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 5px;
+    cursor: pointer;
+}
+.sq-elements-window {
+    width: 264px;
+}
