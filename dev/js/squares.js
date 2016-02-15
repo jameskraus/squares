@@ -33,7 +33,7 @@ The usage scenario is the following (for now):
     // The bulk of the functionality goes here.
     // Squares is the "root" class.
     var squaresDefaultSettings = {
-        containers: ['a']
+        containers: ['a', 'b', 'c', 'd']
     };
 
     function Squares(host) {
@@ -43,6 +43,24 @@ The usage scenario is the following (for now):
         this.contentRoot = undefined;
         this.root = undefined;
         this.elementsWindow = undefined;
+
+        // Drag general flags
+        this.ix = 0; // initial dragged object x
+        this.iy = 0; // initial dragged object x
+        this.iex = 0; // initial event x
+        this.iey = 0; // initial event y
+
+        // Drag container flags
+        this.shouldStartDraggingContainer = false;
+        this.didStartDraggingContainer = false;
+        this.draggingContainer = false;
+
+        // Drag container vars
+        this.draggedContainerIndex = 0;
+        this.draggedContainer = undefined;
+        this.dummyContainer = undefined;
+        this.containerReorderMap = undefined;
+        this.newIndexOfDraggedContainer = 0;
 
         this.init();
     };
@@ -77,6 +95,121 @@ The usage scenario is the following (for now):
         this.host.find('.sq-add-elements').on('click', function() {
             self.toggleElementsWindow();
         });
+
+        // Reorder containers functionality
+
+        $(document).off('mousedown', '.sq-container-move');
+        $(document).on('mousedown', '.sq-container-move', function(e) {
+            // If there is just one container, then don't do anything
+            if (self.settings.containers.length <= 1) return;
+
+            self.iex = e.pageX;
+            self.iey = e.pageY;
+            self.shouldStartDraggingContainer = true;
+            self.draggedContainerIndex = $(e.target).closest('.sq-container').data('index');
+            self.draggedContainer = self.host.find('.sq-container[data-index='+ self.draggedContainerIndex +']');
+        });
+        $(document).off('mousemove.container');
+        $(document).on('mousemove.container', function(e) {
+            if (self.shouldStartDraggingContainer && !self.didStartDraggingContainer) {
+                if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
+                    self.draggingContainer = true;
+                    self.didStartDraggingContainer = true;
+
+                    // Create a virtual map of the current containers
+                    self.containerReorderMap = new Array();
+                    for (var i=0; i<self.settings.containers.length; i++) {
+                        var c = self.host.find('.sq-container[data-index='+ i +']');
+                        var y = c.position().top + c.outerHeight()/2;
+                        self.containerReorderMap.push(y);
+                    }
+
+                    // Position the container absolutely
+                    self.ix = self.draggedContainer.position().left;
+                    self.iy = self.draggedContainer.position().top;
+
+                    self.draggedContainer.css({
+                        position: 'absolute',
+                        left: self.ix,
+                        top: self.iy,
+                        width: self.draggedContainer.width()
+                    });
+
+                    self.draggedContainer.addClass('sq-dragging');
+
+                    // Insert a dummy container
+                    self.draggedContainer.after('<div id="sq-dummy-container"></div>');
+                    self.dummyContainer = $('#sq-dummy-container');
+                    self.dummyContainer.css({
+                        width: self.draggedContainer.outerWidth(),
+                        height: self.draggedContainer.outerHeight()
+                    });
+                }
+            }
+
+            if (self.draggingContainer) {
+                self.draggedContainer.css({
+                    left: self.ix + e.pageX - self.iex,
+                    top: self.iy + e.pageY - self.iey
+                });
+
+                var y = self.draggedContainer.position().top + self.draggedContainer.outerHeight()/2;
+                var closestDeltaY = 999999;
+                var closestIndex = undefined;
+
+                for (var i=0; i<self.containerReorderMap.length; i++) {
+                    if (Math.abs(y - self.containerReorderMap[i]) < closestDeltaY) {
+                        closestDeltaY = Math.abs(y - self.containerReorderMap[i]);
+                        closestIndex = i;
+                    }
+                }
+
+                // If the closest index changed, move the dummy container to the
+                // new position.
+                if (closestIndex != self.newIndexOfDraggedContainer) {
+                    self.newIndexOfDraggedContainer = closestIndex;
+
+                    self.dummyContainer.remove();
+
+                    if (self.newIndexOfDraggedContainer < self.draggedContainerIndex) {
+                        self.host.find('.sq-container[data-index='+ self.newIndexOfDraggedContainer +']').before('<div id="sq-dummy-container"></div>');
+                    } else {
+                        self.host.find('.sq-container[data-index='+ self.newIndexOfDraggedContainer +']').after('<div id="sq-dummy-container"></div>');
+                    }
+
+                    self.dummyContainer = $('#sq-dummy-container');
+                    self.dummyContainer.css({
+                        width: self.draggedContainer.outerWidth(),
+                        height: self.draggedContainer.outerHeight()
+                    });
+                }
+            }
+        });
+        $(document).off('mouseup.container');
+        $(document).on('mouseup.container', function(e) {
+            if (self.draggingContainer) {
+                // Switch places of containers
+                if (self.draggedContainerIndex != self.newIndexOfDraggedContainer) {
+                    var a = self.settings.containers[self.newIndexOfDraggedContainer];
+
+                    self.settings.containers[self.newIndexOfDraggedContainer] = self.settings.containers[self.draggedContainerIndex];
+                    self.settings.containers[self.draggedContainerIndex] = a;
+                }
+
+                // Redraw
+                self.redraw();
+            }
+
+            self.shouldStartDraggingContainer = false;
+            self.didStartDraggingContainer = false;
+            self.draggingContainer = false;
+
+            self.draggedContainerIndex = 0;
+            self.draggedContainer = undefined;
+            self.dummyContainer = undefined;
+        });
+
+        // [end] Reorder containers functionality
     };
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
@@ -105,7 +238,12 @@ The usage scenario is the following (for now):
         var containersHTML = '';
 
         for (var i=0; i<this.settings.containers.length; i++) {
-            containersHTML += '<div class="sq-container"></div>';
+            containersHTML += '<div class="sq-container" data-index="'+ i +'">';
+
+            containersHTML += '     <div class="sq-container-move"></div>';
+            containersHTML += this.settings.containers[i];
+
+            containersHTML += '</div>';
         }
 
         this.contentRoot.html(containersHTML);
