@@ -48,6 +48,13 @@
     font-size: 24px;
     cursor: pointer;
 }
+.sq-windows-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
 .sq-window {
     position: absolute;
     left: 110%;
@@ -60,6 +67,7 @@
     background: #f3f3f3;
     padding: 20px;
     border-bottom: 1px solid #ccc;
+    cursor: move;
 }
 .sq-window-title {
     font-size: 24px;
