@@ -117,8 +117,20 @@
     text-align: center;
     border: 1px solid #ccc;
     margin: 5px;
-    cursor: pointer;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+.sq-element-thumb:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+.sq-element-thumb.sq-dragging {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 .sq-elements-window {
-    width: 264px;
+    width: 268px;
 }

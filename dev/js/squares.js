@@ -19,6 +19,36 @@ The usage scenario is the following (for now):
 */
 
 ;(function ($, window, document, undefined) {
+
+    var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array();
+
+    // =========================================================================
+    // API
+    // The following functions allow to initialize the editor with a previously
+    // saved settings/content, get the current settings/content and generate
+    // HTML content for the end user.
+
+    // The "host" parameter is the root element of the editor. It contains
+    // (or will contain a reference to the JS class instance).
+    // =========================================================================
+
+    $.squaresInitWithSettings = function(settings, host) {
+
+    };
+
+    $.squaresGetCurrentSettings = function(host) {
+
+    };
+
+    $.squaresGenerateHTML = function(host) {
+
+    };
+
+    $.squaresRegisterElement = function(options) {
+        var e = new Element(options);
+        elementsCatalog.push(e);
+    };
+
     $(document).ready(function() {
 
         // On document load, loop over all elements with the "squares" class
@@ -28,7 +58,43 @@ The usage scenario is the following (for now):
         });
     });
 
-    var elementsWindow = undefined, elementSettingsWindow = undefined;
+
+    // Register built-in elements using the public API
+    $.squaresRegisterElement({
+        name: "Text",
+        iconClass: "fa fa-font",
+        content: function() {
+            return "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>";
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Image",
+        iconClass: "fa fa-picture-o",
+        content: function() {
+            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png">';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Button",
+        iconClass: "fa fa-hand-pointer-o",
+        content: function() {
+            return '<input type="button" value="Button">';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Video",
+        iconClass: "fa fa-video-camera",
+        content: function() {
+            return '<video autoplay><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "YouTube",
+        iconClass: "fa fa-youtube",
+        content: function() {
+            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
+        }
+    });
 
     // The bulk of the functionality goes here.
     // Squares is the "root" class.
@@ -190,10 +256,9 @@ The usage scenario is the following (for now):
             if (self.draggingContainer) {
                 // Switch places of containers
                 if (self.draggedContainerIndex != self.newIndexOfDraggedContainer) {
-                    var a = self.settings.containers[self.newIndexOfDraggedContainer];
-
-                    self.settings.containers[self.newIndexOfDraggedContainer] = self.settings.containers[self.draggedContainerIndex];
-                    self.settings.containers[self.draggedContainerIndex] = a;
+                    var a = self.settings.containers[self.draggedContainerIndex];
+                    self.settings.containers.splice(self.draggedContainerIndex, 1);
+                    self.settings.containers.splice(self.newIndexOfDraggedContainer, 0, a);
                 }
 
                 // Redraw
@@ -224,7 +289,7 @@ The usage scenario is the following (for now):
         this.root.append(addContainerButtonHTML);
     };
     Squares.prototype.appendAddElementsButton = function() {
-        var addElementsButtonHTML = '<div class="sq-add-elements"><i class="fa fa-cube"></i></div>';
+        var addElementsButtonHTML = '<div class="sq-add-elements"><i class="fa fa-cubes"></i></div>';
 
         this.root.append(addElementsButtonHTML);
     };
@@ -241,7 +306,6 @@ The usage scenario is the following (for now):
             containersHTML += '<div class="sq-container" data-index="'+ i +'">';
 
             containersHTML += '     <div class="sq-container-move"></div>';
-            containersHTML += this.settings.containers[i];
 
             containersHTML += '</div>';
         }
@@ -271,7 +335,11 @@ The usage scenario is the following (for now):
     // It will have settings only for layout.
 
     var containerDefaultSettings = {
-
+        name: 'Untitled Element',
+        iconClass: 'fa fa-cube',
+        content: function() {
+            return 'No content to display.'
+        }
     };
 
     function Container() {
@@ -294,8 +362,8 @@ The usage scenario is the following (for now):
 
     };
 
-    function Element() {
-        this.settings = $.extend({}, true, elementDefaultSettings);
+    function Element(settings) {
+        this.settings = $.extend(settings, true, elementDefaultSettings);
     };
 
     // The Window object is responsible for creating and manipulating modal
@@ -328,11 +396,11 @@ The usage scenario is the following (for now):
 
             // Elements
             elementsWindowHTML += '     <div class="sq-window-container">';
-            elementsWindowHTML += '         <div class="sq-element-thumb sq-element-thumb-text"><i class="fa fa-font"></i></div>';
-            elementsWindowHTML += '         <div class="sq-element-thumb sq-element-thumb-image"><i class="fa fa-picture-o"></i></div>';
-            elementsWindowHTML += '         <div class="sq-element-thumb sq-element-thumb-button"><i class="fa fa-hand-pointer-o"></i></div>';
-            elementsWindowHTML += '         <div class="sq-element-thumb sq-element-thumb-video"><i class="fa fa-video-camera"></i></div>';
-            elementsWindowHTML += '         <div class="sq-element-thumb sq-element-thumb-youtube"><i class="fa fa-youtube"></i></div>';
+
+            for (var i=0; i<elementsCatalog.length; i++) {
+                elementsWindowHTML += '         <div class="sq-element-thumb"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
+            }
+
             elementsWindowHTML += '         <div class="clear"></div>';
             elementsWindowHTML += '     </div>';
 
@@ -395,29 +463,6 @@ The usage scenario is the following (for now):
             self.dragging = false;
         });
     }
-
-    // =========================================================================
-    // API
-    // The following functions allow to initialize the editor with a previously
-    // saved settings/content, get the current settings/content and generate
-    // HTML content for the end user.
-
-    // The "host" parameter is the root element of the editor. It contains
-    // (or will contain a reference to the JS class instance).
-    // =========================================================================
-
-    $.squaresInitWithSettings = function(settings, host) {
-
-    };
-
-    $.squaresGetCurrentSettings = function(host) {
-
-    };
-
-    $.squaresGenerateHTML = function(host) {
-
-    };
-
 
 
 
