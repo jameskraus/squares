@@ -99,13 +99,13 @@ The usage scenario is the following (for now):
     // The bulk of the functionality goes here.
     // Squares is the "root" class.
     var squaresDefaultSettings = {
-        containers: ['a', 'b', 'c', 'd']
+        containers: []
     };
 
     function Squares(host) {
         // "host" is the direct parent of the embedded editor
         this.host = $(host);
-        this.settings = $.extend({}, true, squaresDefaultSettings);
+        this.settings = $.extend(true, {}, squaresDefaultSettings);
         this.contentRoot = undefined;
         this.root = undefined;
         this.elementsWindow = undefined;
@@ -127,6 +127,23 @@ The usage scenario is the following (for now):
         this.dummyContainer = undefined;
         this.containerReorderMap = undefined;
         this.newIndexOfDraggedContainer = 0;
+
+        // Drag element from window to container flags
+        this.shouldStartDraggingElementToContainer = false;
+        this.didStartDraggingElementToContainer = false;
+        this.draggingElementToContainer = false;
+
+        // Drag element from window to container vars
+        this.indexOfTargetContainerWhenDraggingElementFromWindow = -1;
+        this.indexOfTargetElementWhenDraggingElementFromWindow = -1;
+        this.draggedElementFromWindowCatalogIndex = -1;
+        this.dummyElementAtMouse = undefined;
+        this.dummyElement = undefined;
+        this.thumbElWhenDraggingFromWindow = undefined;
+
+        // Commonly used
+        this.containersMap = undefined;
+        this.elementsMap = undefined;
 
         this.init();
     };
@@ -275,6 +292,123 @@ The usage scenario is the following (for now):
         });
 
         // [end] Reorder containers functionality
+
+        // Drag elements from window to container functionality
+
+        $(document).off('mousedown', '.sq-element-thumb');
+        $(document).on('mousedown', '.sq-element-thumb', function(e) {
+            self.shouldStartDraggingElementToContainer = true;
+
+            self.iex = e.pageX;
+            self.iey = e.pageY;
+
+            self.thumbElWhenDraggingFromWindow = $(this);
+        });
+        $(document).off('mousemove.elementFromWindow');
+        $(document).on('mousemove.elementFromWindow', function(e) {
+            if (self.shouldStartDraggingElementToContainer && !self.didStartDraggingElementToContainer) {
+                if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
+                    self.didStartDraggingElementToContainer = true;
+
+                    // Get contents and position of the element thumb
+                    self.draggedElementFromWindowCatalogIndex = self.thumbElWhenDraggingFromWindow.data('index');
+
+                    var contents = self.thumbElWhenDraggingFromWindow.html();
+
+                    self.ix = self.thumbElWhenDraggingFromWindow.offset().left;
+                    self.iy = self.thumbElWhenDraggingFromWindow.offset().top;
+
+                    // Create a copy of the thumb and place it at mouse location
+                    $('body').prepend('<div id="sq-dummy-element-at-mouse" class="sq-element-thumb">' + contents + '</div>');
+                    self.dummyElementAtMouse = $('#sq-dummy-element-at-mouse');
+                    self.dummyElementAtMouse.css({
+                        left: self.ix,
+                        top: self.iy,
+                        margin: 0
+                    });
+
+                    // Create a map of containers
+                    self.containersMap = new Array();
+                    for (var i=0; i<self.settings.containers.length; i++) {
+                        var containerEl = self.host.find('.sq-container[data-index='+ i +']')
+                        var o = {
+                            x: containerEl.offset().left,
+                            y: containerEl.offset().top,
+                            elements: []
+                        }
+
+                        // Create a map of elements for each container
+                        for (var j=0; j<self.settings.containers[i].elements; j++) {
+                            var elementEl = containerEl.find('.sq-element[data-index='+ j +']');
+                            o.elements.push({ x: containerEl.offset().left, y: containerEl.offset().top })
+                        }
+
+                        self.containersMap.push(o)
+                    }
+                }
+            }
+
+            if (self.didStartDraggingElementToContainer) {
+                // Update dummy element at mouse position
+                self.dummyElementAtMouse.css({
+                    left: self.ix + e.pageX - self.iex,
+                    top: self.iy + e.pageY - self.iey
+                });
+
+                // Is the mouse inside the editor's host
+                if (e.pageX < self.host.offset().left || e.pageX > self.host.offset().left + self.host.outerWidth() ||
+                e.pageY < self.host.offset().top || e.pageY > self.host.offset().top + self.host.outerHeight()) {
+                    $('#sq-dummy-element').remove();
+                    self.indexOfTargetContainerWhenDraggingElementFromWindow = -1;
+                    self.indexOfTargetElementWhenDraggingElementFromWindow = -1;
+                    return;
+                }
+
+                // In which container to insert the element
+                var containerIndex = 0;
+                var closestDistance = 999999;
+                var x = self.ix + e.pageX - self.iex;
+                var y = self.iy + e.pageY - self.iey;
+
+                for (var i=0; i<self.containersMap.length; i++) {
+                    var d = Math.abs(self.containersMap[i].x - x) + Math.abs(self.containersMap[i].y - y);
+                    if (d < closestDistance) {
+                        closestDistance = d;
+                        containerIndex = i;
+                    }
+                }
+
+                // At which element's index to insert the element in that container
+
+                // Create a dummy
+                if (containerIndex != self.indexOfTargetContainerWhenDraggingElementFromWindow) {
+                    self.indexOfTargetContainerWhenDraggingElementFromWindow = containerIndex;
+                    $('#sq-dummy-element').remove();
+                    self.host.find('.sq-container[data-index='+ containerIndex +']').append('<div id="sq-dummy-element"></div>');
+                }
+            }
+        });
+        $(document).off('mouseup.elementFromWindow');
+        $(document).on('mouseup.elementFromWindow', function() {
+            if (self.didStartDraggingElementToContainer) {
+                // Remove element clone (at mouse position)
+                self.dummyElementAtMouse.remove();
+
+                // Add element to container at index
+                self.settings.containers[self.indexOfTargetContainerWhenDraggingElementFromWindow].insertElement(self.draggedElementFromWindowCatalogIndex, 0);
+
+                // Redraw
+                self.redraw();
+            }
+
+            self.shouldStartDraggingElementToContainer = false;
+            self.didStartDraggingElementToContainer = false;
+            self.draggingElementToContainer = false;
+            self.indexOfTargetContainerWhenDraggingElementFromWindow = -1;
+            self.indexOfTargetElementWhenDraggingElementFromWindow = -1;
+        });
+
+        // [end] Drag elements from window to container functionality
     };
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
@@ -307,6 +441,13 @@ The usage scenario is the following (for now):
 
             containersHTML += '     <div class="sq-container-move"></div>';
 
+            for (var j=0; j<this.settings.containers[i].settings.elements.length; j++) {
+                var e = this.settings.containers[i].settings.elements[j];
+                containersHTML += '<div class="sq-element">';
+                containersHTML += e.settings.content();
+                containersHTML += '</div>';
+            }
+
             containersHTML += '</div>';
         }
 
@@ -335,15 +476,15 @@ The usage scenario is the following (for now):
     // It will have settings only for layout.
 
     var containerDefaultSettings = {
-        name: 'Untitled Element',
-        iconClass: 'fa fa-cube',
-        content: function() {
-            return 'No content to display.'
-        }
+        elements: []
     };
 
     function Container() {
-        this.settings = $.extend({}, true, containerDefaultSettings);
+        this.settings = $.extend(true, {}, containerDefaultSettings);
+    }
+    Container.prototype.insertElement = function(elementCatalogIndex, index) {
+        var e = $.extend(true, {}, elementsCatalog[elementCatalogIndex]);
+        this.settings.elements.splice(index, 0, e);
     }
 
     // The element object will represent a single piece of content.
@@ -359,7 +500,11 @@ The usage scenario is the following (for now):
     // - HTML5 video
 
     var elementDefaultSettings = {
-
+        name: 'Untitled Element',
+        iconClass: 'fa fa-cube',
+        content: function() {
+            return 'No content to display.'
+        }
     };
 
     function Element(settings) {
@@ -398,7 +543,7 @@ The usage scenario is the following (for now):
             elementsWindowHTML += '     <div class="sq-window-container">';
 
             for (var i=0; i<elementsCatalog.length; i++) {
-                elementsWindowHTML += '         <div class="sq-element-thumb"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
+                elementsWindowHTML += '         <div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
             }
 
             elementsWindowHTML += '         <div class="clear"></div>';
