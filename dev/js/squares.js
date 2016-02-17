@@ -338,12 +338,18 @@ The usage scenario is the following (for now):
                         }
 
                         // Create a map of elements for each container
-                        for (var j=0; j<self.settings.containers[i].elements; j++) {
+                        for (var j=0; j<self.settings.containers[i].settings.elements.length; j++) {
                             var elementEl = containerEl.find('.sq-element[data-index='+ j +']');
-                            o.elements.push({ x: containerEl.offset().left, y: containerEl.offset().top })
+                            o.elements.push({ x: elementEl.offset().left, y: elementEl.offset().top })
                         }
 
-                        self.containersMap.push(o)
+                        // Add a virtual element at the end of the container
+                        if (o.elements.length > 0) {
+                            var lastElHeight = containerEl.find('.sq-element[data-index='+ (o.elements.length-1) +']').height();
+                            o.elements.push({ x: o.elements[o.elements.length-1].x, y: o.elements[o.elements.length-1].y + lastElHeight });
+                        }
+
+                        self.containersMap.push(o);
                     }
                 }
             }
@@ -365,26 +371,48 @@ The usage scenario is the following (for now):
                 }
 
                 // In which container to insert the element
-                var containerIndex = 0;
-                var closestDistance = 999999;
-                var x = self.ix + e.pageX - self.iex;
-                var y = self.iy + e.pageY - self.iey;
+                var containerIndex = -1;
+                var elementIndex = 0;
+                var closestElementDistance = 999999;
 
-                for (var i=0; i<self.containersMap.length; i++) {
-                    var d = Math.abs(self.containersMap[i].x - x) + Math.abs(self.containersMap[i].y - y);
-                    if (d < closestDistance) {
-                        closestDistance = d;
+                // Find the container that the mouse is in
+                for (var i=0; i<self.settings.containers.length; i++) {
+                    var c = self.host.find('.sq-container[data-index='+ i +']');
+                    if (e.pageX > c.offset().left && e.pageX < c.offset().left + c.outerWidth() &&
+                    e.pageY > c.offset().top && e.pageY < c.offset().top + c.outerHeight()) {
+
                         containerIndex = i;
                     }
                 }
 
-                // At which element's index to insert the element in that container
+                // Find the closest element in that container
+                if (containerIndex != -1 && self.containersMap[containerIndex].elements) {
+                    for (var j=0; j<self.containersMap[containerIndex].elements.length; j++) {
+                        var d = Math.abs(e.pageX - self.containersMap[containerIndex].elements[j].x) + Math.abs(e.pageY - self.containersMap[containerIndex].elements[j].y);
+                        if (d < closestElementDistance) {
+                            closestElementDistance = d;
+                            elementIndex = j;
+                        }
+                    }
+                }
+
+                if (containerIndex == -1) return;
 
                 // Create a dummy
-                if (containerIndex != self.indexOfTargetContainerWhenDraggingElementFromWindow) {
+                if (containerIndex != self.indexOfTargetContainerWhenDraggingElementFromWindow || elementIndex != self.indexOfTargetElementWhenDraggingElementFromWindow) {
                     self.indexOfTargetContainerWhenDraggingElementFromWindow = containerIndex;
+                    self.indexOfTargetElementWhenDraggingElementFromWindow = elementIndex;
                     $('#sq-dummy-element').remove();
-                    self.host.find('.sq-container[data-index='+ containerIndex +']').append('<div id="sq-dummy-element"></div>');
+
+                    if (self.settings.containers[self.indexOfTargetContainerWhenDraggingElementFromWindow].settings.elements.length > 0) {
+                        if (elementIndex >= self.settings.containers[self.indexOfTargetContainerWhenDraggingElementFromWindow].settings.elements.length) {
+                            self.host.find('.sq-container[data-index='+ containerIndex +']').append('<div id="sq-dummy-element"></div>');
+                        } else {
+                            self.host.find('.sq-container[data-index='+ containerIndex +']').find('.sq-element[data-index='+ elementIndex +']').before('<div id="sq-dummy-element"></div>');
+                        }
+                    } else {
+                        self.host.find('.sq-container[data-index='+ containerIndex +']').append('<div id="sq-dummy-element"></div>');
+                    }
                 }
             }
         });
@@ -395,7 +423,7 @@ The usage scenario is the following (for now):
                 self.dummyElementAtMouse.remove();
 
                 // Add element to container at index
-                self.settings.containers[self.indexOfTargetContainerWhenDraggingElementFromWindow].insertElement(self.draggedElementFromWindowCatalogIndex, 0);
+                self.settings.containers[self.indexOfTargetContainerWhenDraggingElementFromWindow].insertElement(self.draggedElementFromWindowCatalogIndex, self.indexOfTargetElementWhenDraggingElementFromWindow);
 
                 // Redraw
                 self.redraw();
@@ -443,7 +471,7 @@ The usage scenario is the following (for now):
 
             for (var j=0; j<this.settings.containers[i].settings.elements.length; j++) {
                 var e = this.settings.containers[i].settings.elements[j];
-                containersHTML += '<div class="sq-element">';
+                containersHTML += '<div class="sq-element" data-index="' + j + '">';
                 containersHTML += e.settings.content();
                 containersHTML += '</div>';
             }
