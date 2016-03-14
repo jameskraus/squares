@@ -57,7 +57,8 @@ The usage scenario is the following (for now):
             // new Squares(this);
             var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}}]}';
             // $.squaresInitWithSettings(this, JSON.parse(s));
-            new Squares(this, JSON.parse(s));
+            var squaresInstance = new Squares(this, JSON.parse(s));
+            $(this).data('squares', squaresInstance);
         });
     });
 
@@ -323,16 +324,10 @@ The usage scenario is the following (for now):
         $(document).on('mouseup.container', function(e) {
             if (self.draggingContainer) {
                 // Switch places of containers
-                if (self.draggedContainerIndex != self.newIndexOfDraggedContainer) {
-                    var a = self.settings.containers[self.draggedContainerIndex];
-                    self.settings.containers.splice(self.draggedContainerIndex, 1);
-                    self.settings.containers.splice(self.newIndexOfDraggedContainer, 0, a);
-                }
-
-                // Redraw
-                self.redraw();
+                self.changeContainerIndex(self.draggedContainerIndex, self.newIndexOfDraggedContainer);
             }
 
+            // Clean up
             self.shouldStartDraggingContainer = false;
             self.didStartDraggingContainer = false;
             self.draggingContainer = false;
@@ -459,11 +454,7 @@ The usage scenario is the following (for now):
                 var containerIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].containerIndex;
                 var elementIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].elementIndex;
 
-                // Add element to container at index
-                self.settings.containers[containerIndex].insertElement(self.draggedElementFromWindowCatalogIndex, elementIndex);
-
-                // Redraw
-                self.redraw();
+                self.addElement(containerIndex, elementIndex, self.draggedElementFromWindowCatalogIndex);
             }
 
             self.shouldStartDraggingElementToContainer = false;
@@ -473,6 +464,11 @@ The usage scenario is the following (for now):
         });
 
         // [end] Drag elements from window to container functionality
+
+        // Show the element settings window
+        $(document).on('click', '.sq-element', function() {
+            self.showElementSettingsWindow($(this));
+        });
     };
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
@@ -495,6 +491,24 @@ The usage scenario is the following (for now):
     Squares.prototype.appendContainer = function() {
         var c = new Container();
         this.settings.containers.push(c);
+    };
+    Squares.prototype.changeContainerIndex = function(oldIndex, newIndex) {
+        if (oldIndex != newIndex) {
+            var a = this.settings.containers[oldIndex];
+            this.settings.containers.splice(oldIndex, 1);
+            this.settings.containers.splice(newIndex, 0, a);
+
+            this.redraw();
+        }
+    };
+    Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
+        var self = this;
+        
+        // Add element to container at index
+        self.settings.containers[containerIndex].insertElement(elementCatalogIndex, elementIndex);
+
+        // Redraw
+        self.redraw();
     };
 
     Squares.prototype.redraw = function () {
@@ -538,10 +552,35 @@ The usage scenario is the following (for now):
         var self = this;
 
         elementsWindow.toggle();
-        elementsWindow.css({
-            left: self.root.offset().left + self.root.width() + 20,
-            top: self.root.offset().top
-        });
+
+        if (!elementsWindow.data('initial-position-set')) {
+            elementsWindow.data('initial-position-set', true);
+
+            elementsWindow.css({
+                left: self.root.offset().left + self.root.width() + 20,
+                top: self.root.offset().top
+            });
+        }
+
+        $('.sq-window-active').removeClass('sq-window-active');
+        elementsWindow.addClass('sq-window-active');
+    };
+    Squares.prototype.showElementSettingsWindow = function(element) {
+        var self = this;
+
+        elementSettingsWindow.show();
+
+        if (!elementSettingsWindow.data('initial-position-set')) {
+            elementSettingsWindow.data('initial-position-set', true);
+
+            elementSettingsWindow.css({
+                left: self.root.offset().left + self.root.width() + 20,
+                top: self.root.offset().top
+            });
+        }
+
+        $('.sq-window-active').removeClass('sq-window-active');
+        elementSettingsWindow.addClass('sq-window-active');
     };
 
     // The "Container" class servs literally as a container
@@ -650,6 +689,9 @@ The usage scenario is the following (for now):
 
             self.iex = e.pageX;
             self.iey = e.pageY;
+
+            $('.sq-window-active').removeClass('sq-window-active');
+            elementsWindow.addClass('sq-window-active');
         });
         $(document).off('mousemove.window');
         $(document).on('mousemove.window', function(e) {
@@ -695,7 +737,7 @@ The usage scenario is the following (for now):
         this.events();
     }
     ElementSettingsWindow.prototype.init = function() {
-        if (elementsWindow === undefined) {
+        if (elementSettingsWindow === undefined) {
             var elementsWindowHTML = '';
 
             elementsWindowHTML += ' <div class="sq-window sq-element-settings-window">';
@@ -720,34 +762,37 @@ The usage scenario is the following (for now):
 
             $('.sq-windows-root').append(elementsWindowHTML);
 
-            elementsWindow = $('.sq-windows-root').find('.sq-elements-window');
+            elementSettingsWindow = $('.sq-windows-root').find('.sq-element-settings-window');
         }
     }
     ElementSettingsWindow.prototype.events = function() {
         var self = this;
 
         // Button for closing the elements window
-        elementsWindow.find('.sq-window-close').off('click');
-        elementsWindow.find('.sq-window-close').on('click', function(e) {
-            elementsWindow.hide();
+        elementSettingsWindow.find('.sq-window-close').off('click');
+        elementSettingsWindow.find('.sq-window-close').on('click', function(e) {
+            elementSettingsWindow.hide();
         });
 
         // Move the window by dragging its header
-        elementsWindow.find('.sq-window-header').off('mousedown');
-        elementsWindow.find('.sq-window-header').on('mousedown', function(e) {
+        elementSettingsWindow.find('.sq-window-header').off('mousedown');
+        elementSettingsWindow.find('.sq-window-header').on('mousedown', function(e) {
             self.shouldStartDragging = true;
 
             self.iex = e.pageX;
             self.iey = e.pageY;
+
+            $('.sq-window-active').removeClass('sq-window-active');
+            elementSettingsWindow.addClass('sq-window-active');
         });
-        $(document).off('mousemove.window');
-        $(document).on('mousemove.window', function(e) {
+        $(document).off('mousemove.elementSettingsWindow');
+        $(document).on('mousemove.elementSettingsWindow', function(e) {
             // Start moving the window only if the user drags it by 5 pixels or
             // more, to prevent accidental drag
             if (self.shouldStartDragging && !self.didStartDragging) {
                 if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
-                    self.ix = elementsWindow.offset().left;
-                    self.iy = elementsWindow.offset().top;
+                    self.ix = elementSettingsWindow.offset().left;
+                    self.iy = elementSettingsWindow.offset().top;
                     self.dragging = true;
                     self.didStartDragging = true;
                 }
@@ -755,15 +800,15 @@ The usage scenario is the following (for now):
             }
 
             if (self.dragging) {
-                elementsWindow.css({
+                elementSettingsWindow.css({
                     left: self.ix + e.pageX - self.iex,
                     top: self.iy + e.pageY - self.iey,
                 });
             }
         });
 
-        $(document).off('mouseup.window');
-        $(document).on('mouseup.window', function(e) {
+        $(document).off('mouseup.elementSettingsWindow');
+        $(document).on('mouseup.elementSettingsWindow', function(e) {
             self.shouldStartDragging = false;
             self.didStartDragging = false;
             self.dragging = false;
