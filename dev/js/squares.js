@@ -55,7 +55,7 @@ The usage scenario is the following (for now):
         // and initialize a Squares editor on them.
         $('.squares').each(function() {
             // new Squares(this);
-            var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}}]}';
+            var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}}]}';
             // $.squaresInitWithSettings(this, JSON.parse(s));
             new Squares(this, JSON.parse(s));
         });
@@ -228,11 +228,33 @@ The usage scenario is the following (for now):
                     self.draggingContainer = true;
                     self.didStartDraggingContainer = true;
 
-                    // Create a virtual map of the current containers
+                    // Create a virtual map of the current containers, where
+                    // every possible position of the dragged container is
+                    // precalculated
                     self.containerReorderMap = new Array();
+                    var draggedContainerY = self.draggedContainer.outerHeight()/2;
+
                     for (var i=0; i<self.settings.containers.length; i++) {
-                        var c = self.host.find('.sq-container[data-index='+ i +']');
-                        var y = c.position().top + c.outerHeight()/2;
+                        var y = draggedContainerY;
+
+                        // Add the height of all previous containers to calculate
+                        // the new virtual Y position of the dragged container
+                        // for the current index
+                        for (var j=i-1; j>=0; j--) {
+                            var index = j;
+
+                            // The height of the dragged container must not be
+                            // included in the calculation.
+                            // If the current index is the index of the dragged
+                            // container, then increase the index
+                            if (j >= self.draggedContainerIndex) {
+                                index++;
+                            }
+
+                            var c = self.host.find('.sq-container[data-index='+ index +']');
+                            y += c.outerHeight();
+                        }
+
                         self.containerReorderMap.push(y);
                     }
 
@@ -523,7 +545,7 @@ The usage scenario is the following (for now):
             this.root.find('.sq-add-elements').show();
         }
 
-        console.log(JSON.stringify(this.settings));
+        // console.log(JSON.stringify(this.settings));
         // console.log(this.settings);
     };
 
