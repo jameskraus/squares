@@ -55,20 +55,82 @@ The usage scenario is the following (for now):
         // and initialize a Squares editor on them.
         $('.squares').each(function() {
             // new Squares(this);
-            var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Text","iconClass":"fa fa-font"}},{"settings":{"name":"Text","iconClass":"fa fa-font"}}]}}]}';
-            // $.squaresInitWithSettings(this, JSON.parse(s));
+            var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
             var squaresInstance = new Squares(this, JSON.parse(s));
             $(this).data('squares', squaresInstance);
         });
+
+        // Create the windows
+        addWindows();
+        addWindowEvents();
+
+        // Create events that are editor independant
+        // Like showing/hiding windows, dragging elements from window to container
+
+
     });
+
+    function addWindows() {
+        // Elements Window
+        var elementsWindowContent = '';
+        for (var i=0; i<elementsCatalog.length; i++) {
+            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
+        }
+        elementsWindowContent += '<div class="clear"></div>';
+
+        elementsWindow = new EditorWindow();
+        elementsWindow.setTitle('Elements');
+        elementsWindow.setContent(elementsWindowContent);
+        elementsWindow.root.css({ width: 268 });
+
+        // Element Settings Window
+        var elementSettingsWindowContent = 'settings';
+
+        elementSettingsWindow = new EditorWindow();
+        elementSettingsWindow.setTitle('Element Settings');
+        elementSettingsWindow.setContent(elementSettingsWindowContent);
+    }
+    function addWindowEvents() {
+        $(document).on('click', '.sq-add-elements', function() {
+            var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
+            var y = $(this).closest('.sq-root-container').offset().top;
+            elementsWindow.show(x, y);
+        });
+        $(document).on('click', '.sq-element', function() {
+            var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
+            var y = $(this).offset().top;
+            elementSettingsWindow.show(x, y);
+        });
+    }
 
 
     // Register built-in elements using the public API
     $.squaresRegisterElement({
-        name: "Text",
+        name: "Paragraph",
         iconClass: "fa fa-font",
         content: function() {
             return "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>";
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Heading 1",
+        iconClass: "fa fa-header",
+        content: function() {
+            return "<h1>Lorem Ipsum</h1>";
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Heading 2",
+        iconClass: "fa fa-header",
+        content: function() {
+            return "<h2>Lorem Ipsum</h2>";
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Heading 3",
+        iconClass: "fa fa-header",
+        content: function() {
+            return "<h3>Lorem Ipsum</h3>";
         }
     });
     $.squaresRegisterElement({
@@ -109,11 +171,12 @@ The usage scenario is the following (for now):
     function Squares(host, settings) {
         // "host" is the direct parent of the embedded editor
         this.host = $(host);
+        this.id = Math.floor(Math.random() * 9999) + 1;
         this.settings = $.extend(true, {}, squaresDefaultSettings);
 
         this.contentRoot = undefined;
         this.root = undefined;
-        this.elementsWindow = undefined;
+        this.Window = undefined;
 
         // Drag general flags
         this.ix = 0; // initial dragged object x
@@ -189,9 +252,47 @@ The usage scenario is the following (for now):
         this.host.find('.sq-root-container').append('<div class="sq-content"></div>');
         this.contentRoot = this.host.find('.sq-content');
 
+        this.contentRoot.attr('id', 'sq-editor-' + this.id);
+
         this.addUI();
         this.addEvents();
         this.redraw();
+    };
+    Squares.prototype.redraw = function () {
+        // Draw containers
+        var containersHTML = '';
+
+        for (var i=0; i<this.settings.containers.length; i++) {
+            containersHTML += '<div class="sq-container" data-index="'+ i +'">';
+
+            containersHTML += '     <div class="sq-container-move"></div>';
+
+            for (var j=0; j<this.settings.containers[i].settings.elements.length; j++) {
+                var e = this.settings.containers[i].settings.elements[j];
+                containersHTML += ' <div class="sq-element" data-index="' + j + '">';
+                containersHTML += '     <div class="sq-element-controls">';
+                containersHTML += '         <div class="sq-element-control-drag"></div>';
+                containersHTML += '         <div class="sq-element-control-edit"><i class="fa fa-cog"></i></div>';
+                containersHTML += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
+                containersHTML += '     </div>';
+                containersHTML +=       e.settings.content();
+                containersHTML += ' </div>';
+            }
+
+            containersHTML += '</div>';
+        }
+
+        this.contentRoot.html(containersHTML);
+
+        // If there are no containers, hide the "elements button"
+        if (this.settings.containers.length == 0) {
+            this.root.find('.sq-add-elements').hide();
+        } else {
+            this.root.find('.sq-add-elements').show();
+        }
+
+        // console.log(JSON.stringify(this.settings));
+        // console.log(this.settings);
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -203,16 +304,10 @@ The usage scenario is the following (for now):
             self.redraw();
         });
 
-        // Button for toggling the elements window
-        this.host.find('.sq-add-elements').off('click');
-        this.host.find('.sq-add-elements').on('click', function() {
-            self.toggleElementsWindow();
-        });
-
         // Reorder containers functionality
 
-        $(document).off('mousedown', '.sq-container-move');
-        $(document).on('mousedown', '.sq-container-move', function(e) {
+        $(document).off('mousedown', '#sq-editor-'+ self.id +' .sq-container-move');
+        $(document).on('mousedown', '#sq-editor-'+ self.id +' .sq-container-move', function(e) {
             // If there is just one container, then don't do anything
             if (self.settings.containers.length <= 1) return;
 
@@ -222,8 +317,8 @@ The usage scenario is the following (for now):
             self.draggedContainerIndex = $(e.target).closest('.sq-container').data('index');
             self.draggedContainer = self.host.find('.sq-container[data-index='+ self.draggedContainerIndex +']');
         });
-        $(document).off('mousemove.container');
-        $(document).on('mousemove.container', function(e) {
+        $(document).off('mousemove.'+ self.id);
+        $(document).on('mousemove.'+ self.id, function(e) {
             if (self.shouldStartDraggingContainer && !self.didStartDraggingContainer) {
                 if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
                     self.draggingContainer = true;
@@ -320,8 +415,8 @@ The usage scenario is the following (for now):
                 }
             }
         });
-        $(document).off('mouseup.container');
-        $(document).on('mouseup.container', function(e) {
+        $(document).off('mouseup.'+ self.id);
+        $(document).on('mouseup.'+ self.id, function(e) {
             if (self.draggingContainer) {
                 // Switch places of containers
                 self.changeContainerIndex(self.draggedContainerIndex, self.newIndexOfDraggedContainer);
@@ -464,19 +559,10 @@ The usage scenario is the following (for now):
         });
 
         // [end] Drag elements from window to container functionality
-
-        // Show the element settings window
-        $(document).on('click', '.sq-element', function() {
-            self.showElementSettingsWindow($(this));
-        });
     };
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
         this.appendAddElementsButton();
-
-        // Create windows
-        new ElementsWindow();
-        new ElementSettingsWindow();
     };
     Squares.prototype.appendAddContainerButton = function() {
         var addContainerButtonHTML = '<div class="sq-add-container"><i class="fa fa-plus"></i></div>';
@@ -503,84 +589,12 @@ The usage scenario is the following (for now):
     };
     Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
         var self = this;
-        
+
         // Add element to container at index
         self.settings.containers[containerIndex].insertElement(elementCatalogIndex, elementIndex);
 
         // Redraw
         self.redraw();
-    };
-
-    Squares.prototype.redraw = function () {
-        // Draw containers
-        var containersHTML = '';
-
-        for (var i=0; i<this.settings.containers.length; i++) {
-            containersHTML += '<div class="sq-container" data-index="'+ i +'">';
-
-            containersHTML += '     <div class="sq-container-move"></div>';
-
-            for (var j=0; j<this.settings.containers[i].settings.elements.length; j++) {
-                var e = this.settings.containers[i].settings.elements[j];
-                containersHTML += ' <div class="sq-element" data-index="' + j + '">';
-                containersHTML += '     <div class="sq-element-controls">';
-                containersHTML += '         <div class="sq-element-control-drag"></div>';
-                containersHTML += '         <div class="sq-element-control-edit"><i class="fa fa-cog"></i></div>';
-                containersHTML += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
-                containersHTML += '     </div>';
-                containersHTML +=       e.settings.content();
-                containersHTML += ' </div>';
-            }
-
-            containersHTML += '</div>';
-        }
-
-        this.contentRoot.html(containersHTML);
-
-        // If there are no containers, hide the "elements button"
-        if (this.settings.containers.length == 0) {
-            this.root.find('.sq-add-elements').hide();
-        } else {
-            this.root.find('.sq-add-elements').show();
-        }
-
-        // console.log(JSON.stringify(this.settings));
-        // console.log(this.settings);
-    };
-
-    Squares.prototype.toggleElementsWindow = function() {
-        var self = this;
-
-        elementsWindow.toggle();
-
-        if (!elementsWindow.data('initial-position-set')) {
-            elementsWindow.data('initial-position-set', true);
-
-            elementsWindow.css({
-                left: self.root.offset().left + self.root.width() + 20,
-                top: self.root.offset().top
-            });
-        }
-
-        $('.sq-window-active').removeClass('sq-window-active');
-        elementsWindow.addClass('sq-window-active');
-    };
-    Squares.prototype.showElementSettingsWindow = function(element) {
-        var self = this;
-
-        elementSettingsWindow.show();
-
-        if (!elementSettingsWindow.data('initial-position-set')) {
-            elementSettingsWindow.data('initial-position-set', true);
-
-            elementSettingsWindow.css({
-                left: self.root.offset().left + self.root.width() + 20,
-                top: self.root.offset().top
-            });
-        }
-
-        $('.sq-window-active').removeClass('sq-window-active');
-        elementSettingsWindow.addClass('sq-window-active');
     };
 
     // The "Container" class servs literally as a container
@@ -605,7 +619,10 @@ The usage scenario is the following (for now):
 
     // Elements to be supported in 0.0.1:
     //
-    // - text
+    // - paragraph
+    // - heading 1
+    // - heading 2
+    // - heading 3
     // - image
     // - button
     // - YouTube video
@@ -623,13 +640,10 @@ The usage scenario is the following (for now):
         this.settings = $.extend(settings, true, elementDefaultSettings);
     };
 
-    // The Window objects are responsible for creating and manipulating modal
-    // windows. There will be a single set of windows attached to the DOM
-    // at any given time, regardless of the number of editors.
+    function EditorWindow() {
+        this.root = undefined;
+        this.id = Math.floor(Math.random() * 10000) + 1;
 
-    // When opened, the windows will load with the active editor's settings.
-
-    function ElementsWindow() {
         // flags for dragging the window
         this.shouldStartDragging = false;
         this.didStartDragging = false;
@@ -642,65 +656,55 @@ The usage scenario is the following (for now):
         this.init();
         this.events();
     }
-    ElementsWindow.prototype.init = function() {
-        if (elementsWindow === undefined) {
-            var elementsWindowHTML = '';
+    EditorWindow.prototype.init = function() {
+        var WindowHTML = '';
 
-            elementsWindowHTML += ' <div class="sq-window sq-elements-window">';
-            elementsWindowHTML += '     <div class="sq-window-header">';
-            elementsWindowHTML += '         <div class="sq-window-title">Elements</div>';
-            elementsWindowHTML += '         <div class="sq-window-close"><i class="fa fa-times"></i></div>';
-            elementsWindowHTML += '     </div>';
+        WindowHTML += ' <div class="sq-window" id="sq-window-'+ this.id +'">';
+        WindowHTML += '     <div class="sq-window-header">';
+        WindowHTML += '         <div class="sq-window-title"></div>';
+        WindowHTML += '         <div class="sq-window-close"><i class="fa fa-times"></i></div>';
+        WindowHTML += '     </div>';
+        WindowHTML += '     <div class="sq-window-container">';
+        WindowHTML += '     </div>';
+        WindowHTML += ' </div>';
 
-            // Elements
-            elementsWindowHTML += '     <div class="sq-window-container">';
-
-            for (var i=0; i<elementsCatalog.length; i++) {
-                elementsWindowHTML += '         <div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
-            }
-
-            elementsWindowHTML += '         <div class="clear"></div>';
-            elementsWindowHTML += '     </div>';
-
-            elementsWindowHTML += ' </div>';
-
-            if ($('.sq-windows-root').length == 0) {
-                $('body').prepend('<div class="sq-windows-root"></div>');
-            }
-
-            $('.sq-windows-root').append(elementsWindowHTML);
-
-            elementsWindow = $('.sq-windows-root').find('.sq-elements-window');
+        if ($('.sq-windows-root').length == 0) {
+            $('body').prepend('<div class="sq-windows-root"></div>');
         }
+
+        $('.sq-windows-root').append(WindowHTML);
+
+        this.root = $('#sq-window-' + this.id);
     }
-    ElementsWindow.prototype.events = function() {
+    EditorWindow.prototype.events = function() {
         var self = this;
 
         // Button for closing the elements window
-        elementsWindow.find('.sq-window-close').off('click');
-        elementsWindow.find('.sq-window-close').on('click', function(e) {
-            elementsWindow.hide();
+        self.root.find('.sq-window-close').off('click');
+        self.root.find('.sq-window-close').on('click', function(e) {
+            self.root.hide();
         });
 
         // Move the window by dragging its header
-        elementsWindow.find('.sq-window-header').off('mousedown');
-        elementsWindow.find('.sq-window-header').on('mousedown', function(e) {
+        self.root.find('.sq-window-header').off('mousedown');
+        self.root.find('.sq-window-header').on('mousedown', function(e) {
+            if ($(e.target).hasClass('sq-window-close') || $(e.target).closest('.sq-window-close').length > 0) return;
+
             self.shouldStartDragging = true;
 
             self.iex = e.pageX;
             self.iey = e.pageY;
 
             $('.sq-window-active').removeClass('sq-window-active');
-            elementsWindow.addClass('sq-window-active');
+            self.root.addClass('sq-window-active');
         });
-        $(document).off('mousemove.window');
-        $(document).on('mousemove.window', function(e) {
+        $(document).on('mousemove.' + self.id, function(e) {
             // Start moving the window only if the user drags it by 5 pixels or
             // more, to prevent accidental drag
             if (self.shouldStartDragging && !self.didStartDragging) {
                 if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
-                    self.ix = elementsWindow.offset().left;
-                    self.iy = elementsWindow.offset().top;
+                    self.ix = self.root.offset().left;
+                    self.iy = self.root.offset().top;
                     self.dragging = true;
                     self.didStartDragging = true;
                 }
@@ -708,111 +712,35 @@ The usage scenario is the following (for now):
             }
 
             if (self.dragging) {
-                elementsWindow.css({
+                self.root.css({
                     left: self.ix + e.pageX - self.iex,
                     top: self.iy + e.pageY - self.iey,
                 });
             }
         });
 
-        $(document).off('mouseup.window');
-        $(document).on('mouseup.window', function(e) {
+        $(document).on('mouseup.' + self.id, function(e) {
             self.shouldStartDragging = false;
             self.didStartDragging = false;
             self.dragging = false;
         });
     }
-
-    function ElementSettingsWindow() {
-        // flags for dragging the window
-        this.shouldStartDragging = false;
-        this.didStartDragging = false;
-        this.dragging = false;
-        this.iex = 0; // initial event x
-        this.iey = 0; // initial event y
-        this.ix = 0; // initial window x
-        this.iy = 0; // initial window y
-
-        this.init();
-        this.events();
+    EditorWindow.prototype.setContent = function(html) {
+        this.root.find('.sq-window-container').append(html);
     }
-    ElementSettingsWindow.prototype.init = function() {
-        if (elementSettingsWindow === undefined) {
-            var elementsWindowHTML = '';
-
-            elementsWindowHTML += ' <div class="sq-window sq-element-settings-window">';
-            elementsWindowHTML += '     <div class="sq-window-header">';
-            elementsWindowHTML += '         <div class="sq-window-title">Element Settings</div>';
-            elementsWindowHTML += '         <div class="sq-window-close"><i class="fa fa-times"></i></div>';
-            elementsWindowHTML += '     </div>';
-
-            // Elements
-            elementsWindowHTML += '     <div class="sq-window-container">';
-
-            elementsWindowHTML += '         settings';
-
-            elementsWindowHTML += '         <div class="clear"></div>';
-            elementsWindowHTML += '     </div>';
-
-            elementsWindowHTML += ' </div>';
-
-            if ($('.sq-windows-root').length == 0) {
-                $('body').prepend('<div class="sq-windows-root"></div>');
-            }
-
-            $('.sq-windows-root').append(elementsWindowHTML);
-
-            elementSettingsWindow = $('.sq-windows-root').find('.sq-element-settings-window');
-        }
+    EditorWindow.prototype.setTitle = function(title) {
+        this.root.find('.sq-window-title').html(title);
     }
-    ElementSettingsWindow.prototype.events = function() {
-        var self = this;
+    EditorWindow.prototype.show = function(x, y) {
+        this.root.show();
 
-        // Button for closing the elements window
-        elementSettingsWindow.find('.sq-window-close').off('click');
-        elementSettingsWindow.find('.sq-window-close').on('click', function(e) {
-            elementSettingsWindow.hide();
+        this.root.css({
+            left: x,
+            top: y
         });
 
-        // Move the window by dragging its header
-        elementSettingsWindow.find('.sq-window-header').off('mousedown');
-        elementSettingsWindow.find('.sq-window-header').on('mousedown', function(e) {
-            self.shouldStartDragging = true;
-
-            self.iex = e.pageX;
-            self.iey = e.pageY;
-
-            $('.sq-window-active').removeClass('sq-window-active');
-            elementSettingsWindow.addClass('sq-window-active');
-        });
-        $(document).off('mousemove.elementSettingsWindow');
-        $(document).on('mousemove.elementSettingsWindow', function(e) {
-            // Start moving the window only if the user drags it by 5 pixels or
-            // more, to prevent accidental drag
-            if (self.shouldStartDragging && !self.didStartDragging) {
-                if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
-                    self.ix = elementSettingsWindow.offset().left;
-                    self.iy = elementSettingsWindow.offset().top;
-                    self.dragging = true;
-                    self.didStartDragging = true;
-                }
-
-            }
-
-            if (self.dragging) {
-                elementSettingsWindow.css({
-                    left: self.ix + e.pageX - self.iex,
-                    top: self.iy + e.pageY - self.iey,
-                });
-            }
-        });
-
-        $(document).off('mouseup.elementSettingsWindow');
-        $(document).on('mouseup.elementSettingsWindow', function(e) {
-            self.shouldStartDragging = false;
-            self.didStartDragging = false;
-            self.dragging = false;
-        });
+        $('.sq-window-active').removeClass('sq-window-active');
+        this.root.addClass('sq-window-active');
     }
 
 

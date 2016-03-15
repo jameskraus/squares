@@ -88,6 +88,7 @@
     top: 0;
     width: 0;
     height: 0;
+    z-index: 999999;
 }
 .sq-window {
     position: absolute;
@@ -95,21 +96,26 @@
     top: 0;
     background: white;
     border: 1px solid #ccc;
+    z-index: 0;
     display: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
+.sq-window.sq-window-active {
+    z-index: 1;
+}
 .sq-window-header {
     background: #f3f3f3;
-    padding: 20px;
+    padding: 20px 78px 20px 20px;
     border-bottom: 1px solid #ccc;
     cursor: move;
 }
 .sq-window-title {
     font-size: 24px;
     margin: 5px;
+    white-space: nowrap;
 }
 .sq-window-close {
     position: absolute;
@@ -144,9 +150,6 @@
     cursor: -webkit-grabbing;
 }
 
-.sq-elements-window {
-    width: 268px;
-}
 #sq-dummy-element {
     border: 3px dashed #ccc;
     background: #f3f3f3;
