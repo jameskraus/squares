@@ -161,6 +161,16 @@ The usage scenario is the following (for now):
                             var coords = { x: 0, y: 0 };
                             var c = editor.host.find('.sq-container[data-index='+ i +']');
 
+                            // if the container has no elements, add one dummy element
+                            // and move on to next container
+                            if (editor.settings.containers[i].settings.elements.length == 0) {
+                                c.append('<div id="sq-dummy-element"></div>');
+                                var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
+                                var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                elementDragMap.push({ x: x, y: y, elementIndex: 0, containerIndex: i, editorIndex: k });
+                                $('#sq-dummy-element').remove();
+                            }
+
                             for (var j=0; j<editor.settings.containers[i].settings.elements.length; j++) {
                                 var el = c.find('.sq-element[data-index='+ j +']');
 
@@ -604,9 +614,8 @@ The usage scenario is the following (for now):
             var a = this.settings.containers[oldIndex];
             this.settings.containers.splice(oldIndex, 1);
             this.settings.containers.splice(newIndex, 0, a);
-
-            this.redraw();
         }
+        this.redraw();
     };
     Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
         var self = this;
