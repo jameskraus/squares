@@ -20,7 +20,7 @@ The usage scenario is the following (for now):
 
 ;(function ($, window, document, undefined) {
 
-    var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array();
+    var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array(), editors = new Array();
 
     // =========================================================================
     // API
@@ -57,6 +57,9 @@ The usage scenario is the following (for now):
             // new Squares(this);
             var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
             var squaresInstance = new Squares(this, JSON.parse(s));
+
+            editors.push(squaresInstance);
+
             $(this).data('squares', squaresInstance);
         });
 
@@ -64,10 +67,9 @@ The usage scenario is the following (for now):
         addWindows();
         addWindowEvents();
 
-        // Create events that are editor independant
-        // Like showing/hiding windows, dragging elements from window to container
-
-
+        // Events for dragging elements from the element window to a container.
+        // These events needs to be editor-independant
+        addDragElementsFromWindowEvents();
     });
 
     function addWindows() {
@@ -101,6 +103,151 @@ The usage scenario is the following (for now):
             var y = $(this).offset().top;
             elementSettingsWindow.show(x, y);
         });
+    }
+    function addDragElementsFromWindowEvents() {
+        // Drag elements from window to container functionality
+
+        var shouldStartDraggingElementToContainer = false,
+            didStartDraggingElementToContainer = false,
+            draggingElementToContainer = false,
+            virtualIndexOfDraggedElement = -1,
+            draggedElementFromWindowCatalogIndex = -1,
+            thumbElWhenDraggingFromWindow = undefined,
+            targetEditor = undefined,
+            dummyElementAtMouse = undefined,
+            elementDragMap = undefined;
+        var iex = 0, iey = 0, ix = 0, iy = 0;
+
+        $(document).off('mousedown', '.sq-element-thumb');
+        $(document).on('mousedown', '.sq-element-thumb', function(e) {
+            shouldStartDraggingElementToContainer = true;
+
+            iex = e.pageX;
+            iey = e.pageY;
+
+            thumbElWhenDraggingFromWindow = $(this);
+        });
+        $(document).off('mousemove.elementFromWindow');
+        $(document).on('mousemove.elementFromWindow', function(e) {
+            if (shouldStartDraggingElementToContainer && !didStartDraggingElementToContainer) {
+                if (Math.abs(e.pageX - iex) > 5 || Math.abs(e.pageY - iey) > 5) {
+                    didStartDraggingElementToContainer = true;
+
+                    // Get contents and position of the element thumb
+                    draggedElementFromWindowCatalogIndex = thumbElWhenDraggingFromWindow.data('index');
+
+                    var contents = thumbElWhenDraggingFromWindow.html();
+
+                    ix = thumbElWhenDraggingFromWindow.offset().left;
+                    iy = thumbElWhenDraggingFromWindow.offset().top;
+
+                    // Create a copy of the thumb and place it at mouse location
+                    $('body').prepend('<div id="sq-dummy-element-at-mouse" class="sq-element-thumb">' + contents + '</div>');
+                    dummyElementAtMouse = $('#sq-dummy-element-at-mouse');
+                    dummyElementAtMouse.css({
+                        left: ix,
+                        top: iy,
+                        margin: 0
+                    });
+
+                    // Create a virtual map of all possible positions of the
+                    // dragged element in all editors
+                    elementDragMap = new Array();
+
+                    for (var k=0; k<editors.length; k++) {
+                        var editor = editors[k];
+
+                        for (var i=0; i<editor.settings.containers.length; i++) {
+                            var coords = { x: 0, y: 0 };
+                            var c = editor.host.find('.sq-container[data-index='+ i +']');
+
+                            for (var j=0; j<editor.settings.containers[i].settings.elements.length; j++) {
+                                var el = c.find('.sq-element[data-index='+ j +']');
+
+                                el.before('<div id="sq-dummy-element"></div>');
+                                var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
+                                var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i, editorIndex: k });
+                                $('#sq-dummy-element').remove();
+
+                                // When we reach the end of the elements array, add a dummy element after the last element
+                                if (j == editor.settings.containers[i].settings.elements.length - 1) {
+                                    el.after('<div id="sq-dummy-element"></div>');
+                                    var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
+                                    var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                    elementDragMap.push({ x: x, y: y, elementIndex: j+1, containerIndex: i, editorIndex: k });
+                                    $('#sq-dummy-element').remove();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (didStartDraggingElementToContainer) {
+                // Update dummy element at mouse position
+                dummyElementAtMouse.css({
+                    left: ix + e.pageX - iex,
+                    top: iy + e.pageY - iey
+                });
+
+                // Find the closest virtual position to the mouse position
+                var closestIndex = 0;
+                var closestDistance = 999999;
+
+                for (var i=0; i<elementDragMap.length; i++) {
+                    var d = Math.abs(e.pageX - elementDragMap[i].x) + Math.abs(e.pageY - elementDragMap[i].y);
+                    if (d < closestDistance) {
+                        closestDistance = d;
+                        closestIndex = i;
+                    }
+                }
+
+                // If the closest index is different than the current index,
+                // remove the dummy element and insert a new one and the new index
+                if (closestIndex != virtualIndexOfDraggedElement) {
+                    virtualIndexOfDraggedElement = closestIndex;
+
+                    // Remove the current dummy element
+                    $('#sq-dummy-element').remove();
+
+                    // Insert a new dummy element at the container/element index
+                    var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
+                    var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
+                    var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
+                    var c = editors[editorIndex].host.find('.sq-container[data-index='+ containerIndex +']');
+
+                    // If the index of the dummy element is bigger than the number
+                    // of elements in that container, insert the dummy at the end
+                    if (elementIndex == editors[editorIndex].settings.containers[containerIndex].settings.elements.length) {
+                        c.append('<div id="sq-dummy-element"></div>');
+                    } else {
+                        var e = c.find('.sq-element[data-index='+ elementIndex +']');
+                        e.before('<div id="sq-dummy-element"></div>');
+                    }
+                }
+            }
+        });
+        $(document).off('mouseup.elementFromWindow');
+        $(document).on('mouseup.elementFromWindow', function() {
+            if (didStartDraggingElementToContainer) {
+                // Remove element clone (at mouse position)
+                dummyElementAtMouse.remove();
+
+                var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
+                var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
+                var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
+
+                editors[editorIndex].addElement(containerIndex, elementIndex, draggedElementFromWindowCatalogIndex);
+            }
+
+            shouldStartDraggingElementToContainer = false;
+            didStartDraggingElementToContainer = false;
+            draggingElementToContainer = false;
+            virtualIndexOfDraggedElement = -1;
+        });
+
+        // [end] Drag elements from window to container functionality
     }
 
 
@@ -433,132 +580,6 @@ The usage scenario is the following (for now):
         });
 
         // [end] Reorder containers functionality
-
-        // Drag elements from window to container functionality
-
-        $(document).off('mousedown', '.sq-element-thumb');
-        $(document).on('mousedown', '.sq-element-thumb', function(e) {
-            self.shouldStartDraggingElementToContainer = true;
-
-            self.iex = e.pageX;
-            self.iey = e.pageY;
-
-            self.thumbElWhenDraggingFromWindow = $(this);
-        });
-        $(document).off('mousemove.elementFromWindow');
-        $(document).on('mousemove.elementFromWindow', function(e) {
-            if (self.shouldStartDraggingElementToContainer && !self.didStartDraggingElementToContainer) {
-                if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
-                    self.didStartDraggingElementToContainer = true;
-
-                    // Get contents and position of the element thumb
-                    self.draggedElementFromWindowCatalogIndex = self.thumbElWhenDraggingFromWindow.data('index');
-
-                    var contents = self.thumbElWhenDraggingFromWindow.html();
-
-                    self.ix = self.thumbElWhenDraggingFromWindow.offset().left;
-                    self.iy = self.thumbElWhenDraggingFromWindow.offset().top;
-
-                    // Create a copy of the thumb and place it at mouse location
-                    $('body').prepend('<div id="sq-dummy-element-at-mouse" class="sq-element-thumb">' + contents + '</div>');
-                    self.dummyElementAtMouse = $('#sq-dummy-element-at-mouse');
-                    self.dummyElementAtMouse.css({
-                        left: self.ix,
-                        top: self.iy,
-                        margin: 0
-                    });
-
-                    // Create a virtual map of all possible positions of the
-                    // dragged element
-                    self.elementDragMap = new Array();
-
-                    for (var i=0; i<self.settings.containers.length; i++) {
-                        var coords = { x: 0, y: 0 };
-                        var c = self.host.find('.sq-container[data-index='+ i +']');
-
-                        for (var j=0; j<self.settings.containers[i].settings.elements.length; j++) {
-                            var e = c.find('.sq-element[data-index='+ j +']');
-
-                            e.before('<div id="sq-dummy-element"></div>');
-                            var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
-                            var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
-                            self.elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i });
-                            $('#sq-dummy-element').remove();
-
-                            if (j == self.settings.containers[i].settings.elements.length - 1) {
-                                e.after('<div id="sq-dummy-element"></div>');
-                                var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
-                                var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
-                                self.elementDragMap.push({ x: x, y: y, elementIndex: j+1, containerIndex: i });
-                                $('#sq-dummy-element').remove();
-                            }
-                        }
-                    }
-                }
-            }
-            if (self.didStartDraggingElementToContainer) {
-                // Update dummy element at mouse position
-                self.dummyElementAtMouse.css({
-                    left: self.ix + e.pageX - self.iex,
-                    top: self.iy + e.pageY - self.iey
-                });
-
-                // Find the closest virtual position to the mouse position
-                var closestIndex = 0;
-                var closestDistance = 999999;
-
-                for (var i=0; i<self.elementDragMap.length; i++) {
-                    var d = Math.abs(e.pageX - self.elementDragMap[i].x) + Math.abs(e.pageY - self.elementDragMap[i].y);
-                    if (d < closestDistance) {
-                        closestDistance = d;
-                        closestIndex = i;
-                    }
-                }
-
-                // If the closest index is different than the current index,
-                // remove the dummy element and insert a new one and the new index
-                if (closestIndex != self.virtualIndexOfDraggedElement) {
-                    self.virtualIndexOfDraggedElement = closestIndex;
-
-                    // Remove the current dummy element
-                    $('#sq-dummy-element').remove();
-
-                    // Insert a new dummy element at the container/element index
-                    var containerIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].containerIndex;
-                    var elementIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].elementIndex;
-
-                    var c = self.host.find('.sq-container[data-index='+ containerIndex +']');
-
-                    // If the index of the dummy element is bigger than the number
-                    // of elements in that container, insert the dummy at the end
-                    if (elementIndex == self.settings.containers[containerIndex].settings.elements.length) {
-                        c.append('<div id="sq-dummy-element"></div>');
-                    } else {
-                        var e = c.find('.sq-element[data-index='+ elementIndex +']');
-                        e.before('<div id="sq-dummy-element"></div>');
-                    }
-                }
-            }
-        });
-        $(document).off('mouseup.elementFromWindow');
-        $(document).on('mouseup.elementFromWindow', function() {
-            if (self.didStartDraggingElementToContainer) {
-                // Remove element clone (at mouse position)
-                self.dummyElementAtMouse.remove();
-
-                var containerIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].containerIndex;
-                var elementIndex = self.elementDragMap[self.virtualIndexOfDraggedElement].elementIndex;
-
-                self.addElement(containerIndex, elementIndex, self.draggedElementFromWindowCatalogIndex);
-            }
-
-            self.shouldStartDraggingElementToContainer = false;
-            self.didStartDraggingElementToContainer = false;
-            self.draggingElementToContainer = false;
-            self.virtualIndexOfDraggedElement = -1;
-        });
-
-        // [end] Drag elements from window to container functionality
     };
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
