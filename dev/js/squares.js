@@ -706,7 +706,12 @@ Custom defined settings per element:
     }
     Squares.prototype.endDraggingContainer = function(e) {
         // Switch places of containers
-        this.changeContainerIndex(this.draggedContainerIndex, this.newIndexOfDraggedContainer);
+        if (this.draggedContainerIndex != this.newIndexOfDraggedContainer) {
+            var a = this.settings.containers[this.draggedContainerIndex];
+            this.settings.containers.splice(this.draggedContainerIndex, 1);
+            this.settings.containers.splice(this.newIndexOfDraggedContainer, 0, a);
+        }
+        this.redraw();
     }
     Squares.prototype.startDraggingElement = function(e) {
         if (Math.abs(e.pageX - this.iex) > 5 || Math.abs(e.pageY - this.iey) > 5) {
@@ -716,7 +721,7 @@ Custom defined settings per element:
             // Create a virtual map of all possible positions of the element
             // in each container
             this.elementDragMap = new Array();
-            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElement.outerWidth() +'px; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
+            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElement.outerWidth() +'px; height: '+ this.draggedElement.outerHeight() +'px; display: inline-block;"></div>';
 
             this.draggedElement.hide();
             for (var i=0; i<this.settings.containers.length; i++) {
@@ -826,6 +831,18 @@ Custom defined settings per element:
     }
     Squares.prototype.endDraggingElement = function(e) {
         this.draggedElement.remove();
+
+        // Move the element to the new index
+        var newContainerIndex = this.elementDragMap[this.newIndexOfDraggedElement].containerIndex;
+        var newElementIndex = this.elementDragMap[this.newIndexOfDraggedElement].elementIndex;
+
+        var oldElementIndex = this.draggedElementIndex;
+        var oldContainerIndex = this.draggedElementContainerIndex;
+
+        var el = this.settings.containers[oldContainerIndex].settings.elements[oldElementIndex];
+        this.settings.containers[oldContainerIndex].settings.elements.splice(oldElementIndex, 1);
+        this.settings.containers[newContainerIndex].settings.elements.splice(newElementIndex, 0, el);
+
         this.redraw();
     }
     Squares.prototype.addUI = function() {
@@ -845,14 +862,6 @@ Custom defined settings per element:
     Squares.prototype.appendContainer = function() {
         var c = new Container();
         this.settings.containers.push(c);
-    };
-    Squares.prototype.changeContainerIndex = function(oldIndex, newIndex) {
-        if (oldIndex != newIndex) {
-            var a = this.settings.containers[oldIndex];
-            this.settings.containers.splice(oldIndex, 1);
-            this.settings.containers.splice(newIndex, 0, a);
-        }
-        this.redraw();
     };
     Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
         var self = this;
