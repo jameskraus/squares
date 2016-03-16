@@ -18,6 +18,71 @@ The usage scenario is the following (for now):
 
 */
 
+/*
+
+[tmp]
+
+Element Settings
+=========================================
+
+Common settings for all elements:
+---------------------------------
+
+- General:
+    - ID
+    - Class
+    - CSS
+- Layout
+    - Box model widget - margin, padding
+    - col span
+- Text
+    - font-family
+    - font-size
+    - font-weight
+    - font-style
+    - line-height
+    - color
+    - text-align
+    - text-decoration
+    - text-transform
+    - text-shadow
+- Style
+    - background-color
+    - background-color opacity
+    - opacity
+    - box-shadow
+    - border width
+    - border style
+    - border color
+    - border opacity
+    - border radius
+
+
+Custom defined settings per element:
+---------------------------------
+
+- Image
+    - URL
+    - Image is a link (checkbox)
+    - Link to
+- Video
+    - WEBM url
+    - OGG url
+    - MP4 url
+    - Video is a link (checkbox)
+    - Link to
+- YouTube Video
+    - Embed code
+- Button
+    - Link to
+    - Text
+- Heading
+    - Heading tag index
+    - Text
+- Paragraph
+    - Text (large)
+*/
+
 ;(function ($, window, document, undefined) {
 
     var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array(), editors = new Array();
@@ -33,7 +98,18 @@ The usage scenario is the following (for now):
     // =========================================================================
 
     $.squaresInitWithSettings = function(host, settings) {
-        new Squares(host, settings);
+        // If the host already has an editor attached, remove the editor from the editors array
+        if (host.data('squares')) {
+            for (var i=0; i<editors.length; i++) {
+                if (editors[i].id == host.data('squares').id) {
+                    // editors.splice(i, 1);
+                }
+            }
+        }
+
+        // Init the new editor
+        var squaresInstance = new Squares(host, settings);
+        editors.push(squaresInstance);
     };
 
     $.squaresGetCurrentSettings = function(host) {
@@ -45,18 +121,74 @@ The usage scenario is the following (for now):
     };
 
     $.squaresRegisterElement = function(options) {
-        var e = new Element(options);
-        elementsCatalog.push(e);
+        elementsCatalog.push(options);
     };
 
-    $(document).ready(function() {
+    // Register built-in elements using the public API
+    $.squaresRegisterElement({
+        name: "Paragraph",
+        iconClass: "fa fa-font",
+        content: function() {
+            return "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>";
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Heading",
+        iconClass: "fa fa-header",
+        extraSettings: {
+            heading: {
+                type: 'select',
+                options: ['h1', 'h2', 'h3'],
+                default: 'h3'
+            }
+        },
+        content: function() {
+            return '<'+ this.extraSettings.heading.val +'>Lorem Ipsum</'+ this.extraSettings.heading.val +'>';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Image",
+        iconClass: "fa fa-picture-o",
+        content: function() {
+            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png">';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Button",
+        iconClass: "fa fa-hand-pointer-o",
+        content: function() {
+            return '<input type="button" value="Button">';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "Video",
+        iconClass: "fa fa-video-camera",
+        content: function() {
+            return '<video autoplay><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
+        }
+    });
+    $.squaresRegisterElement({
+        name: "YouTube",
+        iconClass: "fa fa-youtube",
+        content: function() {
+            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
+        }
+    });
 
+    $(document).ready(function() {
         // On document load, loop over all elements with the "squares" class
         // and initialize a Squares editor on them.
         $('.squares').each(function() {
-            // new Squares(this);
+            // Register elements
+            for (var i=0; i<elementsCatalog.length; i++) {
+                if (!elementsCatalog[i].settings) {
+                    elementsCatalog[i] = new Element(elementsCatalog[i]);
+                }
+            }
+
             var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
-            var squaresInstance = new Squares(this, JSON.parse(s));
+            // var squaresInstance = new Squares(this, JSON.parse(s));
+            var squaresInstance = new Squares(this);
 
             editors.push(squaresInstance);
 
@@ -70,6 +202,10 @@ The usage scenario is the following (for now):
         // Events for dragging elements from the element window to a container.
         // These events needs to be editor-independant
         addDragElementsFromWindowEvents();
+
+        // Test initWithSettings
+        var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
+        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s))
     });
 
     function addWindows() {
@@ -260,65 +396,6 @@ The usage scenario is the following (for now):
         // [end] Drag elements from window to container functionality
     }
 
-
-    // Register built-in elements using the public API
-    $.squaresRegisterElement({
-        name: "Paragraph",
-        iconClass: "fa fa-font",
-        content: function() {
-            return "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>";
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Heading 1",
-        iconClass: "fa fa-header",
-        content: function() {
-            return "<h1>Lorem Ipsum</h1>";
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Heading 2",
-        iconClass: "fa fa-header",
-        content: function() {
-            return "<h2>Lorem Ipsum</h2>";
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Heading 3",
-        iconClass: "fa fa-header",
-        content: function() {
-            return "<h3>Lorem Ipsum</h3>";
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Image",
-        iconClass: "fa fa-picture-o",
-        content: function() {
-            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png">';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Button",
-        iconClass: "fa fa-hand-pointer-o",
-        content: function() {
-            return '<input type="button" value="Button">';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Video",
-        iconClass: "fa fa-video-camera",
-        content: function() {
-            return '<video autoplay><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "YouTube",
-        iconClass: "fa fa-youtube",
-        content: function() {
-            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
-        }
-    });
-
     // The bulk of the functionality goes here.
     // Squares is the "root" class.
     var squaresDefaultSettings = {
@@ -402,6 +479,7 @@ The usage scenario is the following (for now):
         this.host.data.editor = this;
 
         // Insert a container to hold everything
+        this.host.html('');
         this.host.append('<div class="sq-root-container"></div>');
         this.root = this.host.find('.sq-root-container');
 
@@ -647,28 +725,35 @@ The usage scenario is the following (for now):
     // Image, text, video, etc.
     // It will have settings for layout and styling
 
-    // Elements to be supported in 0.0.1:
-    //
-    // - paragraph
-    // - heading 1
-    // - heading 2
-    // - heading 3
-    // - image
-    // - button
-    // - YouTube video
-    // - HTML5 video
-
     var elementDefaultSettings = {
         name: 'Untitled Element',
         iconClass: 'fa fa-cube',
+        settings: 'default settings',
         content: function() {
             return 'No content to display.'
         }
     };
 
     function Element(settings) {
-        this.settings = $.extend(settings, true, elementDefaultSettings);
-    };
+        this.settings = $.extend(true, {}, elementDefaultSettings, settings);
+        this.init();
+    }
+    Element.prototype.init = function() {
+        // Initialize extra settings
+        // Use default values, etc.
+        for (var setting in this.settings.extraSettings) {
+            if (this.settings.extraSettings.hasOwnProperty(setting)) {
+                // Select
+                if (this.settings.extraSettings[setting].type == 'select') {
+                    if (this.settings.extraSettings[setting].default) {
+                        this.settings.extraSettings[setting].val = this.settings.extraSettings[setting].default;
+                    } else {
+                        this.settings.extraSettings[setting].val = this.settings.extraSettings[setting].options[0];
+                    }
+                }
+            }
+        }
+    }
 
     function EditorWindow() {
         this.root = undefined;
