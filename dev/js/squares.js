@@ -403,6 +403,8 @@ Custom defined settings per element:
     };
 
     function Squares(host, settings) {
+        var that = this;
+
         // "host" is the direct parent of the embedded editor
         this.host = $(host);
         this.id = Math.floor(Math.random() * 9999) + 1;
@@ -430,22 +432,15 @@ Custom defined settings per element:
         this.containerReorderMap = undefined;
         this.newIndexOfDraggedContainer = 0;
 
-        // Drag element from window to container flags
-        this.shouldStartDraggingElementToContainer = false;
-        this.didStartDraggingElementToContainer = false;
-        this.draggingElementToContainer = false;
-
-        // Drag element from window to container vars
-        this.virtualIndexOfDraggedElement = -1;
-        // this.indexOfTargetContainerWhenDraggingElementFromWindow = -1;
-        // this.indexOfTargetElementWhenDraggingElementFromWindow = -1;
-        this.draggedElementFromWindowCatalogIndex = -1;
-        this.dummyElementAtMouse = undefined;
-        this.dummyElement = undefined;
-        this.thumbElWhenDraggingFromWindow = undefined;
-
-        // Commonly used
+        // Reorder elements
+        this.shouldStartDraggingElement = false;
+        this.didStartDraggingElement = false;
+        this.draggingElement = false;
+        this.draggedElementIndex = -1;
+        this.draggedElementContainerIndex = -1;
         this.elementDragMap = undefined;
+        this.dummyElement = undefined;
+        this.newIndexOfDraggedElement = -1;
 
         this.loadSettings(settings);
         this.init();
@@ -539,8 +534,9 @@ Custom defined settings per element:
             self.redraw();
         });
 
-        // Reorder containers functionality
+        // Reorder containers and elements functionality
 
+        // Containers
         $(document).off('mousedown', '#sq-editor-'+ self.id +' .sq-container-move');
         $(document).on('mousedown', '#sq-editor-'+ self.id +' .sq-container-move', function(e) {
             // If there is just one container, then don't do anything
@@ -552,109 +548,48 @@ Custom defined settings per element:
             self.draggedContainerIndex = $(e.target).closest('.sq-container').data('index');
             self.draggedContainer = self.host.find('.sq-container[data-index='+ self.draggedContainerIndex +']');
         });
+
+        // Elements
+        $(document).off('mousedown', '#sq-editor-'+ self.id +' .sq-element');
+        $(document).on('mousedown', '#sq-editor-'+ self.id +' .sq-element', function(e) {
+            // If there is just one container with one element, then don't do anything
+            if (self.settings.containers.length == 1 && self.settings.containers[0].settings.elements.length == 1) return;
+
+            self.iex = e.pageX;
+            self.iey = e.pageY;
+            self.shouldStartDraggingElement = true;
+            self.draggedElement = $(this);
+            self.draggedElementIndex = $(this).data('index');
+            self.draggedElementContainerIndex = $(this).closest('.sq-container').data('index');
+        });
+
         $(document).off('mousemove.'+ self.id);
         $(document).on('mousemove.'+ self.id, function(e) {
+            // Drag container
             if (self.shouldStartDraggingContainer && !self.didStartDraggingContainer) {
-                if (Math.abs(e.pageX - self.iex) > 5 || Math.abs(e.pageY - self.iey) > 5) {
-                    self.draggingContainer = true;
-                    self.didStartDraggingContainer = true;
-
-                    // Create a virtual map of the current containers, where
-                    // every possible position of the dragged container is
-                    // precalculated
-                    self.containerReorderMap = new Array();
-                    var draggedContainerY = self.draggedContainer.outerHeight()/2;
-
-                    for (var i=0; i<self.settings.containers.length; i++) {
-                        var y = draggedContainerY;
-
-                        // Add the height of all previous containers to calculate
-                        // the new virtual Y position of the dragged container
-                        // for the current index
-                        for (var j=i-1; j>=0; j--) {
-                            var index = j;
-
-                            // The height of the dragged container must not be
-                            // included in the calculation.
-                            // If the current index is the index of the dragged
-                            // container, then increase the index
-                            if (j >= self.draggedContainerIndex) {
-                                index++;
-                            }
-
-                            var c = self.host.find('.sq-container[data-index='+ index +']');
-                            y += c.outerHeight();
-                        }
-
-                        self.containerReorderMap.push(y);
-                    }
-
-                    // Position the container absolutely
-                    self.ix = self.draggedContainer.position().left;
-                    self.iy = self.draggedContainer.position().top;
-
-                    self.draggedContainer.css({
-                        position: 'absolute',
-                        left: self.ix,
-                        top: self.iy,
-                        width: self.draggedContainer.width()
-                    });
-
-                    self.draggedContainer.addClass('sq-dragging');
-
-                    // Insert a dummy container
-                    self.draggedContainer.after('<div id="sq-dummy-container"></div>');
-                    self.dummyContainer = $('#sq-dummy-container');
-                    self.dummyContainer.css({
-                        width: self.draggedContainer.outerWidth(),
-                        height: self.draggedContainer.outerHeight()
-                    });
-                }
+                self.startDraggingContainer(e);
             }
 
             if (self.draggingContainer) {
-                self.draggedContainer.css({
-                    left: self.ix + e.pageX - self.iex,
-                    top: self.iy + e.pageY - self.iey
-                });
+                self.dragContainer(e);
+            }
 
-                var y = self.draggedContainer.position().top + self.draggedContainer.outerHeight()/2;
-                var closestDeltaY = 999999;
-                var closestIndex = undefined;
+            // Drag element
+            if (self.shouldStartDraggingElement && !self.didStartDraggingElement) {
+                self.startDraggingElement(e);
+            }
 
-                for (var i=0; i<self.containerReorderMap.length; i++) {
-                    if (Math.abs(y - self.containerReorderMap[i]) < closestDeltaY) {
-                        closestDeltaY = Math.abs(y - self.containerReorderMap[i]);
-                        closestIndex = i;
-                    }
-                }
-
-                // If the closest index changed, move the dummy container to the
-                // new position.
-                if (closestIndex != self.newIndexOfDraggedContainer) {
-                    self.newIndexOfDraggedContainer = closestIndex;
-
-                    self.dummyContainer.remove();
-
-                    if (self.newIndexOfDraggedContainer < self.draggedContainerIndex) {
-                        self.host.find('.sq-container[data-index='+ self.newIndexOfDraggedContainer +']').before('<div id="sq-dummy-container"></div>');
-                    } else {
-                        self.host.find('.sq-container[data-index='+ self.newIndexOfDraggedContainer +']').after('<div id="sq-dummy-container"></div>');
-                    }
-
-                    self.dummyContainer = $('#sq-dummy-container');
-                    self.dummyContainer.css({
-                        width: self.draggedContainer.outerWidth(),
-                        height: self.draggedContainer.outerHeight()
-                    });
-                }
+            if (self.draggingElement) {
+                self.dragElement(e);
             }
         });
         $(document).off('mouseup.'+ self.id);
         $(document).on('mouseup.'+ self.id, function(e) {
             if (self.draggingContainer) {
-                // Switch places of containers
-                self.changeContainerIndex(self.draggedContainerIndex, self.newIndexOfDraggedContainer);
+                self.endDraggingContainer(e);
+            }
+            if (self.draggingElement) {
+                self.endDraggingElement(e);
             }
 
             // Clean up
@@ -665,10 +600,234 @@ Custom defined settings per element:
             self.draggedContainerIndex = 0;
             self.draggedContainer = undefined;
             self.dummyContainer = undefined;
+
+            self.shouldStartDraggingElement = false;
+            self.didStartDraggingElement = false;
+            self.draggingElement = false;
+            self.draggedElementIndex = -1;
+            self.draggedElementContainerIndex = -1;
         });
 
         // [end] Reorder containers functionality
     };
+    Squares.prototype.startDraggingContainer = function(e) {
+        if (Math.abs(e.pageX - this.iex) > 5 || Math.abs(e.pageY - this.iey) > 5) {
+            this.draggingContainer = true;
+            this.didStartDraggingContainer = true;
+
+            // Create a virtual map of the current containers, where
+            // every possible position of the dragged container is
+            // precalculated
+            this.containerReorderMap = new Array();
+            var draggedContainerY = this.draggedContainer.outerHeight()/2;
+
+            for (var i=0; i<this.settings.containers.length; i++) {
+                var y = draggedContainerY;
+
+                // Add the height of all previous containers to calculate
+                // the new virtual Y position of the dragged container
+                // for the current index
+                for (var j=i-1; j>=0; j--) {
+                    var index = j;
+
+                    // The height of the dragged container must not be
+                    // included in the calculation.
+                    // If the current index is the index of the dragged
+                    // container, then increase the index
+                    if (j >= this.draggedContainerIndex) {
+                        index++;
+                    }
+
+                    var c = this.host.find('.sq-container[data-index='+ index +']');
+                    y += c.outerHeight();
+                }
+
+                this.containerReorderMap.push(y);
+            }
+
+            // Position the container absolutely
+            this.ix = this.draggedContainer.position().left;
+            this.iy = this.draggedContainer.position().top;
+
+            this.draggedContainer.css({
+                position: 'absolute',
+                left: this.ix,
+                top: this.iy,
+                width: this.draggedContainer.width()
+            });
+
+            this.draggedContainer.addClass('sq-dragging');
+
+            // Insert a dummy container
+            this.draggedContainer.after('<div id="sq-dummy-container"></div>');
+            this.dummyContainer = $('#sq-dummy-container');
+            this.dummyContainer.css({
+                width: this.draggedContainer.outerWidth(),
+                height: this.draggedContainer.outerHeight()
+            });
+        }
+    }
+    Squares.prototype.dragContainer = function(e) {
+        this.draggedContainer.css({
+            left: this.ix + e.pageX - this.iex,
+            top: this.iy + e.pageY - this.iey
+        });
+
+        var y = this.draggedContainer.position().top + this.draggedContainer.outerHeight()/2;
+        var closestDeltaY = 999999;
+        var closestIndex = undefined;
+
+        for (var i=0; i<this.containerReorderMap.length; i++) {
+            if (Math.abs(y - this.containerReorderMap[i]) < closestDeltaY) {
+                closestDeltaY = Math.abs(y - this.containerReorderMap[i]);
+                closestIndex = i;
+            }
+        }
+
+        // If the closest index changed, move the dummy container to the
+        // new position.
+        if (closestIndex != this.newIndexOfDraggedContainer) {
+            this.newIndexOfDraggedContainer = closestIndex;
+
+            this.dummyContainer.remove();
+
+            if (this.newIndexOfDraggedContainer < this.draggedContainerIndex) {
+                this.host.find('.sq-container[data-index='+ this.newIndexOfDraggedContainer +']').before('<div id="sq-dummy-container"></div>');
+            } else {
+                this.host.find('.sq-container[data-index='+ this.newIndexOfDraggedContainer +']').after('<div id="sq-dummy-container"></div>');
+            }
+
+            this.dummyContainer = $('#sq-dummy-container');
+            this.dummyContainer.css({
+                width: this.draggedContainer.outerWidth(),
+                height: this.draggedContainer.outerHeight()
+            });
+        }
+    }
+    Squares.prototype.endDraggingContainer = function(e) {
+        // Switch places of containers
+        this.changeContainerIndex(this.draggedContainerIndex, this.newIndexOfDraggedContainer);
+    }
+    Squares.prototype.startDraggingElement = function(e) {
+        if (Math.abs(e.pageX - this.iex) > 5 || Math.abs(e.pageY - this.iey) > 5) {
+            this.draggingElement = true;
+            this.didStartDraggingElement = true;
+
+            // Create a virtual map of all possible positions of the element
+            // in each container
+            this.elementDragMap = new Array();
+            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElement.outerWidth() +'px; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
+
+            this.draggedElement.hide();
+            for (var i=0; i<this.settings.containers.length; i++) {
+                var c = this.settings.containers[i];
+
+                // If the container doesn't have any elements, insert just one
+                // dummy element and move on to next container
+                if (c.settings.elements.length == 0) {
+                    this.host.find('.sq-container[data-index='+i+']').append(dummyElementHTML);
+                    var el = $('#sq-dummy-element-tmp');
+                    this.elementDragMap.push({ x: el.offset().left + el.width()/2, y: el.offset().top + el.height()/2, containerIndex: i, elementIndex: 0 });
+                    $('#sq-dummy-element-tmp').remove();
+                }
+
+                for (var j=0; j<c.settings.elements.length; j++) {
+                    this.host.find('.sq-container[data-index='+i+']').find('.sq-element[data-index='+j+']').before(dummyElementHTML);
+                    var el = $('#sq-dummy-element-tmp');
+                    this.elementDragMap.push({ x: el.offset().left + el.width()/2, y: el.offset().top + el.height()/2, containerIndex: i, elementIndex: j });
+                    $('#sq-dummy-element-tmp').remove();
+
+                    if (j == c.settings.elements.length - 1) {
+                        this.host.find('.sq-container[data-index='+i+']').find('.sq-element[data-index='+j+']').after(dummyElementHTML);
+                        var el = $('#sq-dummy-element-tmp');
+                        this.elementDragMap.push({ x: el.offset().left + el.width()/2, y: el.offset().top + el.height()/2, containerIndex: i, elementIndex: j + 1 });
+                        $('#sq-dummy-element-tmp').remove();
+                    }
+                }
+            }
+            this.draggedElement.show();
+
+            // Insert a dummy element
+            this.draggedElement.after('<div id="sq-dummy-element"></div>');
+            this.dummyElement = $('#sq-dummy-element');
+            this.dummyElement.css({
+                width: this.draggedElement.outerWidth(),
+                height: this.draggedElement.outerHeight(),
+                margin: 0,
+                padding: 0
+            });
+
+            // Position the element absolutely
+            this.ix = this.draggedElement.offset().left;
+            this.iy = this.draggedElement.offset().top;
+
+            var draggedElementWidth = this.draggedElement.width();
+            var draggedElementHeight = this.draggedElement.height();
+            var draggedElementHTML = this.draggedElement.clone().attr('id', 'sq-dragged-element').wrap('<div>').parent().html();
+            this.draggedElement.hide();
+            $('body').prepend(draggedElementHTML);
+            this.draggedElement = $('#sq-dragged-element');
+
+            this.draggedElement.css({
+                position: 'absolute',
+                left: this.ix,
+                top: this.iy,
+                width: draggedElementWidth,
+                height: draggedElementHeight
+            });
+            this.draggedElement.addClass('sq-dragging');
+        }
+    }
+    Squares.prototype.dragElement = function(e) {
+        this.draggedElement.css({
+            left: this.ix + e.pageX - this.iex,
+            top: this.iy + e.pageY - this.iey
+        });
+
+        // Find the closest virtual position to the mouse position
+        var closestIndex = 0;
+        var closestDistance = 999999;
+
+        for (var i=0; i<this.elementDragMap.length; i++) {
+            var d = Math.abs(e.pageX - this.elementDragMap[i].x) + Math.abs(e.pageY - this.elementDragMap[i].y);
+            if (d < closestDistance) {
+                closestDistance = d;
+                closestIndex = i;
+            }
+        }
+
+        if (closestIndex != this.newIndexOfDraggedElement) {
+            this.newIndexOfDraggedElement = closestIndex;
+
+            // Remove the current dummy element
+            $('#sq-dummy-element').remove();
+
+            // Insert a new dummy element at the container/element index
+            var containerIndex = this.elementDragMap[this.newIndexOfDraggedElement].containerIndex;
+            var elementIndex = this.elementDragMap[this.newIndexOfDraggedElement].elementIndex;
+            var c = this.host.find('.sq-container[data-index='+ containerIndex +']');
+            // If the index of the dummy element is bigger than the number
+            // of elements in that container, insert the dummy at the end
+            if (elementIndex == this.settings.containers[containerIndex].settings.elements.length) {
+                c.append('<div id="sq-dummy-element"></div>');
+            } else {
+                var el = c.find('.sq-element[data-index='+ elementIndex +']');
+                el.before('<div id="sq-dummy-element"></div>');
+            }
+
+            this.dummyElement = $('#sq-dummy-element');
+            this.dummyElement.css({
+                width: this.draggedElement.outerWidth(),
+                height: this.draggedElement.outerHeight(),
+                margin: 0,
+                padding: 0
+            });
+        }
+    }
+    Squares.prototype.endDraggingElement = function(e) {
+        this.draggedElement.remove();
+        this.redraw();
+    }
     Squares.prototype.addUI = function() {
         this.appendAddContainerButton();
         this.appendAddElementsButton();
