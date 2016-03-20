@@ -135,15 +135,22 @@ Custom defined settings per element:
     $.squaresRegisterElement({
         name: "Heading",
         iconClass: "fa fa-header",
-        extraSettings: {
-            heading: {
-                type: 'select',
-                options: ['h1', 'h2', 'h3'],
-                default: 'h3'
+        extraSettings: [
+            {
+                groupName: 'Heading',
+                options: [
+                    {
+                        name: 'heading',
+                        type: 'select',
+                        options: ['h1', 'h2', 'h3'],
+                        default: 'h3'
+                    }
+                ]
             }
-        },
+        ],
         content: function() {
-            return '<'+ this.extraSettings.heading.val +'>Lorem Ipsum</'+ this.extraSettings.heading.val +'>';
+            console.log(this.extraSettings);
+            return '<h1>Lorem Ipsum</h1>';
         }
     });
     $.squaresRegisterElement({
@@ -211,10 +218,12 @@ Custom defined settings per element:
     function addWindows() {
         // Elements Window
         var elementsWindowContent = '';
+        elementsWindowContent += '<div class="sq-element-thumb-container">';
         for (var i=0; i<elementsCatalog.length; i++) {
             elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
         }
         elementsWindowContent += '<div class="clear"></div>';
+        elementsWindowContent += '</div>';
 
         elementsWindow = new EditorWindow();
         elementsWindow.setTitle('Elements');
@@ -237,7 +246,22 @@ Custom defined settings per element:
         $(document).on('click', '.sq-element', function() {
             var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
             var y = $(this).offset().top;
+
+            var editor = $(this).closest('.sq-root-container').data.editor;
+            var containerIndex = $(this).closest('.sq-container').data('index');
+            var elementIndex = $(this).data('index');
+            var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
+
             elementSettingsWindow.show(x, y);
+            elementSettingsWindow.setContent(el.getSettingsForm());
+
+            $('.sq-window-tab-content').hide();
+            $('.sq-window-tab-content[data-tab-index="0"]').show();
+        });
+        $(document).on('click', '.sq-window-tab-button', function() {
+            var index = $(this).data('tab-index');
+            $('.sq-window-tab-content').hide();
+            $('.sq-window-tab-content[data-tab-index="'+ index +'"]').show();
         });
     }
     function addDragElementsFromWindowEvents() {
@@ -904,24 +928,189 @@ Custom defined settings per element:
 
     function Element(settings) {
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
+        this.settingsForm = undefined;
+
+        // Associative array generated from the "settings"
+        // for easier access to the element's settings
+        this.options = undefined;
+
         this.init();
     }
     Element.prototype.init = function() {
-        // Initialize extra settings
-        // Use default values, etc.
-        for (var setting in this.settings.extraSettings) {
-            if (this.settings.extraSettings.hasOwnProperty(setting)) {
-                // Select
-                if (this.settings.extraSettings[setting].type == 'select') {
-                    if (this.settings.extraSettings[setting].default) {
-                        this.settings.extraSettings[setting].val = this.settings.extraSettings[setting].default;
-                    } else {
-                        this.settings.extraSettings[setting].val = this.settings.extraSettings[setting].options[0];
-                    }
+
+    }
+    Element.prototype.getSettingsForm = function() {
+        // Generates a settings form for this element
+        if (!this.settingsForm) {
+            var settingsFormOptions = [
+                {
+                    groupName: 'General',
+                    options: [
+                        {
+                            name: 'ID',
+                            type: 'text',
+                            default: ''
+                        },
+                        {
+                            name: 'Classes',
+                            type: 'text',
+                            default: ''
+                        },
+                        {
+                            name: 'CSS',
+                            type: 'text',
+                            default: ''
+                        },
+                    ]
+                },
+                {
+                    groupName: 'Layout',
+                    options: [
+                        {
+                            name: 'Column Span',
+                            type: 'select',
+                            options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+                            default: 12
+                        },
+                        {
+                            name: 'Box Model',
+                            type: 'box model'
+                        }
+                    ]
+                },
+                {
+                    groupName: 'Text',
+                    options: [
+                        {
+                            name: 'Font Family',
+                            type: 'text',
+                            default: 'sans-serif'
+                        },
+                        {
+                            name: 'Font Size',
+                            type: 'text',
+                            format: 'int',
+                            default: '16'
+                        },
+                        {
+                            name: 'Font Weight',
+                            type: 'text',
+                            default: 'normal'
+                        },
+                        {
+                            name: 'Font Style',
+                            type: 'select',
+                            options: [ 'normal', 'italic', 'oblique', 'initial', 'inherit' ],
+                            default: 'normal'
+                        },
+                        {
+                            name: 'Line Height',
+                            type: 'text',
+                            format: 'int',
+                            default: 'sans-serif'
+                        },
+                        {
+                            name: 'Text Color',
+                            type: 'color',
+                            default: '#000000'
+                        },
+                        {
+                            name: 'Text Align',
+                            type: 'text',
+                            default: 'sans-serif'
+                        },
+                        {
+                            name: 'Text Decoration',
+                            type: 'text',
+                            default: 'sans-serif'
+                        },
+                        {
+                            name: 'Text Transform',
+                            type: 'select',
+                            options: [ 'none', 'capitalize', 'uppercase', 'lowercase', 'initial', 'inherit' ],
+                            default: 'none'
+                        },
+                        {
+                            name: 'Text Shadow',
+                            type: 'text',
+                            default: ''
+                        },
+                    ]
+                },
+                {
+                    groupName: 'Style',
+                    options: [
+                        {
+                            name: 'Background Color',
+                            type: 'color',
+                            default: '#ffffff'
+                        },
+                        {
+                            name: 'Background Opacity',
+                            type: 'float',
+                            default: '0'
+                        },
+                        {
+                            name: 'Opacity',
+                            type: 'float',
+                            default: '1'
+                        },
+                        {
+                            name: 'Box Shadow',
+                            type: 'text',
+                            default: 'none'
+                        },
+                        {
+                            name: 'Border Width',
+                            type: 'int',
+                            default: '0'
+                        },
+                        {
+                            name: 'Border Style',
+                            type: 'select',
+                            options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
+                            default: 'none'
+                        },
+                        {
+                            name: 'Border Color',
+                            type: 'color',
+                            default: '#000000'
+                        },
+                        {
+                            name: 'Border Opacity',
+                            type: 'float',
+                            default: '1'
+                        },
+                        {
+                            name: 'Border Radius',
+                            type: 'int',
+                            default: '0'
+                        },
+                    ]
+                }
+            ];
+
+            if (this.settings.extraSettings) {
+                for (var i=0; i<this.settings.extraSettings.length; i++) {
+                    settingsFormOptions.push(this.settings.extraSettings[i]);
                 }
             }
+
+            this.settingsForm = generateForm(settingsFormOptions);
         }
+
+        return this.settingsForm;
     }
+    Element.prototype.loadOptions = function() {
+        // Loads its options in the settings window
+        // Attempts to find the correct input field using the ID
+        // generated from the "generateFormElementIDFromName" function.
+    }
+    Element.prototype.updateOptions = function() {
+        // Updates its options based on the input fields loaded
+        // in the current Settings window.
+    }
+
 
     function EditorWindow() {
         this.root = undefined;
@@ -1009,7 +1198,7 @@ Custom defined settings per element:
         });
     }
     EditorWindow.prototype.setContent = function(html) {
-        this.root.find('.sq-window-container').append(html);
+        this.root.find('.sq-window-container').html(html);
     }
     EditorWindow.prototype.setTitle = function(title) {
         this.root.find('.sq-window-title').html(title);
@@ -1026,5 +1215,56 @@ Custom defined settings per element:
         this.root.addClass('sq-window-active');
     }
 
+    // Generates a form with tabs
+
+    function generateForm(o) {
+        var html = '';
+
+        // Create tabs
+        html += '<div class="sq-window-tab-buttons-group">';
+        for (var i=0; i<o.length; i++) {
+            html += '<div class="sq-window-tab-button" data-tab-index="'+ i +'">'+ o[i].groupName +'</div>';
+        }
+        html += '</div>';
+
+        // Create content for each tab
+        html += '<div class="sq-window-tab-content-wrap">';
+
+        for (var i=0; i<o.length; i++) {
+            var group = o[i];
+            html += '<div class="sq-window-tab-content" data-tab-index="'+ i +'">';
+
+            for (var j=0; j<group.options.length; j++) {
+                var option = group.options[j];
+                var id = generateFormElementIDFromName(option.name);
+
+                html += '<label for="'+ id +'">'+ option.name +'</label>';
+                if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
+                    html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';
+                }
+                if (option.type == 'color') {
+                    html += '<input type="color" placeholder="'+ option.name +'" id="'+ id +'">';
+                }
+
+                if (option.type == 'select') {
+                    html += '<select id="'+ id +'">';
+
+                    for (var k=0; k<option.options.length; k++) {
+                        html += '<option value="'+ option.options[k] +'">'+ option.options[k] +'</option>';
+                    }
+
+                    html += '</select>';
+                }
+            }
+
+            html += '</div>';
+        }
+        html += '</div>';
+
+        return html;
+    }
+    function generateFormElementIDFromName(name) {
+        return name.toLowerCase().replace(' ', '-');
+    }
 
 })(jQuery, window, document);

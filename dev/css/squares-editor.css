@@ -129,6 +129,9 @@
     cursor: pointer;
 }
 .sq-window-container {
+
+}
+.sq-element-thumb-container {
     padding: 20px;
 }
 .sq-element-thumb {
@@ -148,6 +151,55 @@
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
+}
+.sq-window-tab-buttons-group {
+
+}
+.sq-window-tab-button {
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+    line-height: 44px;
+    cursor: pointer;
+    border: 1px solid #EAEAEA;
+    background-color: #F5F5F5;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.sq-window-tab-content-wrap {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.sq-window-tab-content label, .sq-window-tab-content input, .sq-window-tab-content textarea, .sq-window-tab-content select {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    line-height: 32px;
+    height: 32px;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    display: block;
+    border-radius: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.sq-window-tab-content input[type="color"] {
+    padding: 0;
+}
+.sq-window-tab-content label {
+    font-size: 12px;
+}
+.sq-window-tab-content input, .sq-window-tab-content textarea, .sq-window-tab-content select {
+    font-size: 16px;
+    border: 1px solid #D6D6D6;
+    padding: 0 10px;
+}
+.sq-window-tab-content input:focus, .sq-window-tab-content textarea:focus, .sq-window-tab-content select:focus {
+    border: 1px solid #969696;
 }
 
 #sq-dummy-element {
