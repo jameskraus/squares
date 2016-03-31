@@ -29,58 +29,58 @@ Common settings for all elements:
 ---------------------------------
 
 - General:
-    - ID
-    - Class
-    - CSS
+- ID
+- Class
+- CSS
 - Layout
-    - Box model widget - margin, padding
-    - col span
+- Box model widget - margin, padding
+- col span
 - Text
-    - font-family
-    - font-size
-    - font-weight
-    - font-style
-    - line-height
-    - color
-    - text-align
-    - text-decoration
-    - text-transform
-    - text-shadow
+- font-family
+- font-size
+- font-weight
+- font-style
+- line-height
+- color
+- text-align
+- text-decoration
+- text-transform
+- text-shadow
 - Style
-    - background-color
-    - background-color opacity
-    - opacity
-    - box-shadow
-    - border width
-    - border style
-    - border color
-    - border opacity
-    - border radius
+- background-color
+- background-color opacity
+- opacity
+- box-shadow
+- border width
+- border style
+- border color
+- border opacity
+- border radius
 
 
 Custom defined settings per element:
 ---------------------------------
 
 - Image
-    - URL
-    - Image is a link (checkbox)
-    - Link to
+- URL
+- Image is a link (checkbox)
+- Link to
 - Video
-    - WEBM url
-    - OGG url
-    - MP4 url
-    - Video is a link (checkbox)
-    - Link to
+- WEBM url
+- OGG url
+- MP4 url
+- Video is a link (checkbox)
+- Link to
 - YouTube Video
-    - Embed code
+- Embed code
 - Button
-    - Link to
-    - Text
+- Link to
+- Text
 - Heading
-    - Heading tag index
-    - Text
+- Heading tag index
+- Text
 - Paragraph
-    - Text (large)
+- Text (large)
 */
 
 ;(function ($, window, document, undefined) {
@@ -205,9 +205,9 @@ Custom defined settings per element:
         addDragElementsFromWindowEvents();
 
         // Test initWithSettings
-        var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header","extendOptions":{"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3"}}},"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}},"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3","val":"h3"}}}},"options":{}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}}},"options":{}}]}}]}';
-        // $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
-        $.squaresInitWithSettings($('.squares').first());
+        var s = '{"containers":[{"id":"sq-container-984031","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-7461"},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":"12"},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":40,"bottom":40,"left":40,"right":40},"padding":{"top":20,"bottom":20,"left":20,"right":20}}},"width":{"name":"Width","type":"int","default":"100","val":100},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":100},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":1},"opacity":{"name":"Opacity","type":"float","default":"1","val":1},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":0},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":1},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":0}}},"styles":"","classes":"","id":""},"id":"sq-element-341731"}]}},{"id":"sq-container-691981","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-967591"}]}}]}';
+        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        // $.squaresInitWithSettings($('.squares').first());
     });
 
     function addWindows() {
@@ -265,14 +265,14 @@ Custom defined settings per element:
         // Drag elements from window to container functionality
 
         var shouldStartDraggingElementToContainer = false,
-            didStartDraggingElementToContainer = false,
-            draggingElementToContainer = false,
-            virtualIndexOfDraggedElement = -1,
-            draggedElementFromWindowCatalogIndex = -1,
-            thumbElWhenDraggingFromWindow = undefined,
-            targetEditor = undefined,
-            dummyElementAtMouse = undefined,
-            elementDragMap = undefined;
+        didStartDraggingElementToContainer = false,
+        draggingElementToContainer = false,
+        virtualIndexOfDraggedElement = -1,
+        draggedElementFromWindowCatalogIndex = -1,
+        thumbElWhenDraggingFromWindow = undefined,
+        targetEditor = undefined,
+        dummyElementAtMouse = undefined,
+        elementDragMap = undefined;
         var iex = 0, iey = 0, ix = 0, iy = 0;
 
         $(document).off('mousedown', '.sq-element-thumb');
@@ -522,12 +522,12 @@ Custom defined settings per element:
             var c = this.settings.containers[i];
 
             // Append a container
-            var html = '<div class="sq-container" data-index="'+ i +'"></div>';
+            var html = '<div class="sq-container" data-index="'+ i +'" id="'+ c.id +'"></div>';
 
             this.contentRoot.append(html);
 
             // Set the container's "root" object
-            c.root = this.contentRoot.find('.sq-container[data-index="'+ i +'"]');
+            var containerRoot = $('#' + c.id);
 
             // Call the render() function of the container
             c.render();
@@ -537,53 +537,14 @@ Custom defined settings per element:
                 var e = c.settings.elements[j];
 
                 // Append an element to the container
-                var html = '<div class="sq-element" data-index="' + j + '"></div>';
-                c.root.append(html);
-
-                // Set the element's "root" object
-                e.root = c.root.find('.sq-element[data-index="'+ j +'"]');
+                var html = '<div class="sq-element" data-index="' + j + '" id="'+ e.id +'"></div>';
+                containerRoot.append(html);
 
                 // Call the render() function of the element
                 e.render();
                 e.appendControls();
             }
         }
-
-        // If there are no containers, hide the "elements button"
-        if (this.settings.containers.length == 0) {
-            this.root.find('.sq-add-elements').hide();
-        } else {
-            this.root.find('.sq-add-elements').show();
-        }
-
-        return;
-        // ==================================
-
-
-        // Draw containers
-        var containersHTML = '';
-
-        for (var i=0; i<this.settings.containers.length; i++) {
-            containersHTML += '<div class="sq-container" data-index="'+ i +'">';
-
-            containersHTML += '     <div class="sq-container-move"></div>';
-
-            for (var j=0; j<this.settings.containers[i].settings.elements.length; j++) {
-                var e = this.settings.containers[i].settings.elements[j];
-                containersHTML += ' <div class="sq-element" data-index="' + j + '">';
-                containersHTML += '     <div class="sq-element-controls">';
-                containersHTML += '         <div class="sq-element-control-drag"></div>';
-                containersHTML += '         <div class="sq-element-control-edit"><i class="fa fa-cog"></i></div>';
-                containersHTML += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
-                containersHTML += '     </div>';
-                containersHTML +=       e.settings.content();
-                containersHTML += ' </div>';
-            }
-
-            containersHTML += '</div>';
-        }
-
-        this.contentRoot.html(containersHTML);
 
         // If there are no containers, hide the "elements button"
         if (this.settings.containers.length == 0) {
@@ -828,7 +789,7 @@ Custom defined settings per element:
             this.dummyElement.css({
                 width: this.draggedElement.outerWidth(),
                 height: this.draggedElement.outerHeight(),
-                margin: 0,
+                margin: this.draggedElement.css('margin'),
                 padding: 0
             });
 
@@ -894,7 +855,7 @@ Custom defined settings per element:
             this.dummyElement.css({
                 width: this.draggedElement.outerWidth(),
                 height: this.draggedElement.outerHeight(),
-                margin: 0,
+                margin: this.draggedElement.css('margin'),
                 padding: 0
             });
         }
@@ -954,13 +915,16 @@ Custom defined settings per element:
     function Container() {
         // this.root is the highest element in the container's hierarchy.
         // it will contain data-index attribute, used to reference this element
-        this.root = undefined;
+        this.id = 'sq-container-' + Math.floor(Math.random() * 99999) + 1;
 
         this.settings = $.extend(true, {}, containerDefaultSettings);
     }
     Container.prototype.insertElement = function(elementCatalogIndex, index) {
         var e = $.extend(true, {}, elementsCatalog[elementCatalogIndex]);
         this.settings.elements.splice(index, 0, e);
+
+        // Assign a unique ID
+        e.id = 'sq-element-' + Math.floor(Math.random() * 99999) + 1;
     }
     Container.prototype.render = function() {
         // Nothing to render for now
@@ -969,7 +933,7 @@ Custom defined settings per element:
         var html = '';
         html += '     <div class="sq-container-move"></div>';
 
-        this.root.append(html);
+        $('#' + this.id).append(html);
     }
 
     // The element object will represent a single piece of content.
@@ -1064,7 +1028,7 @@ Custom defined settings per element:
                     name: 'Font Size',
                     type: 'text',
                     format: 'int',
-                    default: '16',
+                    default: '14',
                     val: undefined
                 },
                 font_weight: {
@@ -1084,7 +1048,7 @@ Custom defined settings per element:
                     name: 'Line Height',
                     type: 'text',
                     format: 'int',
-                    default: 'sans-serif',
+                    default: '22',
                     val: undefined
                 },
                 text_color: {
@@ -1095,14 +1059,16 @@ Custom defined settings per element:
                 },
                 text_align: {
                     name: 'Text Align',
-                    type: 'text',
-                    default: 'sans-serif',
+                    type: 'select',
+                    options: ['left', 'right', 'center', 'justify', 'justify-all', 'start', 'end', 'match-parent', 'inherit', 'initial', 'unset'],
+                    default: 'left',
                     val: undefined
                 },
                 text_decoration: {
                     name: 'Text Decoration',
-                    type: 'text',
-                    default: 'sans-serif',
+                    type: 'select',
+                    options: ['none', 'underline'],
+                    default: 'none',
                     val: undefined
                 },
                 text_transform: {
@@ -1129,7 +1095,7 @@ Custom defined settings per element:
                 background_opacity: {
                     name: 'Background Opacity',
                     type: 'float',
-                    default: '0',
+                    default: '1',
                     val: undefined
                 },
                 opacity: {
@@ -1178,17 +1144,16 @@ Custom defined settings per element:
             }
         },
         content: function() {
-            return 'No content to display.'
+            return '';
         }
     };
 
     function Element(settings) {
         // this.root is the highest element in the container's hierarchy.
         // it will contain data-index attribute, used to reference this element
-        this.root = undefined;
+        this.id = undefined;
 
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
-        this.settingsForm = undefined;
 
         this.init();
     }
@@ -1226,11 +1191,7 @@ Custom defined settings per element:
     }
     Element.prototype.getSettingsForm = function() {
         // Generates a settings form for this element
-        if (!this.settingsForm) {
-            this.settingsForm = generateForm(this.settings.options);
-        }
-
-        return this.settingsForm;
+        return generateForm(this.settings.options);
     }
     Element.prototype.loadOptions = function() {
         // Loads its options in the settings window
@@ -1352,14 +1313,162 @@ Custom defined settings per element:
         return this.settings.options.general.id.val;
     }
     Element.prototype.generateStyles = function() {
-        return 'border: 5px solid black';
+        var css = '';
+
+        // =====================================================================
+        // Layout
+        // =====================================================================
+        var o = this.settings.options.layout;
+
+        // to do: grid system
+
+        // Box Model
+        if (o.box_model.val.margin.top !== '' && !isNaN(o.box_model.val.margin.top)) {
+            css += 'margin-top: ' + o.box_model.val.margin.top + 'px; ';
+        }
+        if (o.box_model.val.margin.bottom !== '' && !isNaN(o.box_model.val.margin.bottom)) {
+            css += 'margin-bottom: ' + o.box_model.val.margin.bottom + 'px; ';
+        }
+        if (o.box_model.val.margin.left !== '' && !isNaN(o.box_model.val.margin.left)) {
+            css += 'margin-left: ' + o.box_model.val.margin.left + 'px; ';
+        }
+        if (o.box_model.val.margin.right !== '' && !isNaN(o.box_model.val.margin.right)) {
+            css += 'margin-right: ' + o.box_model.val.margin.right + 'px; ';
+        }
+
+        if (o.box_model.val.padding.top !== '' && !isNaN(o.box_model.val.padding.top)) {
+            css += 'padding-top: ' + o.box_model.val.padding.top + 'px; ';
+        }
+        if (o.box_model.val.padding.bottom !== '' && !isNaN(o.box_model.val.padding.bottom)) {
+            css += 'padding-bottom: ' + o.box_model.val.padding.bottom + 'px; ';
+        }
+        if (o.box_model.val.padding.left !== '' && !isNaN(o.box_model.val.padding.left)) {
+            css += 'padding-left: ' + o.box_model.val.padding.left + 'px; ';
+        }
+        if (o.box_model.val.padding.right !== '' && !isNaN(o.box_model.val.padding.right)) {
+            css += 'padding-right: ' + o.box_model.val.padding.right + 'px; ';
+        }
+
+        // Width
+        if (parseInt(o.auto_width.val, 10) == 1) {
+            css += 'width: auto; ';
+        } else {
+            if (o.width.val !== '' && !isNaN(o.width.val)) {
+                css += 'width: '+ o.width.val +'px; ';
+            }
+        }
+
+        // Height
+        if (parseInt(o.auto_height.val, 10) == 1) {
+            css += 'height: auto; ';
+        } else {
+            if (o.height.val !== '' && !isNaN(o.height.val)) {
+                css += 'height: '+ o.height.val +'px; ';
+            }
+        }
+
+        // =====================================================================
+        // Text
+        // =====================================================================
+        var o = this.settings.options.text;
+
+        // Font Family
+        if (o.font_family.val !== '' && !isNaN()) {
+            css += 'font-family: ' + o.font_family.val + '; ';
+        }
+
+        // Font Size
+        if (o.font_size.val !== '' && !isNaN()) {
+            css += 'font-size: ' + o.font_size.val + 'px; ';
+        }
+
+        // Font Weight
+        if (o.font_weight.val !== '' && !isNaN()) {
+            css += 'font-weight: ' + o.font_weight.val + '; ';
+        }
+
+        // Font Style
+        if (o.font_style.val !== '' && !isNaN()) {
+            css += 'font-style: ' + o.font_style.val + '; ';
+        }
+
+        // Line Height
+        if (o.line_height.val !== '' && !isNaN()) {
+            css += 'line-height: ' + o.line_height.val + 'px; ';
+        }
+
+        // Text Color
+        if (o.text_color.val !== '' && !isNaN()) {
+            css += 'color: ' + o.text_color.val + '; ';
+        }
+
+        // Text Align
+        if (o.text_align.val !== '' && !isNaN()) {
+            css += 'text-align: ' + o.text_align.val + '; ';
+        }
+
+        // Text Decoration
+        if (o.text_decoration.val !== '' && !isNaN()) {
+            css += 'text-decoration: ' + o.text_decoration.val + '; ';
+        }
+
+        // Text Transform
+        if (o.text_transform.val !== '' && !isNaN()) {
+            css += 'text-transform: ' + o.text_transform.val + '; ';
+        }
+
+        // Text Shadow
+        if (o.text_shadow.val !== '' && !isNaN()) {
+            css += 'text-shadow: ' + o.text_shadow.val + '; ';
+        }
+
+
+        // =====================================================================
+        // Style
+        // =====================================================================
+        var o = this.settings.options.style;
+
+        // Background Color
+        var c_bg = hexToRgb(o.background_color.val);
+        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.background_opacity.val +'); ';
+
+        // Opacity
+        if (o.opacity.val !== '' && !isNaN()) {
+            css += 'opacity: ' + o.opacity.val + '; ';
+        }
+
+        // Box Shadow
+        if (o.box_shadow.val !== '' && !isNaN()) {
+            css += 'box-shadow: ' + o.box_shadow.val + '; ';
+        }
+
+        // Border Width
+        if (o.border_width.val !== '' && !isNaN()) {
+            css += 'border-width: ' + o.border_width.val + 'px; ';
+        }
+
+        // Border Style
+        if (o.border_style.val !== '' && !isNaN()) {
+            css += 'border-style: ' + o.border_style.val + '; ';
+        }
+
+        // Border Color
+        var c_bg = hexToRgb(o.border_color.val);
+        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.border_opacity.val +'); ';
+
+        // Border Radius
+        if (o.border_radius.val !== '' && !isNaN()) {
+            css += 'border-radius: ' + o.border_radius.val + 'px; ';
+        }
+
+        return css;
     }
     Element.prototype.render = function() {
         // Update the element's user set content
-        this.root.html(this.settings.content());
+        $('#' + this.id).html(this.settings.content());
 
         // Update the element's style
-        this.root.attr('style', this.generateStyles());
+        $('#' + this.id).attr('style', this.generateStyles());
     }
     Element.prototype.appendControls = function() {
         var html = '';
@@ -1370,7 +1479,7 @@ Custom defined settings per element:
         html += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
         html += '     </div>';
 
-        this.root.append(html);
+        $('#' + this.id).append(html);
     }
 
     function EditorWindow() {
@@ -1570,6 +1679,14 @@ Custom defined settings per element:
     }
     function generateFormElementIDFromName(name) {
         return 'squares-element-option-' + name.toLowerCase().replace(' ', '-');
+    }
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
     }
 
 })(jQuery, window, document);
