@@ -129,7 +129,7 @@ Custom defined settings per element:
         name: "Paragraph",
         iconClass: "fa fa-font",
         content: function() {
-            return "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>";
+            return '<p id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>';
         }
     });
     $.squaresRegisterElement({
@@ -146,35 +146,35 @@ Custom defined settings per element:
             }
         },
         content: function() {
-            return '<'+ this.options.heading.heading.val +'>Lorem Ipsum</'+ this.options.heading.heading.val +'>';
+            return '<'+ this.options.heading.heading.val +' id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">Lorem Ipsum</'+ this.options.heading.heading.val +'>';
         }
     });
     $.squaresRegisterElement({
         name: "Image",
         iconClass: "fa fa-picture-o",
         content: function() {
-            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png">';
+            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
         }
     });
     $.squaresRegisterElement({
         name: "Button",
         iconClass: "fa fa-hand-pointer-o",
         content: function() {
-            return '<input type="button" value="Button">';
+            return '<input type="button" value="Button" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
         }
     });
     $.squaresRegisterElement({
         name: "Video",
         iconClass: "fa fa-video-camera",
         content: function() {
-            return '<video autoplay><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
+            return '<video autoplay id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'"><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
         }
     });
     $.squaresRegisterElement({
         name: "YouTube",
         iconClass: "fa fa-youtube",
         content: function() {
-            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
+            return '<iframe id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'" width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
         }
     });
 
@@ -206,8 +206,8 @@ Custom defined settings per element:
 
         // Test initWithSettings
         var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header","extendOptions":{"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3"}}},"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}},"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3","val":"h3"}}}},"options":{}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}}},"options":{}}]}}]}';
-        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
-        // $.squaresInitWithSettings($('.squares').first());
+        // $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        $.squaresInitWithSettings($('.squares').first());
     });
 
     function addWindows() {
@@ -510,6 +510,56 @@ Custom defined settings per element:
         this.redraw();
     };
     Squares.prototype.redraw = function () {
+        // This is the global redraw function.
+        // It is called only when a change in hierarchy is made.
+        // It is responsible for creating the root element for each
+        //      container and element, telling those objects that they have a new
+        //      root element, and calling the "render" function on them.
+
+        this.contentRoot.html('');
+
+        for (var i=0; i<this.settings.containers.length; i++) {
+            var c = this.settings.containers[i];
+
+            // Append a container
+            var html = '<div class="sq-container" data-index="'+ i +'"></div>';
+
+            this.contentRoot.append(html);
+
+            // Set the container's "root" object
+            c.root = this.contentRoot.find('.sq-container[data-index="'+ i +'"]');
+
+            // Call the render() function of the container
+            c.render();
+            c.appendControls();
+
+            for (var j=0; j<c.settings.elements.length; j++) {
+                var e = c.settings.elements[j];
+
+                // Append an element to the container
+                var html = '<div class="sq-element" data-index="' + j + '"></div>';
+                c.root.append(html);
+
+                // Set the element's "root" object
+                e.root = c.root.find('.sq-element[data-index="'+ j +'"]');
+
+                // Call the render() function of the element
+                e.render();
+                e.appendControls();
+            }
+        }
+
+        // If there are no containers, hide the "elements button"
+        if (this.settings.containers.length == 0) {
+            this.root.find('.sq-add-elements').hide();
+        } else {
+            this.root.find('.sq-add-elements').show();
+        }
+
+        return;
+        // ==================================
+
+
         // Draw containers
         var containersHTML = '';
 
@@ -902,11 +952,24 @@ Custom defined settings per element:
     };
 
     function Container() {
+        // this.root is the highest element in the container's hierarchy.
+        // it will contain data-index attribute, used to reference this element
+        this.root = undefined;
+
         this.settings = $.extend(true, {}, containerDefaultSettings);
     }
     Container.prototype.insertElement = function(elementCatalogIndex, index) {
         var e = $.extend(true, {}, elementsCatalog[elementCatalogIndex]);
         this.settings.elements.splice(index, 0, e);
+    }
+    Container.prototype.render = function() {
+        // Nothing to render for now
+    }
+    Container.prototype.appendControls = function() {
+        var html = '';
+        html += '     <div class="sq-container-move"></div>';
+
+        this.root.append(html);
     }
 
     // The element object will represent a single piece of content.
@@ -1120,12 +1183,12 @@ Custom defined settings per element:
     };
 
     function Element(settings) {
+        // this.root is the highest element in the container's hierarchy.
+        // it will contain data-index attribute, used to reference this element
+        this.root = undefined;
+
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
         this.settingsForm = undefined;
-
-        // Associative array generated from the "settings"
-        // for easier access to the element's settings
-        this.options = {};
 
         this.init();
     }
@@ -1155,6 +1218,11 @@ Custom defined settings per element:
                 }
             }
         }
+
+        // Set styles, classes and id
+        this.settings.styles = this.getUserCSS();
+        this.settings.classes = this.getUserClasses();
+        this.settings.id = this.getUserID();
     }
     Element.prototype.getSettingsForm = function() {
         // Generates a settings form for this element
@@ -1270,8 +1338,40 @@ Custom defined settings per element:
                 }
             }
         }
-    }
 
+        this.render();
+        this.appendControls();
+    }
+    Element.prototype.getUserCSS = function() {
+        return this.settings.options.general.css.val;
+    }
+    Element.prototype.getUserClasses = function() {
+        return this.settings.options.general.classes.val;
+    }
+    Element.prototype.getUserID = function() {
+        return this.settings.options.general.id.val;
+    }
+    Element.prototype.generateStyles = function() {
+        return 'border: 5px solid black';
+    }
+    Element.prototype.render = function() {
+        // Update the element's user set content
+        this.root.html(this.settings.content());
+
+        // Update the element's style
+        this.root.attr('style', this.generateStyles());
+    }
+    Element.prototype.appendControls = function() {
+        var html = '';
+
+        html += '     <div class="sq-element-controls">';
+        html += '         <div class="sq-element-control-drag"></div>';
+        html += '         <div class="sq-element-control-edit"><i class="fa fa-cog"></i></div>';
+        html += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
+        html += '     </div>';
+
+        this.root.append(html);
+    }
 
     function EditorWindow() {
         this.root = undefined;
