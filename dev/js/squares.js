@@ -135,22 +135,18 @@ Custom defined settings per element:
     $.squaresRegisterElement({
         name: "Heading",
         iconClass: "fa fa-header",
-        extraSettings: [
-            {
-                groupName: 'Heading',
-                options: [
-                    {
-                        name: 'heading',
-                        type: 'select',
-                        options: ['h1', 'h2', 'h3'],
-                        default: 'h3'
-                    }
-                ]
+        extendOptions: {
+            heading: {
+                heading: {
+                    name: 'Heading',
+                    type: 'select',
+                    options: ['h1', 'h2', 'h3'],
+                    default: 'h3'
+                }
             }
-        ],
+        },
         content: function() {
-            console.log(this.extraSettings);
-            return '<h1>Lorem Ipsum</h1>';
+            return '<'+ this.options.heading.heading.val +'>Lorem Ipsum</'+ this.options.heading.heading.val +'>';
         }
     });
     $.squaresRegisterElement({
@@ -193,8 +189,6 @@ Custom defined settings per element:
                 }
             }
 
-            var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
-            // var squaresInstance = new Squares(this, JSON.parse(s));
             var squaresInstance = new Squares(this);
 
             editors.push(squaresInstance);
@@ -204,15 +198,16 @@ Custom defined settings per element:
 
         // Create the windows
         addWindows();
-        addWindowEvents();
+        addEvents();
 
         // Events for dragging elements from the element window to a container.
         // These events needs to be editor-independant
         addDragElementsFromWindowEvents();
 
         // Test initWithSettings
-        var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}},{"settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"}}]}}]}';
-        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s))
+        var s = '{"containers":[{"settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header","extendOptions":{"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3"}}},"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}},"heading":{"heading":{"name":"Heading","type":"select","options":["h1","h2","h3"],"default":"h3","val":"h3"}}}},"options":{}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"16","val":"16"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"sans-serif","val":"sans-serif"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"text","default":"sans-serif","val":"sans-serif"},"text_decoration":{"name":"Text Decoration","type":"text","default":"sans-serif","val":"sans-serif"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"0","val":"0"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}}},"options":{}}]}}]}';
+        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        // $.squaresInitWithSettings($('.squares').first());
     });
 
     function addWindows() {
@@ -237,7 +232,7 @@ Custom defined settings per element:
         elementSettingsWindow.setTitle('Element Settings');
         elementSettingsWindow.setContent(elementSettingsWindowContent);
     }
-    function addWindowEvents() {
+    function addEvents() {
         $(document).on('click', '.sq-add-elements', function() {
             var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
             var y = $(this).closest('.sq-root-container').offset().top;
@@ -254,9 +249,11 @@ Custom defined settings per element:
 
             elementSettingsWindow.show(x, y);
             elementSettingsWindow.setContent(el.getSettingsForm());
+            elementSettingsWindow.dataSource = el;
+            el.loadOptions();
 
             $('.sq-window-tab-content').hide();
-            $('.sq-window-tab-content[data-tab-index="0"]').show();
+            $('.sq-window-tab-content[data-tab-index="1"]').show();
         });
         $(document).on('click', '.sq-window-tab-button', function() {
             var index = $(this).data('tab-index');
@@ -546,7 +543,6 @@ Custom defined settings per element:
         }
 
         // console.log(JSON.stringify(this.settings));
-        // console.log(this.settings);
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -920,7 +916,204 @@ Custom defined settings per element:
     var elementDefaultSettings = {
         name: 'Untitled Element',
         iconClass: 'fa fa-cube',
-        settings: 'default settings',
+        extendOptions: [],
+        options: {
+            general: {
+                id: {
+                    name: 'ID',
+                    type: 'text',
+                    default: '',
+                    val: undefined
+                },
+                classes: {
+                    name: 'Classes',
+                    type: 'text',
+                    default: '',
+                    val: undefined
+                },
+                css: {
+                    name: 'CSS',
+                    type: 'text',
+                    default: '',
+                    val: undefined
+                }
+            },
+            layout: {
+                column_span: {
+                    name: 'Column Span',
+                    type: 'select',
+                    options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+                    default: 12,
+                    val: undefined
+                },
+                box_model: {
+                    name: 'Box Model',
+                    type: 'box model',
+                    default: {
+                        margin: {
+                            top: 10,
+                            bottom: 10,
+                            left: 0,
+                            right: 0
+                        },
+                        padding: {
+                            top: 0,
+                            bottom: 0,
+                            left: 10,
+                            right: 10
+                        }
+                    },
+                    val: undefined
+                },
+                width: {
+                    name: 'Width',
+                    type: 'int',
+                    default: '100',
+                    val: undefined
+                },
+                auto_width: {
+                    name: 'Auto Width',
+                    type: 'checkbox',
+                    default: 1,
+                    val: undefined
+                },
+                height: {
+                    name: 'Height',
+                    type: 'int',
+                    default: '100',
+                    val: undefined
+                },
+                auto_height: {
+                    name: 'Auto Height',
+                    type: 'checkbox',
+                    default: 1,
+                    val: undefined
+                }
+            },
+            text: {
+                font_family: {
+                    name: 'Font Family',
+                    type: 'text',
+                    default: 'sans-serif',
+                    val: undefined
+                },
+                font_size: {
+                    name: 'Font Size',
+                    type: 'text',
+                    format: 'int',
+                    default: '16',
+                    val: undefined
+                },
+                font_weight: {
+                    name: 'Font Weight',
+                    type: 'text',
+                    default: 'normal',
+                    val: undefined
+                },
+                font_style: {
+                    name: 'Font Style',
+                    type: 'select',
+                    options: [ 'normal', 'italic', 'oblique', 'initial', 'inherit' ],
+                    default: 'normal',
+                    val: undefined
+                },
+                line_height: {
+                    name: 'Line Height',
+                    type: 'text',
+                    format: 'int',
+                    default: 'sans-serif',
+                    val: undefined
+                },
+                text_color: {
+                    name: 'Text Color',
+                    type: 'color',
+                    default: '#000000',
+                    val: undefined
+                },
+                text_align: {
+                    name: 'Text Align',
+                    type: 'text',
+                    default: 'sans-serif',
+                    val: undefined
+                },
+                text_decoration: {
+                    name: 'Text Decoration',
+                    type: 'text',
+                    default: 'sans-serif',
+                    val: undefined
+                },
+                text_transform: {
+                    name: 'Text Transform',
+                    type: 'select',
+                    options: [ 'none', 'capitalize', 'uppercase', 'lowercase', 'initial', 'inherit' ],
+                    default: 'none',
+                    val: undefined
+                },
+                text_shadow: {
+                    name: 'Text Shadow',
+                    type: 'text',
+                    default: '',
+                    val: undefined
+                }
+            },
+            style: {
+                background_color: {
+                    name: 'Background Color',
+                    type: 'color',
+                    default: '#ffffff',
+                    val: undefined
+                },
+                background_opacity: {
+                    name: 'Background Opacity',
+                    type: 'float',
+                    default: '0',
+                    val: undefined
+                },
+                opacity: {
+                    name: 'Opacity',
+                    type: 'float',
+                    default: '1',
+                    val: undefined
+                },
+                box_shadow: {
+                    name: 'Box Shadow',
+                    type: 'text',
+                    default: 'none',
+                    val: undefined
+                },
+                border_width: {
+                    name: 'Border Width',
+                    type: 'int',
+                    default: '0',
+                    val: undefined
+                },
+                border_style: {
+                    name: 'Border Style',
+                    type: 'select',
+                    options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
+                    default: 'none',
+                    val: undefined
+                },
+                border_color: {
+                    name: 'Border Color',
+                    type: 'color',
+                    default: '#000000',
+                    val: undefined
+                },
+                border_opacity: {
+                    name: 'Border Opacity',
+                    type: 'float',
+                    default: '1',
+                    val: undefined
+                },
+                border_radius: {
+                    name: 'Border Radius',
+                    type: 'int',
+                    default: '0',
+                    val: undefined
+                },
+            }
+        },
         content: function() {
             return 'No content to display.'
         }
@@ -932,171 +1125,41 @@ Custom defined settings per element:
 
         // Associative array generated from the "settings"
         // for easier access to the element's settings
-        this.options = undefined;
+        this.options = {};
 
         this.init();
     }
     Element.prototype.init = function() {
+        // Add the extra settings to the this.settings.options object
+        this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
+        // Add 'val' properties to each option object
+        // Set the 'val' to the default property value, if 'val' is undefined
+        // or it does not exist
+        for (var g in this.settings.options) {
+            if (this.settings.options.hasOwnProperty(g)) {
+                var group = this.settings.options[g];
+
+                for (var op in group) {
+                    if (group.hasOwnProperty(op)) {
+                        var option = group[op];
+
+                        if (!option.val || option.val === undefined) {
+                            if (typeof(option.default) == 'object') {
+                                option.val = $.extend(true, {}, option.default);
+                            } else {
+                                option.val = option.default;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     Element.prototype.getSettingsForm = function() {
         // Generates a settings form for this element
         if (!this.settingsForm) {
-            var settingsFormOptions = [
-                {
-                    groupName: 'General',
-                    options: [
-                        {
-                            name: 'ID',
-                            type: 'text',
-                            default: ''
-                        },
-                        {
-                            name: 'Classes',
-                            type: 'text',
-                            default: ''
-                        },
-                        {
-                            name: 'CSS',
-                            type: 'text',
-                            default: ''
-                        },
-                    ]
-                },
-                {
-                    groupName: 'Layout',
-                    options: [
-                        {
-                            name: 'Column Span',
-                            type: 'select',
-                            options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                            default: 12
-                        },
-                        {
-                            name: 'Box Model',
-                            type: 'box model'
-                        }
-                    ]
-                },
-                {
-                    groupName: 'Text',
-                    options: [
-                        {
-                            name: 'Font Family',
-                            type: 'text',
-                            default: 'sans-serif'
-                        },
-                        {
-                            name: 'Font Size',
-                            type: 'text',
-                            format: 'int',
-                            default: '16'
-                        },
-                        {
-                            name: 'Font Weight',
-                            type: 'text',
-                            default: 'normal'
-                        },
-                        {
-                            name: 'Font Style',
-                            type: 'select',
-                            options: [ 'normal', 'italic', 'oblique', 'initial', 'inherit' ],
-                            default: 'normal'
-                        },
-                        {
-                            name: 'Line Height',
-                            type: 'text',
-                            format: 'int',
-                            default: 'sans-serif'
-                        },
-                        {
-                            name: 'Text Color',
-                            type: 'color',
-                            default: '#000000'
-                        },
-                        {
-                            name: 'Text Align',
-                            type: 'text',
-                            default: 'sans-serif'
-                        },
-                        {
-                            name: 'Text Decoration',
-                            type: 'text',
-                            default: 'sans-serif'
-                        },
-                        {
-                            name: 'Text Transform',
-                            type: 'select',
-                            options: [ 'none', 'capitalize', 'uppercase', 'lowercase', 'initial', 'inherit' ],
-                            default: 'none'
-                        },
-                        {
-                            name: 'Text Shadow',
-                            type: 'text',
-                            default: ''
-                        },
-                    ]
-                },
-                {
-                    groupName: 'Style',
-                    options: [
-                        {
-                            name: 'Background Color',
-                            type: 'color',
-                            default: '#ffffff'
-                        },
-                        {
-                            name: 'Background Opacity',
-                            type: 'float',
-                            default: '0'
-                        },
-                        {
-                            name: 'Opacity',
-                            type: 'float',
-                            default: '1'
-                        },
-                        {
-                            name: 'Box Shadow',
-                            type: 'text',
-                            default: 'none'
-                        },
-                        {
-                            name: 'Border Width',
-                            type: 'int',
-                            default: '0'
-                        },
-                        {
-                            name: 'Border Style',
-                            type: 'select',
-                            options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-                            default: 'none'
-                        },
-                        {
-                            name: 'Border Color',
-                            type: 'color',
-                            default: '#000000'
-                        },
-                        {
-                            name: 'Border Opacity',
-                            type: 'float',
-                            default: '1'
-                        },
-                        {
-                            name: 'Border Radius',
-                            type: 'int',
-                            default: '0'
-                        },
-                    ]
-                }
-            ];
-
-            if (this.settings.extraSettings) {
-                for (var i=0; i<this.settings.extraSettings.length; i++) {
-                    settingsFormOptions.push(this.settings.extraSettings[i]);
-                }
-            }
-
-            this.settingsForm = generateForm(settingsFormOptions);
+            this.settingsForm = generateForm(this.settings.options);
         }
 
         return this.settingsForm;
@@ -1105,10 +1168,108 @@ Custom defined settings per element:
         // Loads its options in the settings window
         // Attempts to find the correct input field using the ID
         // generated from the "generateFormElementIDFromName" function.
+
+        for (var g in this.settings.options) {
+            if (this.settings.options.hasOwnProperty(g)) {
+                var group = this.settings.options[g];
+
+                for (var op in group) {
+                    if (group.hasOwnProperty(op)) {
+                        var option = group[op];
+                        var id = generateFormElementIDFromName(option.name);
+
+                        if (option.type == 'text') {
+                            $('#' + id).val(option.val);
+                        }
+                        if (option.type == 'int') {
+                            $('#' + id).val(parseInt(option.val, 10));
+                        }
+                        if (option.type == 'float') {
+                            $('#' + id).val(parseFloat(option.val, 10));
+                        }
+                        if (option.type == 'checkbox') {
+                            if (parseInt(option.val, 10) == 1) {
+                                $('#' + id).get(0).checked = true;
+                            } else {
+                                $('#' + id).get(0).checked = false;
+                            }
+                        }
+                        if (option.type == 'color') {
+                            $('#' + id).val(option.val);
+                        }
+
+                        if (option.type == 'select') {
+                            $('#' + id).val(option.val);
+                        }
+
+                        if (option.type == 'box model') {
+                            $('#squares-element-option-boxmodel-margin-top').val(parseInt(option.val.margin.top));
+                            $('#squares-element-option-boxmodel-margin-bottom').val(parseInt(option.val.margin.bottom));
+                            $('#squares-element-option-boxmodel-margin-left').val(parseInt(option.val.margin.left));
+                            $('#squares-element-option-boxmodel-margin-right').val(parseInt(option.val.margin.right));
+
+                            $('#squares-element-option-boxmodel-padding-top').val(parseInt(option.val.padding.top));
+                            $('#squares-element-option-boxmodel-padding-bottom').val(parseInt(option.val.padding.bottom));
+                            $('#squares-element-option-boxmodel-padding-left').val(parseInt(option.val.padding.left));
+                            $('#squares-element-option-boxmodel-padding-right').val(parseInt(option.val.padding.right));
+                        }
+                    }
+                }
+            }
+        }
     }
     Element.prototype.updateOptions = function() {
         // Updates its options based on the input fields loaded
         // in the current Settings window.
+
+        for (var g in this.settings.options) {
+            if (this.settings.options.hasOwnProperty(g)) {
+                var group = this.settings.options[g];
+
+                for (var op in group) {
+                    if (group.hasOwnProperty(op)) {
+                        var option = group[op];
+                        var id = generateFormElementIDFromName(option.name);
+
+                        if (option.type == 'text') {
+                            option.val = $('#' + id).val();
+                        }
+                        if (option.type == 'int') {
+                            option.val = parseInt($('#' + id).val(), 10);
+                        }
+                        if (option.type == 'float') {
+                            option.val = parseFloat($('#' + id).val(), 10);
+                        }
+                        if (option.type == 'checkbox') {
+                            if ($('#' + id).get(0).checked) {
+                                option.val = 1;
+                            } else {
+                                option.val = 0;
+                            }
+                        }
+                        if (option.type == 'color') {
+                            option.val = $('#' + id).val();
+                        }
+
+                        if (option.type == 'select') {
+                            option.val = $('#' + id).val();
+                        }
+
+                        if (option.type == 'box model') {
+                            option.val.margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
+                            option.val.margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
+                            option.val.margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
+                            option.val.margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
+
+                            option.val.padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
+                            option.val.padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
+                            option.val.padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
+                            option.val.padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
@@ -1124,6 +1285,12 @@ Custom defined settings per element:
         this.iey = 0; // initial event y
         this.ix = 0; // initial window x
         this.iy = 0; // initial window y
+
+        // Data source object for any form elements that a window might contain
+        // For example, the data source for the element settings window will be
+        // the element itself. element.loadOptions() will look for form elements
+        // with specific IDs
+        this.dataSource = undefined;
 
         this.init();
         this.events();
@@ -1198,7 +1365,13 @@ Custom defined settings per element:
         });
     }
     EditorWindow.prototype.setContent = function(html) {
+        var self = this;
         this.root.find('.sq-window-container').html(html);
+
+        // Set an event for all form elements
+        this.root.find('input, select, textarea').on('change', function() {
+            self.dataSource.updateOptions();
+        });
     }
     EditorWindow.prototype.setTitle = function(title) {
         this.root.find('.sq-window-title').html(title);
@@ -1222,49 +1395,81 @@ Custom defined settings per element:
 
         // Create tabs
         html += '<div class="sq-window-tab-buttons-group">';
-        for (var i=0; i<o.length; i++) {
-            html += '<div class="sq-window-tab-button" data-tab-index="'+ i +'">'+ o[i].groupName +'</div>';
+        var groupCount = 0;
+        for (var g in o) {
+            if (o.hasOwnProperty(g)) {
+                html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'">'+ g +'</div>';
+                groupCount++;
+            }
         }
         html += '</div>';
 
         // Create content for each tab
         html += '<div class="sq-window-tab-content-wrap">';
 
-        for (var i=0; i<o.length; i++) {
-            var group = o[i];
-            html += '<div class="sq-window-tab-content" data-tab-index="'+ i +'">';
+        var groupCount = 0;
+        for (var g in o) {
+            if (o.hasOwnProperty(g)) {
+                html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'">';
 
-            for (var j=0; j<group.options.length; j++) {
-                var option = group.options[j];
-                var id = generateFormElementIDFromName(option.name);
+                var group = o[g];
+                groupCount++;
 
-                html += '<label for="'+ id +'">'+ option.name +'</label>';
-                if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
-                    html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';
-                }
-                if (option.type == 'color') {
-                    html += '<input type="color" placeholder="'+ option.name +'" id="'+ id +'">';
-                }
+                var optionCount = 0;
+                for (var op in group) {
+                    if (group.hasOwnProperty(op)) {
+                        optionCount++;
+                        var option = group[op];
+                        var id = generateFormElementIDFromName(option.name);
 
-                if (option.type == 'select') {
-                    html += '<select id="'+ id +'">';
+                        html += '<label for="'+ id +'">'+ option.name +'</label>';
+                        if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
+                            html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';
+                        }
+                        if (option.type == 'checkbox') {
+                            html += '<input type="checkbox" placeholder="'+ option.name +'" id="'+ id +'">';
+                        }
+                        if (option.type == 'color') {
+                            html += '<input type="color" placeholder="'+ option.name +'" id="'+ id +'">';
+                        }
 
-                    for (var k=0; k<option.options.length; k++) {
-                        html += '<option value="'+ option.options[k] +'">'+ option.options[k] +'</option>';
+                        if (option.type == 'select') {
+                            html += '<select id="'+ id +'">';
+
+                            for (var k=0; k<option.options.length; k++) {
+                                html += '<option value="'+ option.options[k] +'">'+ option.options[k] +'</option>';
+                            }
+
+                            html += '</select>';
+                        }
+
+                        if (option.type == 'box model') {
+                            html += '<div class="sq-boxmodel-margin">';
+                            html += '   <div id="sq-boxmodel-label-margin">margin</div>';
+                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-top">';
+                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-bottom">';
+                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-left">';
+                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-right">';
+                            html += '   <div class="sq-boxmodel-padding">';
+                            html += '       <div id="sq-boxmodel-label-padding">padding</div>';
+                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-top">';
+                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-bottom">';
+                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-left">';
+                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-right">';
+                            html += '   </div>';
+                            html += '</div>';
+                        }
                     }
-
-                    html += '</select>';
                 }
-            }
 
-            html += '</div>';
+                html += '</div>';
+            }
         }
         html += '</div>';
-
         return html;
     }
     function generateFormElementIDFromName(name) {
-        return name.toLowerCase().replace(' ', '-');
+        return 'squares-element-option-' + name.toLowerCase().replace(' ', '-');
     }
 
 })(jQuery, window, document);

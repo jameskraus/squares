@@ -169,7 +169,7 @@
 }
 .sq-window-tab-content-wrap {
     padding: 20px;
-    max-height: 400px;
+    max-height: 600px;
     overflow-y: auto;
 }
 .sq-window-tab-content label, .sq-window-tab-content input, .sq-window-tab-content textarea, .sq-window-tab-content select {
@@ -189,6 +189,7 @@
 }
 .sq-window-tab-content input[type="color"] {
     padding: 0;
+    background-color: white;
 }
 .sq-window-tab-content label {
     font-size: 12px;
@@ -200,6 +201,67 @@
 }
 .sq-window-tab-content input:focus, .sq-window-tab-content textarea:focus, .sq-window-tab-content select:focus {
     border: 1px solid #969696;
+}
+
+.sq-boxmodel-margin {
+    height: 250px;
+    width: 250px;
+    position: relative;
+    width: 100%;
+    border: 1px dashed #303942;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    padding: 52px;
+    background: #f9cc9d;
+}
+.sq-boxmodel-padding {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px dashed #808080;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    background: #c2cf8a;
+}
+.sq-boxmodel-margin input, .sq-boxmodel-padding input {
+    width: 32px;
+    position: absolute;
+    font-size: 12px;
+    padding: 0 5px;
+    text-align: center;
+    border-color: #808080;
+}
+.sq-boxmodel-margin input:focus, .sq-boxmodel-padding input:focus {
+    border-color: #303942;
+}
+#squares-element-option-boxmodel-margin-top, #squares-element-option-boxmodel-padding-top {
+    top: 10px;
+    left: 50%;
+    margin-left: -16px;
+}
+#squares-element-option-boxmodel-margin-bottom, #squares-element-option-boxmodel-padding-bottom {
+    bottom: 10px;
+    left: 50%;
+    margin-left: -16px;
+}
+#squares-element-option-boxmodel-margin-left, #squares-element-option-boxmodel-padding-left {
+    top: 50%;
+    left: 10px;
+    margin-top: -16px;
+}
+#squares-element-option-boxmodel-margin-right, #squares-element-option-boxmodel-padding-right {
+    top: 50%;
+    right: 10px;
+    margin-top: -16px;
+}
+#sq-boxmodel-label-margin, #sq-boxmodel-label-padding {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 12px;
+    color: #303942;
 }
 
 #sq-dummy-element {
