@@ -146,7 +146,8 @@ Custom defined settings per element:
             }
         },
         content: function() {
-            return '<'+ this.options.heading.heading.val +' id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">Lorem Ipsum</'+ this.options.heading.heading.val +'>';
+            // this = options
+            return '<'+ this.heading.heading +' id="'+ this.general.id +'" style="'+ this.general.css +'" class="'+ this.general.classes +'">Lorem Ipsum</'+ this.heading.heading +'>';
         }
     });
     $.squaresRegisterElement({
@@ -206,8 +207,8 @@ Custom defined settings per element:
 
         // Test initWithSettings
         var s = '{"containers":[{"id":"sq-container-984031","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-7461"},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":"12"},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":40,"bottom":40,"left":40,"right":40},"padding":{"top":20,"bottom":20,"left":20,"right":20}}},"width":{"name":"Width","type":"int","default":"100","val":100},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":100},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":1},"opacity":{"name":"Opacity","type":"float","default":"1","val":1},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":0},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":1},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":0}}},"styles":"","classes":"","id":""},"id":"sq-element-341731"}]}},{"id":"sq-container-691981","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-967591"}]}}]}';
-        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
-        // $.squaresInitWithSettings($('.squares').first());
+        // $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        $.squaresInitWithSettings($('.squares').first());
     });
 
     function addWindows() {
@@ -237,6 +238,9 @@ Custom defined settings per element:
             var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
             var y = $(this).closest('.sq-root-container').offset().top;
             elementsWindow.show(x, y);
+
+            // $(this).closest('.sq-root-container').data.editor.generateJSON();
+            console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
         });
         $(document).on('click', '.sq-element', function() {
             var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
@@ -552,8 +556,6 @@ Custom defined settings per element:
         } else {
             this.root.find('.sq-add-elements').show();
         }
-
-        // console.log(JSON.stringify(this.settings));
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -904,6 +906,32 @@ Custom defined settings per element:
         self.redraw();
     };
 
+    Squares.prototype.generateJSON = function() {
+        var settings = $.extend(true, {}, this.settings);
+
+        // Compress element settings
+        for (var i=0; i<settings.containers.length; i++) {
+            var c = $.extend(true, {}, settings.containers[i]);
+
+            for (var j=0; j<c.settings.elements.length; j++) {
+                var e = $.extend(true, {}, c.settings.elements[j]);
+
+                e.settings = subtract(e.settings, elementDefaultSettings);
+                e.options = subtract(e.options, e.defaults);
+
+                // clean
+                e.settings = clean(e.settings);
+                e.options = clean(e.options);
+
+                c.settings.elements[j] = e;
+            }
+
+            settings.containers[i] = c;
+        }
+
+        return JSON.stringify(settings);
+    }
+
     // The "Container" class servs literally as a container
     // for Element objects, similar to Bootstrap's "row" class.
     // It will have settings only for layout.
@@ -949,20 +977,17 @@ Custom defined settings per element:
                 id: {
                     name: 'ID',
                     type: 'text',
-                    default: '',
-                    val: undefined
+                    default: ''
                 },
                 classes: {
                     name: 'Classes',
                     type: 'text',
-                    default: '',
-                    val: undefined
+                    default: ''
                 },
                 css: {
                     name: 'CSS',
                     type: 'text',
-                    default: '',
-                    val: undefined
+                    default: ''
                 }
             },
             layout: {
@@ -970,176 +995,151 @@ Custom defined settings per element:
                     name: 'Column Span',
                     type: 'select',
                     options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                    default: 12,
-                    val: undefined
+                    default: 12
                 },
                 box_model: {
                     name: 'Box Model',
                     type: 'box model',
                     default: {
                         margin: {
-                            top: 10,
-                            bottom: 10,
+                            top: 0,
+                            bottom: 0,
                             left: 0,
                             right: 0
                         },
                         padding: {
-                            top: 0,
-                            bottom: 0,
+                            top: 10,
+                            bottom: 10,
                             left: 10,
                             right: 10
                         }
-                    },
-                    val: undefined
+                    }
                 },
                 width: {
                     name: 'Width',
                     type: 'int',
-                    default: '100',
-                    val: undefined
+                    default: '100'
                 },
                 auto_width: {
                     name: 'Auto Width',
                     type: 'checkbox',
-                    default: 1,
-                    val: undefined
+                    default: 1
                 },
                 height: {
                     name: 'Height',
                     type: 'int',
-                    default: '100',
-                    val: undefined
+                    default: '100'
                 },
                 auto_height: {
                     name: 'Auto Height',
                     type: 'checkbox',
-                    default: 1,
-                    val: undefined
+                    default: 1
                 }
             },
             text: {
                 font_family: {
                     name: 'Font Family',
                     type: 'text',
-                    default: 'sans-serif',
-                    val: undefined
+                    default: 'sans-serif'
                 },
                 font_size: {
                     name: 'Font Size',
                     type: 'text',
                     format: 'int',
-                    default: '14',
-                    val: undefined
+                    default: '14'
                 },
                 font_weight: {
                     name: 'Font Weight',
                     type: 'text',
-                    default: 'normal',
-                    val: undefined
+                    default: 'normal'
                 },
                 font_style: {
                     name: 'Font Style',
                     type: 'select',
                     options: [ 'normal', 'italic', 'oblique', 'initial', 'inherit' ],
-                    default: 'normal',
-                    val: undefined
+                    default: 'normal'
                 },
                 line_height: {
                     name: 'Line Height',
                     type: 'text',
                     format: 'int',
-                    default: '22',
-                    val: undefined
+                    default: '22'
                 },
                 text_color: {
                     name: 'Text Color',
                     type: 'color',
-                    default: '#000000',
-                    val: undefined
+                    default: '#000000'
                 },
                 text_align: {
                     name: 'Text Align',
                     type: 'select',
                     options: ['left', 'right', 'center', 'justify', 'justify-all', 'start', 'end', 'match-parent', 'inherit', 'initial', 'unset'],
-                    default: 'left',
-                    val: undefined
+                    default: 'left'
                 },
                 text_decoration: {
                     name: 'Text Decoration',
                     type: 'select',
                     options: ['none', 'underline'],
-                    default: 'none',
-                    val: undefined
+                    default: 'none'
                 },
                 text_transform: {
                     name: 'Text Transform',
                     type: 'select',
                     options: [ 'none', 'capitalize', 'uppercase', 'lowercase', 'initial', 'inherit' ],
-                    default: 'none',
-                    val: undefined
+                    default: 'none'
                 },
                 text_shadow: {
                     name: 'Text Shadow',
                     type: 'text',
-                    default: '',
-                    val: undefined
+                    default: ''
                 }
             },
             style: {
                 background_color: {
                     name: 'Background Color',
                     type: 'color',
-                    default: '#ffffff',
-                    val: undefined
+                    default: '#ffffff'
                 },
                 background_opacity: {
                     name: 'Background Opacity',
                     type: 'float',
-                    default: '1',
-                    val: undefined
+                    default: '1'
                 },
                 opacity: {
                     name: 'Opacity',
                     type: 'float',
-                    default: '1',
-                    val: undefined
+                    default: '1'
                 },
                 box_shadow: {
                     name: 'Box Shadow',
                     type: 'text',
-                    default: 'none',
-                    val: undefined
+                    default: 'none'
                 },
                 border_width: {
                     name: 'Border Width',
                     type: 'int',
-                    default: '0',
-                    val: undefined
+                    default: '0'
                 },
                 border_style: {
                     name: 'Border Style',
                     type: 'select',
                     options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-                    default: 'none',
-                    val: undefined
+                    default: 'none'
                 },
                 border_color: {
                     name: 'Border Color',
                     type: 'color',
-                    default: '#000000',
-                    val: undefined
+                    default: '#000000'
                 },
                 border_opacity: {
                     name: 'Border Opacity',
                     type: 'float',
-                    default: '1',
-                    val: undefined
+                    default: '1'
                 },
                 border_radius: {
                     name: 'Border Radius',
                     type: 'int',
-                    default: '0',
-                    val: undefined
+                    default: '0'
                 },
             }
         },
@@ -1148,12 +1148,23 @@ Custom defined settings per element:
         }
     };
 
-    function Element(settings) {
+    function Element(settings, options) {
         // this.root is the highest element in the container's hierarchy.
         // it will contain data-index attribute, used to reference this element
         this.id = undefined;
 
+        // Settings are used only for initialization
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
+
+        // Associative array containing the CURRENT values for each setting
+        this.options = $.extend(true, {}, options);
+
+        // This array will contain only the default values for each option and
+        // it will be used only for compressing the generated JSON
+        this.defaults = new Array();
+
+        //
+        this.options.content = this.settings.content;
 
         this.init();
     }
@@ -1161,33 +1172,36 @@ Custom defined settings per element:
         // Add the extra settings to the this.settings.options object
         this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
-        // Add 'val' properties to each option object
-        // Set the 'val' to the default property value, if 'val' is undefined
-        // or it does not exist
+        // Set styles, classes and id
+        // this.settings.styles = this.getUserCSS();
+        // this.settings.classes = this.getUserClasses();
+        // this.settings.id = this.getUserID();
+
+        // Create associative array for this.options
         for (var g in this.settings.options) {
             if (this.settings.options.hasOwnProperty(g)) {
                 var group = this.settings.options[g];
+
+                if (!this.options[g]) {
+                    this.options[g] = {};
+                }
+                if (!this.defaults[g]) {
+                    this.defaults[g] = {};
+                }
 
                 for (var op in group) {
                     if (group.hasOwnProperty(op)) {
                         var option = group[op];
 
-                        if (!option.val || option.val === undefined) {
-                            if (typeof(option.default) == 'object') {
-                                option.val = $.extend(true, {}, option.default);
-                            } else {
-                                option.val = option.default;
-                            }
+                        if (this.options[g][op] != option.default) {
+                            this.options[g][op] = option.default;
                         }
+
+                        this.defaults[g][op] = option.default;
                     }
                 }
             }
         }
-
-        // Set styles, classes and id
-        this.settings.styles = this.getUserCSS();
-        this.settings.classes = this.getUserClasses();
-        this.settings.id = this.getUserID();
     }
     Element.prototype.getSettingsForm = function() {
         // Generates a settings form for this element
@@ -1208,39 +1222,39 @@ Custom defined settings per element:
                         var id = generateFormElementIDFromName(option.name);
 
                         if (option.type == 'text') {
-                            $('#' + id).val(option.val);
+                            $('#' + id).val(this.options[g][op]);
                         }
                         if (option.type == 'int') {
-                            $('#' + id).val(parseInt(option.val, 10));
+                            $('#' + id).val(parseInt(this.options[g][op], 10));
                         }
                         if (option.type == 'float') {
-                            $('#' + id).val(parseFloat(option.val, 10));
+                            $('#' + id).val(parseFloat(this.options[g][op], 10));
                         }
                         if (option.type == 'checkbox') {
-                            if (parseInt(option.val, 10) == 1) {
+                            if (parseInt(this.options[g][op], 10) == 1) {
                                 $('#' + id).get(0).checked = true;
                             } else {
                                 $('#' + id).get(0).checked = false;
                             }
                         }
                         if (option.type == 'color') {
-                            $('#' + id).val(option.val);
+                            $('#' + id).val(this.options[g][op]);
                         }
 
                         if (option.type == 'select') {
-                            $('#' + id).val(option.val);
+                            $('#' + id).val(this.options[g][op]);
                         }
 
                         if (option.type == 'box model') {
-                            $('#squares-element-option-boxmodel-margin-top').val(parseInt(option.val.margin.top));
-                            $('#squares-element-option-boxmodel-margin-bottom').val(parseInt(option.val.margin.bottom));
-                            $('#squares-element-option-boxmodel-margin-left').val(parseInt(option.val.margin.left));
-                            $('#squares-element-option-boxmodel-margin-right').val(parseInt(option.val.margin.right));
+                            $('#squares-element-option-boxmodel-margin-top').val(parseInt(this.options[g][op].margin.top));
+                            $('#squares-element-option-boxmodel-margin-bottom').val(parseInt(this.options[g][op].margin.bottom));
+                            $('#squares-element-option-boxmodel-margin-left').val(parseInt(this.options[g][op].margin.left));
+                            $('#squares-element-option-boxmodel-margin-right').val(parseInt(this.options[g][op].margin.right));
 
-                            $('#squares-element-option-boxmodel-padding-top').val(parseInt(option.val.padding.top));
-                            $('#squares-element-option-boxmodel-padding-bottom').val(parseInt(option.val.padding.bottom));
-                            $('#squares-element-option-boxmodel-padding-left').val(parseInt(option.val.padding.left));
-                            $('#squares-element-option-boxmodel-padding-right').val(parseInt(option.val.padding.right));
+                            $('#squares-element-option-boxmodel-padding-top').val(parseInt(this.options[g][op].padding.top));
+                            $('#squares-element-option-boxmodel-padding-bottom').val(parseInt(this.options[g][op].padding.bottom));
+                            $('#squares-element-option-boxmodel-padding-left').val(parseInt(this.options[g][op].padding.left));
+                            $('#squares-element-option-boxmodel-padding-right').val(parseInt(this.options[g][op].padding.right));
                         }
                     }
                 }
@@ -1261,39 +1275,39 @@ Custom defined settings per element:
                         var id = generateFormElementIDFromName(option.name);
 
                         if (option.type == 'text') {
-                            option.val = $('#' + id).val();
+                            this.options[g][op] = $('#' + id).val();
                         }
                         if (option.type == 'int') {
-                            option.val = parseInt($('#' + id).val(), 10);
+                            this.options[g][op] = parseInt($('#' + id).val(), 10);
                         }
                         if (option.type == 'float') {
-                            option.val = parseFloat($('#' + id).val(), 10);
+                            this.options[g][op] = parseFloat($('#' + id).val(), 10);
                         }
                         if (option.type == 'checkbox') {
                             if ($('#' + id).get(0).checked) {
-                                option.val = 1;
+                                this.options[g][op] = 1;
                             } else {
-                                option.val = 0;
+                                this.options[g][op] = 0;
                             }
                         }
                         if (option.type == 'color') {
-                            option.val = $('#' + id).val();
+                            this.options[g][op] = $('#' + id).val();
                         }
 
                         if (option.type == 'select') {
-                            option.val = $('#' + id).val();
+                            this.options[g][op] = $('#' + id).val();
                         }
 
                         if (option.type == 'box model') {
-                            option.val.margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
-                            option.val.margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
-                            option.val.margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
-                            option.val.margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
+                            this.options[g][op].margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
+                            this.options[g][op].margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
+                            this.options[g][op].margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
+                            this.options[g][op].margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
 
-                            option.val.padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
-                            option.val.padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
-                            option.val.padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
-                            option.val.padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
+                            this.options[g][op].padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
+                            this.options[g][op].padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
+                            this.options[g][op].padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
+                            this.options[g][op].padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
                         }
                     }
                 }
@@ -1318,154 +1332,154 @@ Custom defined settings per element:
         // =====================================================================
         // Layout
         // =====================================================================
-        var o = this.settings.options.layout;
+        var o = this.options.layout;
 
         // to do: grid system
 
         // Box Model
-        if (o.box_model.val.margin.top !== '' && !isNaN(o.box_model.val.margin.top)) {
-            css += 'margin-top: ' + o.box_model.val.margin.top + 'px; ';
+        if (o.box_model.margin.top !== '' && !isNaN(o.box_model.margin.top)) {
+            css += 'margin-top: ' + o.box_model.margin.top + 'px; ';
         }
-        if (o.box_model.val.margin.bottom !== '' && !isNaN(o.box_model.val.margin.bottom)) {
-            css += 'margin-bottom: ' + o.box_model.val.margin.bottom + 'px; ';
+        if (o.box_model.margin.bottom !== '' && !isNaN(o.box_model.margin.bottom)) {
+            css += 'margin-bottom: ' + o.box_model.margin.bottom + 'px; ';
         }
-        if (o.box_model.val.margin.left !== '' && !isNaN(o.box_model.val.margin.left)) {
-            css += 'margin-left: ' + o.box_model.val.margin.left + 'px; ';
+        if (o.box_model.margin.left !== '' && !isNaN(o.box_model.margin.left)) {
+            css += 'margin-left: ' + o.box_model.margin.left + 'px; ';
         }
-        if (o.box_model.val.margin.right !== '' && !isNaN(o.box_model.val.margin.right)) {
-            css += 'margin-right: ' + o.box_model.val.margin.right + 'px; ';
+        if (o.box_model.margin.right !== '' && !isNaN(o.box_model.margin.right)) {
+            css += 'margin-right: ' + o.box_model.margin.right + 'px; ';
         }
 
-        if (o.box_model.val.padding.top !== '' && !isNaN(o.box_model.val.padding.top)) {
-            css += 'padding-top: ' + o.box_model.val.padding.top + 'px; ';
+        if (o.box_model.padding.top !== '' && !isNaN(o.box_model.padding.top)) {
+            css += 'padding-top: ' + o.box_model.padding.top + 'px; ';
         }
-        if (o.box_model.val.padding.bottom !== '' && !isNaN(o.box_model.val.padding.bottom)) {
-            css += 'padding-bottom: ' + o.box_model.val.padding.bottom + 'px; ';
+        if (o.box_model.padding.bottom !== '' && !isNaN(o.box_model.padding.bottom)) {
+            css += 'padding-bottom: ' + o.box_model.padding.bottom + 'px; ';
         }
-        if (o.box_model.val.padding.left !== '' && !isNaN(o.box_model.val.padding.left)) {
-            css += 'padding-left: ' + o.box_model.val.padding.left + 'px; ';
+        if (o.box_model.padding.left !== '' && !isNaN(o.box_model.padding.left)) {
+            css += 'padding-left: ' + o.box_model.padding.left + 'px; ';
         }
-        if (o.box_model.val.padding.right !== '' && !isNaN(o.box_model.val.padding.right)) {
-            css += 'padding-right: ' + o.box_model.val.padding.right + 'px; ';
+        if (o.box_model.padding.right !== '' && !isNaN(o.box_model.padding.right)) {
+            css += 'padding-right: ' + o.box_model.padding.right + 'px; ';
         }
 
         // Width
-        if (parseInt(o.auto_width.val, 10) == 1) {
+        if (parseInt(o.auto_width, 10) == 1) {
             css += 'width: auto; ';
         } else {
-            if (o.width.val !== '' && !isNaN(o.width.val)) {
-                css += 'width: '+ o.width.val +'px; ';
+            if (o.width !== '' && !isNaN(o.width)) {
+                css += 'width: '+ o.width +'px; ';
             }
         }
 
         // Height
-        if (parseInt(o.auto_height.val, 10) == 1) {
+        if (parseInt(o.auto_height, 10) == 1) {
             css += 'height: auto; ';
         } else {
-            if (o.height.val !== '' && !isNaN(o.height.val)) {
-                css += 'height: '+ o.height.val +'px; ';
+            if (o.height !== '' && !isNaN(o.height)) {
+                css += 'height: '+ o.height +'px; ';
             }
         }
 
         // =====================================================================
         // Text
         // =====================================================================
-        var o = this.settings.options.text;
+        var o = this.options.text;
 
         // Font Family
-        if (o.font_family.val !== '' && !isNaN()) {
-            css += 'font-family: ' + o.font_family.val + '; ';
+        if (o.font_family !== '' && !isNaN()) {
+            css += 'font-family: ' + o.font_family + '; ';
         }
 
         // Font Size
-        if (o.font_size.val !== '' && !isNaN()) {
-            css += 'font-size: ' + o.font_size.val + 'px; ';
+        if (o.font_size !== '' && !isNaN()) {
+            css += 'font-size: ' + o.font_size + 'px; ';
         }
 
         // Font Weight
-        if (o.font_weight.val !== '' && !isNaN()) {
-            css += 'font-weight: ' + o.font_weight.val + '; ';
+        if (o.font_weight !== '' && !isNaN()) {
+            css += 'font-weight: ' + o.font_weight + '; ';
         }
 
         // Font Style
-        if (o.font_style.val !== '' && !isNaN()) {
-            css += 'font-style: ' + o.font_style.val + '; ';
+        if (o.font_style !== '' && !isNaN()) {
+            css += 'font-style: ' + o.font_style + '; ';
         }
 
         // Line Height
-        if (o.line_height.val !== '' && !isNaN()) {
-            css += 'line-height: ' + o.line_height.val + 'px; ';
+        if (o.line_height !== '' && !isNaN()) {
+            css += 'line-height: ' + o.line_height + 'px; ';
         }
 
         // Text Color
-        if (o.text_color.val !== '' && !isNaN()) {
-            css += 'color: ' + o.text_color.val + '; ';
+        if (o.text_color !== '' && !isNaN()) {
+            css += 'color: ' + o.text_color + '; ';
         }
 
         // Text Align
-        if (o.text_align.val !== '' && !isNaN()) {
-            css += 'text-align: ' + o.text_align.val + '; ';
+        if (o.text_align !== '' && !isNaN()) {
+            css += 'text-align: ' + o.text_align + '; ';
         }
 
         // Text Decoration
-        if (o.text_decoration.val !== '' && !isNaN()) {
-            css += 'text-decoration: ' + o.text_decoration.val + '; ';
+        if (o.text_decoration !== '' && !isNaN()) {
+            css += 'text-decoration: ' + o.text_decoration + '; ';
         }
 
         // Text Transform
-        if (o.text_transform.val !== '' && !isNaN()) {
-            css += 'text-transform: ' + o.text_transform.val + '; ';
+        if (o.text_transform !== '' && !isNaN()) {
+            css += 'text-transform: ' + o.text_transform + '; ';
         }
 
         // Text Shadow
-        if (o.text_shadow.val !== '' && !isNaN()) {
-            css += 'text-shadow: ' + o.text_shadow.val + '; ';
+        if (o.text_shadow !== '' && !isNaN()) {
+            css += 'text-shadow: ' + o.text_shadow + '; ';
         }
 
 
         // =====================================================================
         // Style
         // =====================================================================
-        var o = this.settings.options.style;
+        var o = this.options.style;
 
         // Background Color
-        var c_bg = hexToRgb(o.background_color.val);
-        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.background_opacity.val +'); ';
+        var c_bg = hexToRgb(o.background_color);
+        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.background_opacity +'); ';
 
         // Opacity
-        if (o.opacity.val !== '' && !isNaN()) {
-            css += 'opacity: ' + o.opacity.val + '; ';
+        if (o.opacity !== '' && !isNaN()) {
+            css += 'opacity: ' + o.opacity + '; ';
         }
 
         // Box Shadow
-        if (o.box_shadow.val !== '' && !isNaN()) {
-            css += 'box-shadow: ' + o.box_shadow.val + '; ';
+        if (o.box_shadow !== '' && !isNaN()) {
+            css += 'box-shadow: ' + o.box_shadow + '; ';
         }
 
         // Border Width
-        if (o.border_width.val !== '' && !isNaN()) {
-            css += 'border-width: ' + o.border_width.val + 'px; ';
+        if (o.border_width !== '' && !isNaN()) {
+            css += 'border-width: ' + o.border_width + 'px; ';
         }
 
         // Border Style
-        if (o.border_style.val !== '' && !isNaN()) {
-            css += 'border-style: ' + o.border_style.val + '; ';
+        if (o.border_style !== '' && !isNaN()) {
+            css += 'border-style: ' + o.border_style + '; ';
         }
 
         // Border Color
-        var c_bg = hexToRgb(o.border_color.val);
-        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.border_opacity.val +'); ';
+        var c_bg = hexToRgb(o.border_color);
+        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.border_opacity +'); ';
 
         // Border Radius
-        if (o.border_radius.val !== '' && !isNaN()) {
-            css += 'border-radius: ' + o.border_radius.val + 'px; ';
+        if (o.border_radius !== '' && !isNaN()) {
+            css += 'border-radius: ' + o.border_radius + 'px; ';
         }
 
         return css;
     }
     Element.prototype.render = function() {
         // Update the element's user set content
-        $('#' + this.id).html(this.settings.content());
+        $('#' + this.id).html(this.options.content());
 
         // Update the element's style
         $('#' + this.id).attr('style', this.generateStyles());
@@ -1687,6 +1701,60 @@ Custom defined settings per element:
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
         } : null;
+    }
+    function subtract(a, b) {
+        var r = {};
+
+        // For each property of 'b'
+        // if it's different than the corresponding property of 'a'
+        // place it in 'r'
+        for (var key in b) {
+            if (typeof(b[key]) == 'object') {
+                if (!a[key]) a[key] = {};
+                r[key] = subtract(a[key], b[key]);
+            } else {
+                if (b[key] != a[key]) {
+                    r[key] = a[key];
+                }
+            }
+        }
+
+        return r;
+    }
+    function clean(a) {
+        var r = undefined;
+
+        // Check if 'a' is an object
+        if (typeof(a) == 'object') {
+            // If 'a' is an object, check if it's empty and set to undefined if true
+            if (isEmpty(a)) {
+                r = undefined;
+            } else {
+                // If 'a' is NOT empty, iterate over each of its properties
+                // and recursively clean
+                for (var key in a) {
+                    var cleaned = clean(a[key]);
+
+                    if (cleaned !== undefined) {
+                        if (r === undefined) r = {};
+
+                        r[key] = cleaned;
+                    }
+                }
+            }
+        } else {
+            r = a;
+        }
+
+        return r;
+    }
+    function isEmpty(obj) {
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+            return false;
+        }
+
+        return true && JSON.stringify(obj) === JSON.stringify({});
     }
 
 })(jQuery, window, document);
