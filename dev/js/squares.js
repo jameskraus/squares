@@ -206,9 +206,9 @@ Custom defined settings per element:
         addDragElementsFromWindowEvents();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-984031","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-7461"},{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":"12"},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":40,"bottom":40,"left":40,"right":40},"padding":{"top":20,"bottom":20,"left":20,"right":20}}},"width":{"name":"Width","type":"int","default":"100","val":100},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":100},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":1},"opacity":{"name":"Opacity","type":"float","default":"1","val":1},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":0},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":1},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":0}}},"styles":"","classes":"","id":""},"id":"sq-element-341731"}]}},{"id":"sq-container-691981","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font","extendOptions":[],"options":{"general":{"id":{"name":"ID","type":"text","default":"","val":""},"classes":{"name":"Classes","type":"text","default":"","val":""},"css":{"name":"CSS","type":"text","default":"","val":""}},"layout":{"column_span":{"name":"Column Span","type":"select","options":[1,2,3,4,5,6,7,8,9,10,11,12],"default":12,"val":12},"box_model":{"name":"Box Model","type":"box model","default":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}},"val":{"margin":{"top":10,"bottom":10,"left":0,"right":0},"padding":{"top":0,"bottom":0,"left":10,"right":10}}},"width":{"name":"Width","type":"int","default":"100","val":"100"},"auto_width":{"name":"Auto Width","type":"checkbox","default":1,"val":1},"height":{"name":"Height","type":"int","default":"100","val":"100"},"auto_height":{"name":"Auto Height","type":"checkbox","default":1,"val":1}},"text":{"font_family":{"name":"Font Family","type":"text","default":"sans-serif","val":"sans-serif"},"font_size":{"name":"Font Size","type":"text","format":"int","default":"14","val":"14"},"font_weight":{"name":"Font Weight","type":"text","default":"normal","val":"normal"},"font_style":{"name":"Font Style","type":"select","options":["normal","italic","oblique","initial","inherit"],"default":"normal","val":"normal"},"line_height":{"name":"Line Height","type":"text","format":"int","default":"22","val":"22"},"text_color":{"name":"Text Color","type":"color","default":"#000000","val":"#000000"},"text_align":{"name":"Text Align","type":"select","options":["left","right","center","justify","justify-all","start","end","match-parent","inherit","initial","unset"],"default":"left","val":"left"},"text_decoration":{"name":"Text Decoration","type":"select","options":["none","underline"],"default":"none","val":"none"},"text_transform":{"name":"Text Transform","type":"select","options":["none","capitalize","uppercase","lowercase","initial","inherit"],"default":"none","val":"none"},"text_shadow":{"name":"Text Shadow","type":"text","default":"","val":""}},"style":{"background_color":{"name":"Background Color","type":"color","default":"#ffffff","val":"#ffffff"},"background_opacity":{"name":"Background Opacity","type":"float","default":"1","val":"1"},"opacity":{"name":"Opacity","type":"float","default":"1","val":"1"},"box_shadow":{"name":"Box Shadow","type":"text","default":"none","val":"none"},"border_width":{"name":"Border Width","type":"int","default":"0","val":"0"},"border_style":{"name":"Border Style","type":"select","options":["none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"],"default":"none","val":"none"},"border_color":{"name":"Border Color","type":"color","default":"#000000","val":"#000000"},"border_opacity":{"name":"Border Opacity","type":"float","default":"1","val":"1"},"border_radius":{"name":"Border Radius","type":"int","default":"0","val":"0"}}},"styles":"","classes":"","id":""},"id":"sq-element-967591"}]}}]}';
-        // $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
-        $.squaresInitWithSettings($('.squares').first());
+        var s = '{"containers":[{"id":"sq-container-963471","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"id":"sq-element-889481"},{"settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[],"id":"sq-element-148991"},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"id":"sq-element-525051"}]}}]}';
+        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        // $.squaresInitWithSettings($('.squares').first());
     });
 
     function addWindows() {
@@ -237,7 +237,8 @@ Custom defined settings per element:
         $(document).on('click', '.sq-add-elements', function() {
             var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
             var y = $(this).closest('.sq-root-container').offset().top;
-            elementsWindow.show(x, y);
+            elementsWindow.show(x + 20, y + 20);
+            elementSettingsWindow.hide();
 
             // $(this).closest('.sq-root-container').data.editor.generateJSON();
             console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
@@ -252,6 +253,7 @@ Custom defined settings per element:
             var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
 
             elementSettingsWindow.show(x, y);
+            elementsWindow.hide();
             elementSettingsWindow.setContent(el.getSettingsForm());
             elementSettingsWindow.dataSource = el;
             el.loadOptions();
@@ -488,6 +490,7 @@ Custom defined settings per element:
                         if (e.settings.name == elementsCatalog[k].settings.name) {
                             e.__proto__ = Element.prototype;
                             e.settings.content = elementsCatalog[k].settings.content;
+                            // to do: load content, "unpack" options
                         }
                     }
                 }
@@ -1158,13 +1161,11 @@ Custom defined settings per element:
 
         // Associative array containing the CURRENT values for each setting
         this.options = $.extend(true, {}, options);
+        this.options.content = this.settings.content;
 
         // This array will contain only the default values for each option and
         // it will be used only for compressing the generated JSON
         this.defaults = new Array();
-
-        //
-        this.options.content = this.settings.content;
 
         this.init();
     }
@@ -1173,9 +1174,9 @@ Custom defined settings per element:
         this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
         // Set styles, classes and id
-        // this.settings.styles = this.getUserCSS();
-        // this.settings.classes = this.getUserClasses();
-        // this.settings.id = this.getUserID();
+        this.options.styles = this.getUserCSS();
+        this.options.classes = this.getUserClasses();
+        this.options.id = this.getUserID();
 
         // Create associative array for this.options
         for (var g in this.settings.options) {
@@ -1387,52 +1388,52 @@ Custom defined settings per element:
         var o = this.options.text;
 
         // Font Family
-        if (o.font_family !== '' && !isNaN()) {
+        if (o.font_family !== '' && !isNaN(o.font_family)) {
             css += 'font-family: ' + o.font_family + '; ';
         }
 
         // Font Size
-        if (o.font_size !== '' && !isNaN()) {
+        if (o.font_size !== '' && !isNaN(o.font_size)) {
             css += 'font-size: ' + o.font_size + 'px; ';
         }
 
         // Font Weight
-        if (o.font_weight !== '' && !isNaN()) {
+        if (o.font_weight !== '' && !isNaN(o.font_weight)) {
             css += 'font-weight: ' + o.font_weight + '; ';
         }
 
         // Font Style
-        if (o.font_style !== '' && !isNaN()) {
+        if (o.font_style !== '' && !isNaN(o.font_style)) {
             css += 'font-style: ' + o.font_style + '; ';
         }
 
         // Line Height
-        if (o.line_height !== '' && !isNaN()) {
+        if (o.line_height !== '' && !isNaN(o.line_height)) {
             css += 'line-height: ' + o.line_height + 'px; ';
         }
 
         // Text Color
-        if (o.text_color !== '' && !isNaN()) {
+        if (o.text_color !== '') {
             css += 'color: ' + o.text_color + '; ';
         }
 
         // Text Align
-        if (o.text_align !== '' && !isNaN()) {
+        if (o.text_align !== '' && !isNaN(o.text_align)) {
             css += 'text-align: ' + o.text_align + '; ';
         }
 
         // Text Decoration
-        if (o.text_decoration !== '' && !isNaN()) {
+        if (o.text_decoration !== '' && !isNaN(o.text_decoration)) {
             css += 'text-decoration: ' + o.text_decoration + '; ';
         }
 
         // Text Transform
-        if (o.text_transform !== '' && !isNaN()) {
+        if (o.text_transform !== '' && !isNaN(o.text_transform)) {
             css += 'text-transform: ' + o.text_transform + '; ';
         }
 
         // Text Shadow
-        if (o.text_shadow !== '' && !isNaN()) {
+        if (o.text_shadow !== '' && !isNaN(o.text_shadow)) {
             css += 'text-shadow: ' + o.text_shadow + '; ';
         }
 
@@ -1447,22 +1448,22 @@ Custom defined settings per element:
         css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.background_opacity +'); ';
 
         // Opacity
-        if (o.opacity !== '' && !isNaN()) {
+        if (o.opacity !== '' && !isNaN(o.opacity)) {
             css += 'opacity: ' + o.opacity + '; ';
         }
 
         // Box Shadow
-        if (o.box_shadow !== '' && !isNaN()) {
+        if (o.box_shadow !== '' && !isNaN(o.box_shadow)) {
             css += 'box-shadow: ' + o.box_shadow + '; ';
         }
 
         // Border Width
-        if (o.border_width !== '' && !isNaN()) {
+        if (o.border_width !== '' && !isNaN(o.border_width)) {
             css += 'border-width: ' + o.border_width + 'px; ';
         }
 
         // Border Style
-        if (o.border_style !== '' && !isNaN()) {
+        if (o.border_style !== '' && !isNaN(o.border_style)) {
             css += 'border-style: ' + o.border_style + '; ';
         }
 
@@ -1471,7 +1472,7 @@ Custom defined settings per element:
         css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.border_opacity +'); ';
 
         // Border Radius
-        if (o.border_radius !== '' && !isNaN()) {
+        if (o.border_radius !== '' && !isNaN(o.border_radius)) {
             css += 'border-radius: ' + o.border_radius + 'px; ';
         }
 
@@ -1610,6 +1611,10 @@ Custom defined settings per element:
         $('.sq-window-active').removeClass('sq-window-active');
         this.root.addClass('sq-window-active');
     }
+    EditorWindow.prototype.hide = function() {
+        this.root.hide();
+    }
+
 
     // Generates a form with tabs
 
