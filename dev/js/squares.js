@@ -16,10 +16,6 @@ The usage scenario is the following (for now):
 4. Include the "squares.css" file in the front-end
 5. Insert the previously generated HTML code
 
-*/
-
-/*
-
 [tmp]
 
 Element Settings
@@ -88,15 +84,16 @@ Custom defined settings per element:
     var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array(), editors = new Array();
 
     // =========================================================================
-    // API
+    // [API]
+
     // The following functions allow to initialize the editor with a previously
     // saved settings/content, get the current settings/content and generate
     // HTML content for the end user.
 
+
+    // Create an editor with previously stored settings in JSON format.
     // The "host" parameter is the root element of the editor. It contains
     // (or will contain a reference to the JS class instance).
-    // =========================================================================
-
     $.squaresInitWithSettings = function(host, settings) {
         // If the host already has an editor attached, remove the editor from the editors array
         if (host.data('squares')) {
@@ -112,17 +109,24 @@ Custom defined settings per element:
         editors.push(squaresInstance);
     };
 
+    // Gets the current state as JS object of an editor, selected by its host
     $.squaresGetCurrentSettings = function(host) {
 
     };
 
+    // Called at the end to generate the final HTML code to be inserted in the
+    // front-end.
     $.squaresGenerateHTML = function(host) {
 
     };
 
+    // Adds a new element to the catalog. See documentation for 'options'.
     $.squaresRegisterElement = function(options) {
         elementsCatalog.push(options);
     };
+
+    // [END API]
+    // =========================================================================
 
     // Register built-in elements using the public API
     $.squaresRegisterElement({
@@ -183,17 +187,8 @@ Custom defined settings per element:
         // On document load, loop over all elements with the "squares" class
         // and initialize a Squares editor on them.
         $('.squares').each(function() {
-            // Register elements
-            for (var i=0; i<elementsCatalog.length; i++) {
-                if (!elementsCatalog[i].settings) {
-                    elementsCatalog[i] = new Element(elementsCatalog[i]);
-                }
-            }
-
             var squaresInstance = new Squares(this);
-
             editors.push(squaresInstance);
-
             $(this).data('squares', squaresInstance);
         });
 
@@ -206,7 +201,7 @@ Custom defined settings per element:
         addDragElementsFromWindowEvents();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-963471","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"id":"sq-element-889481"},{"settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[],"id":"sq-element-148991"},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"id":"sq-element-525051"}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-29541","settings":{"elements":[{"id":"sq-element-701061","settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"layout":{"column_span":"7"}},"defaults":[]},{"id":"sq-element-833181","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[]},{"id":"sq-element-580071","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[]},{"id":"sq-element-251421","settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[]}]}},{"id":"sq-container-584851","settings":{"elements":[{"id":"sq-element-867271","settings":{"name":"Image","iconClass":"fa fa-picture-o"},"defaults":[]},{"id":"sq-element-878961","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[]},{"id":"sq-element-810591","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[]}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -216,7 +211,7 @@ Custom defined settings per element:
         var elementsWindowContent = '';
         elementsWindowContent += '<div class="sq-element-thumb-container">';
         for (var i=0; i<elementsCatalog.length; i++) {
-            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].settings.iconClass + '"></i></div>';
+            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].iconClass + '"></i></div>';
         }
         elementsWindowContent += '<div class="clear"></div>';
         elementsWindowContent += '</div>';
@@ -477,20 +472,22 @@ Custom defined settings per element:
         // have the correct prototype.
 
         if (settings) {
-            this.settings = $.extend(true, settings, squaresDefaultSettings);
+            // Iterate over all containers
+            for (var i=0; i<settings.containers.length; i++) {
+                var c = settings.containers[i];
 
-            for (var i=0; i<this.settings.containers.length; i++) {
-                var c = this.settings.containers[i];
-                c.__proto__ = Container.prototype;
+                // Add a container and store a reference
+                var newContainer = this.appendContainer();
 
+                // Iterate over all elements of the container
                 for (var j=0; j<c.settings.elements.length; j++) {
                     var e = c.settings.elements[j];
 
+                    // Get the catalog index of the element with the same name
+                    // and insert it in the container
                     for (var k=0; k<elementsCatalog.length; k++) {
-                        if (e.settings.name == elementsCatalog[k].settings.name) {
-                            e.__proto__ = Element.prototype;
-                            e.settings.content = elementsCatalog[k].settings.content;
-                            // to do: load content, "unpack" options
+                        if (e.settings.name == elementsCatalog[k].name) {
+                            newContainer.insertElement(k, j);
                         }
                     }
                 }
@@ -898,6 +895,8 @@ Custom defined settings per element:
     Squares.prototype.appendContainer = function() {
         var c = new Container();
         this.settings.containers.push(c);
+
+        return c;
     };
     Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
         var self = this;
@@ -951,7 +950,7 @@ Custom defined settings per element:
         this.settings = $.extend(true, {}, containerDefaultSettings);
     }
     Container.prototype.insertElement = function(elementCatalogIndex, index) {
-        var e = $.extend(true, {}, elementsCatalog[elementCatalogIndex]);
+        var e = new Element(elementsCatalog[elementCatalogIndex]);
         this.settings.elements.splice(index, 0, e);
 
         // Assign a unique ID
@@ -1161,7 +1160,6 @@ Custom defined settings per element:
 
         // Associative array containing the CURRENT values for each setting
         this.options = $.extend(true, {}, options);
-        this.options.content = this.settings.content;
 
         // This array will contain only the default values for each option and
         // it will be used only for compressing the generated JSON
@@ -1170,6 +1168,10 @@ Custom defined settings per element:
         this.init();
     }
     Element.prototype.init = function() {
+        // This is needed so when the content() function is called, the 'this'
+        // variable should point to this.options
+        this.options.content = this.settings.content;
+
         // Add the extra settings to the this.settings.options object
         this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
@@ -1463,7 +1465,7 @@ Custom defined settings per element:
         }
 
         // Border Style
-        if (o.border_style !== '' && !isNaN(o.border_style)) {
+        if (o.border_style !== '') {
             css += 'border-style: ' + o.border_style + '; ';
         }
 
