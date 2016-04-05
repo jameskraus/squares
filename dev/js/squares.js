@@ -993,12 +993,6 @@ Custom defined settings per element:
                 }
             },
             layout: {
-                column_span: {
-                    name: 'Column Span',
-                    type: 'select',
-                    options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                    default: 12
-                },
                 box_model: {
                     name: 'Box Model',
                     type: 'box model',
@@ -1017,24 +1011,40 @@ Custom defined settings per element:
                         }
                     }
                 },
+                use_grid: {
+                    name: 'Use Grid System',
+                    type: 'checkbox',
+                    default: 1
+                },
+                column_span: {
+                    name: 'Column Span',
+                    type: 'select',
+                    optionsGroup: 'Layout Grid',
+                    options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+                    default: 12
+                },
                 width: {
                     name: 'Width',
                     type: 'int',
+                    optionsGroup: 'Layout Manual',
                     default: '100'
                 },
                 auto_width: {
                     name: 'Auto Width',
                     type: 'checkbox',
+                    optionsGroup: 'Layout Manual',
                     default: 1
                 },
                 height: {
                     name: 'Height',
                     type: 'int',
+                    optionsGroup: 'Layout Manual',
                     default: '100'
                 },
                 auto_height: {
                     name: 'Auto Height',
                     type: 'checkbox',
+                    optionsGroup: 'Layout Manual',
                     default: 1
                 }
             },
@@ -1263,6 +1273,8 @@ Custom defined settings per element:
                 }
             }
         }
+
+        this.updateForm();
     }
     Element.prototype.updateOptions = function() {
         // Updates its options based on the input fields loaded
@@ -1317,8 +1329,24 @@ Custom defined settings per element:
             }
         }
 
+        this.updateForm();
         this.render();
         this.appendControls();
+    }
+    Element.prototype.updateForm = function() {
+        if (parseInt(this.options.layout.use_grid, 10) == 1) {
+            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.optionsGroup);
+            $('.' + manualGroupClassName).hide();
+
+            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.optionsGroup);
+            $('.' + gridGroupClassName).show();
+        } else {
+            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.optionsGroup);
+            $('.' + manualGroupClassName).show();
+
+            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.optionsGroup);
+            $('.' + gridGroupClassName).hide();
+        }
     }
     Element.prototype.getUserCSS = function() {
         return this.settings.options.general.css.val;
@@ -1336,8 +1364,6 @@ Custom defined settings per element:
         // Layout
         // =====================================================================
         var o = this.options.layout;
-
-        // to do: grid system
 
         // Box Model
         if (o.box_model.margin.top !== '' && !isNaN(o.box_model.margin.top)) {
@@ -1366,23 +1392,32 @@ Custom defined settings per element:
             css += 'padding-right: ' + o.box_model.padding.right + 'px; ';
         }
 
-        // Width
-        if (parseInt(o.auto_width, 10) == 1) {
-            css += 'width: auto; ';
+        if (parseInt(o.use_grid, 10) == 1) {
+            // Grid system
+            var columnWidth = 8.33333333;
+            var elementWidth = columnWidth * o.column_span;
+            css += 'width: '+ elementWidth +'%; ';
         } else {
-            if (o.width !== '' && !isNaN(o.width)) {
-                css += 'width: '+ o.width +'px; ';
+            // Width
+            if (parseInt(o.auto_width, 10) == 1) {
+                css += 'width: auto; ';
+            } else {
+                if (o.width !== '' && !isNaN(o.width)) {
+                    css += 'width: '+ o.width +'px; ';
+                }
+            }
+
+            // Height
+            if (parseInt(o.auto_height, 10) == 1) {
+                css += 'height: auto; ';
+            } else {
+                if (o.height !== '' && !isNaN(o.height)) {
+                    css += 'height: '+ o.height +'px; ';
+                }
             }
         }
 
-        // Height
-        if (parseInt(o.auto_height, 10) == 1) {
-            css += 'height: auto; ';
-        } else {
-            if (o.height !== '' && !isNaN(o.height)) {
-                css += 'height: '+ o.height +'px; ';
-            }
-        }
+        css += 'float: left; ';
 
         // =====================================================================
         // Text
@@ -1651,6 +1686,13 @@ Custom defined settings per element:
                         optionCount++;
                         var option = group[op];
                         var id = generateFormElementIDFromName(option.name);
+                        var className = '';
+
+                        if (option.optionsGroup !== undefined) {
+                            className = generateFormElementGroupClassFromName(option.optionsGroup);
+                        }
+
+                        html += '<div class="squares-form-control '+ className +'">';
 
                         html += '<label for="'+ id +'">'+ option.name +'</label>';
                         if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
@@ -1689,6 +1731,9 @@ Custom defined settings per element:
                             html += '   </div>';
                             html += '</div>';
                         }
+
+                        // end form control wrapper
+                        html += '</div>';
                     }
                 }
 
@@ -1699,7 +1744,10 @@ Custom defined settings per element:
         return html;
     }
     function generateFormElementIDFromName(name) {
-        return 'squares-element-option-' + name.toLowerCase().replace(' ', '-');
+        return 'squares-element-option-' + name.toLowerCase().replace(/\s/g, '-');
+    }
+    function generateFormElementGroupClassFromName(name) {
+        return 'squares-element-option-group-' + name.toLowerCase().replace(/\s/g, '-');
     }
     function hexToRgb(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

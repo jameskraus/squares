@@ -31,6 +31,12 @@
     border: 1px solid #ccc;
     min-height: 44px;
     margin: 10px 0;
+    display: table;
+    content: ' ';
+}
+.sq-container:before {
+    display: table;
+    content: ' ';
 }
 .sq-container .sq-container-move {
     display: none;
@@ -269,6 +275,7 @@
     background: #f3f3f3;
     height: 66px;
     margin: 10px;
+    float: left;
 }
 #sq-dummy-element-at-mouse {
     z-index: 999999;
