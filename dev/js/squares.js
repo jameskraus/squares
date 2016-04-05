@@ -230,24 +230,28 @@ Custom defined settings per element:
     }
     function addEvents() {
         $(document).on('click', '.sq-add-elements', function() {
-            var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
-            var y = $(this).closest('.sq-root-container').offset().top;
-            elementsWindow.show(x + 20, y + 20);
+            if (!elementsWindow.visible) {
+                var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
+                var y = $(this).closest('.sq-root-container').offset().top;
+                elementsWindow.show(x + 20, y + 20);
+            }
+
             elementSettingsWindow.hide();
 
-            // $(this).closest('.sq-root-container').data.editor.generateJSON();
             console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
         });
         $(document).on('click', '.sq-element', function() {
-            var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
-            var y = $(this).offset().top;
+            if (!elementSettingsWindow.visible) {
+                var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
+                var y = $(this).offset().top;
+                elementSettingsWindow.show(x, y);
+            }
 
             var editor = $(this).closest('.sq-root-container').data.editor;
             var containerIndex = $(this).closest('.sq-container').data('index');
             var elementIndex = $(this).data('index');
             var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
 
-            elementSettingsWindow.show(x, y);
             elementsWindow.hide();
             elementSettingsWindow.setContent(el.getSettingsForm());
             elementSettingsWindow.dataSource = el;
@@ -463,6 +467,7 @@ Custom defined settings per element:
         this.elementDragMap = undefined;
         this.dummyElement = undefined;
         this.newIndexOfDraggedElement = -1;
+        this.draggedElementWidth = -1;
 
         this.loadSettings(settings);
         this.init();
@@ -754,7 +759,11 @@ Custom defined settings per element:
             // Create a virtual map of all possible positions of the element
             // in each container
             this.elementDragMap = new Array();
-            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElement.outerWidth() +'px; height: '+ this.draggedElement.outerHeight() +'px; display: inline-block;"></div>';
+
+            var draggedElementObject = this.settings.containers[this.draggedElementContainerIndex].settings.elements[this.draggedElementIndex];
+            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.options.layout.column_span);
+
+            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElementWidth +'; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
 
             this.draggedElement.hide();
             for (var i=0; i<this.settings.containers.length; i++) {
@@ -783,13 +792,14 @@ Custom defined settings per element:
                     }
                 }
             }
+
             this.draggedElement.show();
 
             // Insert a dummy element
             this.draggedElement.after('<div id="sq-dummy-element"></div>');
             this.dummyElement = $('#sq-dummy-element');
             this.dummyElement.css({
-                width: this.draggedElement.outerWidth(),
+                width: this.draggedElementWidth,
                 height: this.draggedElement.outerHeight(),
                 margin: this.draggedElement.css('margin'),
                 padding: 0
@@ -855,7 +865,7 @@ Custom defined settings per element:
 
             this.dummyElement = $('#sq-dummy-element');
             this.dummyElement.css({
-                width: this.draggedElement.outerWidth(),
+                width: this.draggedElementWidth,
                 height: this.draggedElement.outerHeight(),
                 margin: this.draggedElement.css('margin'),
                 padding: 0
@@ -1021,7 +1031,7 @@ Custom defined settings per element:
                     type: 'select',
                     optionsGroup: 'Layout Grid',
                     options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                    default: 12
+                    default: 4
                 },
                 width: {
                     name: 'Width',
@@ -1394,9 +1404,7 @@ Custom defined settings per element:
 
         if (parseInt(o.use_grid, 10) == 1) {
             // Grid system
-            var columnWidth = 8.33333333;
-            var elementWidth = columnWidth * o.column_span;
-            css += 'width: '+ elementWidth +'%; ';
+            css += 'width: '+ getWidthOfElementInGrid(o.column_span) +'; ';
         } else {
             // Width
             if (parseInt(o.auto_width, 10) == 1) {
@@ -1538,6 +1546,8 @@ Custom defined settings per element:
         this.root = undefined;
         this.id = Math.floor(Math.random() * 10000) + 1;
 
+        this.visible = false;
+
         // flags for dragging the window
         this.shouldStartDragging = false;
         this.didStartDragging = false;
@@ -1638,17 +1648,21 @@ Custom defined settings per element:
         this.root.find('.sq-window-title').html(title);
     }
     EditorWindow.prototype.show = function(x, y) {
+        this.visible = true;
         this.root.show();
 
-        this.root.css({
-            left: x,
-            top: y
-        });
+        if (x !== undefined && y !== undefined) {
+            this.root.css({
+                left: x,
+                top: y
+            });
+        }
 
         $('.sq-window-active').removeClass('sq-window-active');
         this.root.addClass('sq-window-active');
     }
     EditorWindow.prototype.hide = function() {
+        this.visible = false;
         this.root.hide();
     }
 
@@ -1810,6 +1824,12 @@ Custom defined settings per element:
         }
 
         return true && JSON.stringify(obj) === JSON.stringify({});
+    }
+    function getWidthOfElementInGrid(span) {
+        var columnWidth = 8.33333333;
+        var elementWidth = columnWidth * span;
+
+        return elementWidth + '%';
     }
 
 })(jQuery, window, document);

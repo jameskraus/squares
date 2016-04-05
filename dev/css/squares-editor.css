@@ -33,6 +33,7 @@
     margin: 10px 0;
     display: table;
     content: ' ';
+    width: 100%;
 }
 .sq-container:before {
     display: table;
@@ -276,6 +277,10 @@
     height: 66px;
     margin: 10px;
     float: left;
+}
+#sq-dummy-element-tmp {
+    float: left;
+    background: red;
 }
 #sq-dummy-element-at-mouse {
     z-index: 999999;
