@@ -304,8 +304,8 @@ Custom defined settings per element:
                     iy = thumbElWhenDraggingFromWindow.offset().top;
 
                     // Create a copy of the thumb and place it at mouse location
-                    $('body').prepend('<div id="sq-dummy-element-at-mouse" class="sq-element-thumb">' + contents + '</div>');
-                    dummyElementAtMouse = $('#sq-dummy-element-at-mouse');
+                    $('body').prepend('<div id="sq-dragged-element-clone" class="sq-element-thumb">' + contents + '</div>');
+                    dummyElementAtMouse = $('#sq-dragged-element-clone');
                     dummyElementAtMouse.css({
                         left: ix,
                         top: iy,
@@ -326,29 +326,29 @@ Custom defined settings per element:
                             // if the container has no elements, add one dummy element
                             // and move on to next container
                             if (editor.settings.containers[i].settings.elements.length == 0) {
-                                c.append('<div id="sq-dummy-element"></div>');
-                                var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
-                                var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                c.append('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
                                 elementDragMap.push({ x: x, y: y, elementIndex: 0, containerIndex: i, editorIndex: k });
-                                $('#sq-dummy-element').remove();
+                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
                             }
 
                             for (var j=0; j<editor.settings.containers[i].settings.elements.length; j++) {
                                 var el = c.find('.sq-element[data-index='+ j +']');
 
-                                el.before('<div id="sq-dummy-element"></div>');
-                                var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
-                                var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                el.before('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
                                 elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i, editorIndex: k });
-                                $('#sq-dummy-element').remove();
+                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
 
                                 // When we reach the end of the elements array, add a dummy element after the last element
                                 if (j == editor.settings.containers[i].settings.elements.length - 1) {
-                                    el.after('<div id="sq-dummy-element"></div>');
-                                    var x = $('#sq-dummy-element').offset().left + $('#sq-dummy-element').outerWidth()/2;
-                                    var y = $('#sq-dummy-element').offset().top + $('#sq-dummy-element').outerHeight()/2;
+                                    el.after('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                    var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                    var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
                                     elementDragMap.push({ x: x, y: y, elementIndex: j+1, containerIndex: i, editorIndex: k });
-                                    $('#sq-dummy-element').remove();
+                                    $('#sq-dummy-element-dragging-from-window-tmp').remove();
                                 }
                             }
                         }
@@ -381,7 +381,7 @@ Custom defined settings per element:
                     virtualIndexOfDraggedElement = closestIndex;
 
                     // Remove the current dummy element
-                    $('#sq-dummy-element').remove();
+                    $('#sq-dummy-element-dragging-from-window').remove();
 
                     // Insert a new dummy element at the container/element index
                     var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
@@ -392,13 +392,14 @@ Custom defined settings per element:
                     // If the index of the dummy element is bigger than the number
                     // of elements in that container, insert the dummy at the end
                     if (elementIndex == editors[editorIndex].settings.containers[containerIndex].settings.elements.length) {
-                        c.append('<div id="sq-dummy-element"></div>');
+                        c.append('<div id="sq-dummy-element-dragging-from-window"></div>');
                     } else {
                         var e = c.find('.sq-element[data-index='+ elementIndex +']');
-                        e.before('<div id="sq-dummy-element"></div>');
+                        e.before('<div id="sq-dummy-element-dragging-from-window"></div>');
                     }
                 }
             }
+
         });
         $(document).off('mouseup.elementFromWindow');
         $(document).on('mouseup.elementFromWindow', function() {
@@ -1031,7 +1032,7 @@ Custom defined settings per element:
                     type: 'select',
                     optionsGroup: 'Layout Grid',
                     options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                    default: 4
+                    default: 12
                 },
                 width: {
                     name: 'Width',
