@@ -1,3 +1,19 @@
+/*
+
+TO DO:
+
+- API for registering custom form controls
+- move the control registrations in a separate file - squares-controls.js
+- ALL form controls will be "custom", including inputs and checkboxes
+- slider form control
+- add additional controls for the current existing elements
+- generate HTML
+- new UI
+    - merge all windows in one window with two tabs - "Elements" and "Settings"
+    - resizable window
+
+*/
+
 // Squares
 // Description: Interactive and embeddable HTML content builder.
 // Author: Nikolay Dyankov
@@ -77,11 +93,12 @@ Custom defined settings per element:
 - Text
 - Paragraph
 - Text (large)
+
 */
 
 ;(function ($, window, document, undefined) {
 
-    var elementsWindow = undefined, elementSettingsWindow = undefined, elementsCatalog = new Array(), editors = new Array();
+    var elementsWindow = undefined, elementSettingsWindow = undefined, registeredElements = new Array(), registeredControls = new Array(), editors = new Array();
 
     // =========================================================================
     // [API]
@@ -122,66 +139,28 @@ Custom defined settings per element:
 
     // Adds a new element to the catalog. See documentation for 'options'.
     $.squaresRegisterElement = function(options) {
-        elementsCatalog.push(options);
+        registeredElements.push(options);
     };
+
+    // Registers a control that can be added to the element settings window
+    /*
+        Required options on control registration:
+            - type: int, float, text, color, etc
+            - getValue: getter for the value of the control
+            - setValue: setter for the value of the control
+            - HTML: returns the HTML of the control
+            - events: create events associated with this specific control element
+
+        Required options on
+    */
+
+    $.squaresRegisterControl = function(options) {
+        registeredControls.push(options);
+    }
 
     // [END API]
     // =========================================================================
 
-    // Register built-in elements using the public API
-    $.squaresRegisterElement({
-        name: "Paragraph",
-        iconClass: "fa fa-font",
-        content: function() {
-            return '<p id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Heading",
-        iconClass: "fa fa-header",
-        extendOptions: {
-            heading: {
-                heading: {
-                    name: 'Heading',
-                    type: 'select',
-                    options: ['h1', 'h2', 'h3'],
-                    default: 'h3'
-                }
-            }
-        },
-        content: function() {
-            // this = options
-            return '<'+ this.heading.heading +' id="'+ this.general.id +'" style="'+ this.general.css +'" class="'+ this.general.classes +'">Lorem Ipsum</'+ this.heading.heading +'>';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Image",
-        iconClass: "fa fa-picture-o",
-        content: function() {
-            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Button",
-        iconClass: "fa fa-hand-pointer-o",
-        content: function() {
-            return '<input type="button" value="Button" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "Video",
-        iconClass: "fa fa-video-camera",
-        content: function() {
-            return '<video autoplay id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'"><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
-        }
-    });
-    $.squaresRegisterElement({
-        name: "YouTube",
-        iconClass: "fa fa-youtube",
-        content: function() {
-            return '<iframe id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'" width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
-        }
-    });
 
     $(document).ready(function() {
         // On document load, loop over all elements with the "squares" class
@@ -201,7 +180,7 @@ Custom defined settings per element:
         addDragElementsFromWindowEvents();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-29541","settings":{"elements":[{"id":"sq-element-701061","settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"layout":{"column_span":"7"}},"defaults":[]},{"id":"sq-element-833181","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[]},{"id":"sq-element-580071","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[]},{"id":"sq-element-251421","settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[]}]}},{"id":"sq-container-584851","settings":{"elements":[{"id":"sq-element-867271","settings":{"name":"Image","iconClass":"fa fa-picture-o"},"defaults":[]},{"id":"sq-element-878961","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[]},{"id":"sq-element-810591","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[]}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-420971","settings":{"elements":[{"id":"sq-element-8451","settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}},"defaults":[],"controls":[]},{"id":"sq-element-983381","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-518081","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]},{"id":"sq-element-754951","settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[],"controls":[]}]}},{"id":"sq-container-793821","settings":{"elements":[{"id":"sq-element-557641","settings":{"name":"Image","iconClass":"fa fa-picture-o"},"defaults":[],"controls":[]},{"id":"sq-element-446891","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-34541","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -210,8 +189,8 @@ Custom defined settings per element:
         // Elements Window
         var elementsWindowContent = '';
         elementsWindowContent += '<div class="sq-element-thumb-container">';
-        for (var i=0; i<elementsCatalog.length; i++) {
-            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + elementsCatalog[i].iconClass + '"></i></div>';
+        for (var i=0; i<registeredElements.length; i++) {
+            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
         }
         elementsWindowContent += '<div class="clear"></div>';
         elementsWindowContent += '</div>';
@@ -491,9 +470,9 @@ Custom defined settings per element:
 
                     // Get the catalog index of the element with the same name
                     // and insert it in the container
-                    for (var k=0; k<elementsCatalog.length; k++) {
-                        if (e.settings.name == elementsCatalog[k].name) {
-                            newContainer.insertElement(k, j);
+                    for (var k=0; k<registeredElements.length; k++) {
+                        if (e.settings.name == registeredElements[k].name) {
+                            newContainer.insertElement(k, j, e.options);
                         }
                     }
                 }
@@ -960,8 +939,8 @@ Custom defined settings per element:
 
         this.settings = $.extend(true, {}, containerDefaultSettings);
     }
-    Container.prototype.insertElement = function(elementCatalogIndex, index) {
-        var e = new Element(elementsCatalog[elementCatalogIndex]);
+    Container.prototype.insertElement = function(elementCatalogIndex, index, options) {
+        var e = new Element(registeredElements[elementCatalogIndex], options);
         this.settings.elements.splice(index, 0, e);
 
         // Assign a unique ID
@@ -1030,32 +1009,32 @@ Custom defined settings per element:
                 column_span: {
                     name: 'Column Span',
                     type: 'select',
-                    optionsGroup: 'Layout Grid',
+                    group: 'Layout Grid',
                     options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
                     default: 12
                 },
                 width: {
                     name: 'Width',
                     type: 'int',
-                    optionsGroup: 'Layout Manual',
+                    group: 'Layout Manual',
                     default: '100'
                 },
                 auto_width: {
                     name: 'Auto Width',
                     type: 'checkbox',
-                    optionsGroup: 'Layout Manual',
+                    group: 'Layout Manual',
                     default: 1
                 },
                 height: {
                     name: 'Height',
                     type: 'int',
-                    optionsGroup: 'Layout Manual',
+                    group: 'Layout Manual',
                     default: '100'
                 },
                 auto_height: {
                     name: 'Auto Height',
                     type: 'checkbox',
-                    optionsGroup: 'Layout Manual',
+                    group: 'Layout Manual',
                     default: 1
                 }
             },
@@ -1180,28 +1159,38 @@ Custom defined settings per element:
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
 
         // Associative array containing the CURRENT values for each setting
-        this.options = $.extend(true, {}, options);
+        // to do: obsolete, options should be accessed from the controls
+        this.options = $.extend(true, {}, elementDefaultSettings.options, options);
 
         // This array will contain only the default values for each option and
         // it will be used only for compressing the generated JSON
         this.defaults = new Array();
+
+        // Array containing all control objects
+        // all options of this element should be accessed from here
+        this.controls = new Array();
 
         this.init();
     }
     Element.prototype.init = function() {
         // This is needed so when the content() function is called, the 'this'
         // variable should point to this.options
+        // to do: obsolete. content() should belong to 'this'
         this.options.content = this.settings.content;
 
         // Add the extra settings to the this.settings.options object
+        // to do: obsolete
         this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
         // Set styles, classes and id
+        // to do: obsolete. styles, classes and ID are just another controls
         this.options.styles = this.getUserCSS();
         this.options.classes = this.getUserClasses();
         this.options.id = this.getUserID();
 
-        // Create associative array for this.options
+        // Create associative array from this.options containing default values
+        // Used only for compression
+        // to do: must use controls instead of 'this.options'
         for (var g in this.settings.options) {
             if (this.settings.options.hasOwnProperty(g)) {
                 var group = this.settings.options[g];
@@ -1226,10 +1215,39 @@ Custom defined settings per element:
                 }
             }
         }
+
+        // Create controls
+        for (var g in this.settings.options) {
+            if (this.settings.options.hasOwnProperty(g)) {
+                var group = this.settings.options[g];
+
+                for (var op in group) {
+                    if (group.hasOwnProperty(op)) {
+                        var option = group[op];
+
+                        // Get a control from the registered controls
+                        // of the corresponding type
+                        var controlOptions = undefined;
+
+                        for (var i=0; i<registeredControls.length; i++) {
+                            if (registeredControls[i].type == option.type) {
+                                controlOptions = registeredControls[i];
+                            }
+                        }
+
+                        this.controls[option.name] = new SquaresControl(controlOptions, option.name, option.group, option.options);
+                        this.controls[option.name].setVal(option.default);
+                    }
+                }
+            }
+        }
     }
     Element.prototype.getSettingsForm = function() {
+        // Loop over all controls and get the HTML from each control
+        // Also add a label with the name of the control
+
         // Generates a settings form for this element
-        return generateForm(this.settings.options);
+        return generateForm(this.settings.options, this.controls);
     }
     Element.prototype.loadOptions = function() {
         // Loads its options in the settings window
@@ -1346,16 +1364,16 @@ Custom defined settings per element:
     }
     Element.prototype.updateForm = function() {
         if (parseInt(this.options.layout.use_grid, 10) == 1) {
-            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.optionsGroup);
+            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.group);
             $('.' + manualGroupClassName).hide();
 
-            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.optionsGroup);
+            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.group);
             $('.' + gridGroupClassName).show();
         } else {
-            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.optionsGroup);
+            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.group);
             $('.' + manualGroupClassName).show();
 
-            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.optionsGroup);
+            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.group);
             $('.' + gridGroupClassName).hide();
         }
     }
@@ -1667,10 +1685,45 @@ Custom defined settings per element:
         this.root.hide();
     }
 
+    function SquaresControl(s, name, group, options) {
+        // The 's' argument is the array coming from the registeredControls array
+
+        // Automatically generated at the time of object creation
+        this.id = Math.floor(Math.random() * 9999) + 1;
+        this.elementID = 'squares-control-' + this.id;
+
+        // Settings coming from the registered controls catalog
+        // referenced in the 'this' variable, so 'this' can be accessed within
+        // those functions (in case of validate(), HTML(), events(), etc)
+        // These settings are also common in all controls
+        this.type = s.type;
+        this.getValue = s.getValue;
+        this.setValue = s.setValue;
+        this.HTML = s.HTML;
+
+        // These variables are specific for each individual control
+        this.name = name;
+        this.options = group;
+        this.group = options;
+
+        // Private property, must be accessed only via setter and getter
+        this._value = undefined;
+
+        this.init();
+    }
+    SquaresControl.prototype.init = function() {
+
+    }
+    SquaresControl.prototype.getVal = function() {
+        return this.getValue();
+    }
+    SquaresControl.prototype.setVal = function(v) {
+        this.setValue(v);
+    }
 
     // Generates a form with tabs
-
-    function generateForm(o) {
+    // o = options, c = controls
+    function generateForm(o, c) {
         var html = '';
 
         // Create tabs
@@ -1700,16 +1753,22 @@ Custom defined settings per element:
                     if (group.hasOwnProperty(op)) {
                         optionCount++;
                         var option = group[op];
+                        var control = c[option.name];
                         var id = generateFormElementIDFromName(option.name);
                         var className = '';
 
-                        if (option.optionsGroup !== undefined) {
-                            className = generateFormElementGroupClassFromName(option.optionsGroup);
+                        if (option.group !== undefined) {
+                            className = generateFormElementGroupClassFromName(option.group);
                         }
 
                         html += '<div class="squares-form-control '+ className +'">';
 
                         html += '<label for="'+ id +'">'+ option.name +'</label>';
+
+                        // here
+                        var controlHTML = control.HTML();
+                        // console.log(controlHTML);
+
                         if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
                             html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';
                         }
