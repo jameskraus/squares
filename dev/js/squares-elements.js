@@ -26,8 +26,8 @@
             }
         },
         content: function() {
-            // this = options
-            return '<'+ this.heading.heading +' id="'+ this.general.id +'" style="'+ this.general.css +'" class="'+ this.general.classes +'">Lorem Ipsum</'+ this.heading.heading +'>';
+            return '<'+ this.controls['Heading'].getVal() +' id="'+ this.controls['ID'].getVal() +'" style="'+ this.controls['CSS'].getVal() +'" class="'+ this.controls['Classes'].getVal() +'">Lorem Ipsum</'+ this.controls['Heading'].getVal() +'>';
+            return 'asd';
         }
     });
     $.squaresRegisterElement({

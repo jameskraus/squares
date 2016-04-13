@@ -34,10 +34,10 @@ The usage scenario is the following (for now):
 
 [tmp]
 
-Element Settings
+Element Controls
 =========================================
 
-Common settings for all elements:
+Common controls for all elements:
 ---------------------------------
 
 - General:
@@ -70,7 +70,7 @@ Common settings for all elements:
 - border radius
 
 
-Custom defined settings per element:
+Custom defined controls per element:
 ---------------------------------
 
 - Image
@@ -137,21 +137,38 @@ Custom defined settings per element:
 
     };
 
-    // Adds a new element to the catalog. See documentation for 'options'.
+    /*
+    Adds a new element to the catalog.
+    Required options for Element registration:
+        - name: sematic name for the Element
+        - iconClass: complete class name from Font Awesome
+        - content(): callback function which returns HTML code to be rendered
+        - (optional) extendOptions - array containing additional controls for
+            the element. For example:
+
+        extendOptions: {
+            heading: { // Control group name
+                heading: { // Control name
+                    name: 'Heading',
+                    type: 'select',
+                    options: ['h1', 'h2', 'h3'],
+                    default: 'h3'
+                }
+            }
+        }
+    */
     $.squaresRegisterElement = function(options) {
         registeredElements.push(options);
     };
 
-    // Registers a control that can be added to the element settings window
     /*
-        Required options on control registration:
-            - type: int, float, text, color, etc
-            - getValue: getter for the value of the control
-            - setValue: setter for the value of the control
-            - HTML: returns the HTML of the control
-            - events: create events associated with this specific control element
-
-        Required options on
+    Registers a control that can be added to the element settings window
+    Required options for Control registration:
+        - type: int, float, text, color, etc
+        - getValue: getter for the value of the control
+        - setValue: setter for the value of the control
+        - HTML: returns the HTML of the control
+        - events: create events associated with this specific control element
     */
 
     $.squaresRegisterControl = function(options) {
@@ -520,7 +537,7 @@ Custom defined settings per element:
 
             // Call the render() function of the container
             c.render();
-            c.appendControls();
+            c.appendEditorControls();
 
             for (var j=0; j<c.settings.elements.length; j++) {
                 var e = c.settings.elements[j];
@@ -531,7 +548,7 @@ Custom defined settings per element:
 
                 // Call the render() function of the element
                 e.render();
-                e.appendControls();
+                e.appendEditorControls();
             }
         }
 
@@ -888,11 +905,11 @@ Custom defined settings per element:
 
         return c;
     };
-    Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex) {
+    Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex, elementControlOptions) {
         var self = this;
 
         // Add element to container at index
-        self.settings.containers[containerIndex].insertElement(elementCatalogIndex, elementIndex);
+        self.settings.containers[containerIndex].insertElement(elementCatalogIndex, elementIndex, elementControlOptions);
 
         // Redraw
         self.redraw();
@@ -949,7 +966,7 @@ Custom defined settings per element:
     Container.prototype.render = function() {
         // Nothing to render for now
     }
-    Container.prototype.appendControls = function() {
+    Container.prototype.appendEditorControls = function() {
         var html = '';
         html += '     <div class="sq-container-move"></div>';
 
@@ -1158,10 +1175,6 @@ Custom defined settings per element:
         // Settings are used only for initialization
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
 
-        // Associative array containing the CURRENT values for each setting
-        // to do: obsolete, options should be accessed from the controls
-        this.options = $.extend(true, {}, elementDefaultSettings.options, options);
-
         // This array will contain only the default values for each option and
         // it will be used only for compressing the generated JSON
         this.defaults = new Array();
@@ -1170,34 +1183,22 @@ Custom defined settings per element:
         // all options of this element should be accessed from here
         this.controls = new Array();
 
-        this.init();
-    }
-    Element.prototype.init = function() {
-        // This is needed so when the content() function is called, the 'this'
-        // variable should point to this.options
-        // to do: obsolete. content() should belong to 'this'
-        this.options.content = this.settings.content;
+        // Create a reference to the content() function, so 'this' within that function
+        // refers to the Element object and it has access to its controls
+        this.content = this.settings.content;
 
-        // Add the extra settings to the this.settings.options object
-        // to do: obsolete
+        this.init(options);
+    }
+    Element.prototype.init = function(options) {
+        // Merge the extendOptions into the options
         this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
 
-        // Set styles, classes and id
-        // to do: obsolete. styles, classes and ID are just another controls
-        this.options.styles = this.getUserCSS();
-        this.options.classes = this.getUserClasses();
-        this.options.id = this.getUserID();
-
-        // Create associative array from this.options containing default values
+        // Create associative array from this.settings.options containing default values
         // Used only for compression
-        // to do: must use controls instead of 'this.options'
         for (var g in this.settings.options) {
             if (this.settings.options.hasOwnProperty(g)) {
                 var group = this.settings.options[g];
 
-                if (!this.options[g]) {
-                    this.options[g] = {};
-                }
                 if (!this.defaults[g]) {
                     this.defaults[g] = {};
                 }
@@ -1205,10 +1206,6 @@ Custom defined settings per element:
                 for (var op in group) {
                     if (group.hasOwnProperty(op)) {
                         var option = group[op];
-
-                        if (this.options[g][op] != option.default) {
-                            this.options[g][op] = option.default;
-                        }
 
                         this.defaults[g][op] = option.default;
                     }
@@ -1235,8 +1232,15 @@ Custom defined settings per element:
                             }
                         }
 
+                        // Check if there is a value in the init options
+                        var v = option.default;
+
+                        if (options !== undefined && options[g] !== undefined && options[g][op] !== undefined) {
+                            v = options[g][op];
+                        }
+
                         this.controls[option.name] = new SquaresControl(controlOptions, option.name, option.group, option.options);
-                        this.controls[option.name].setVal(option.default);
+                        this.controls[option.name].setVal(v);
                     }
                 }
             }
@@ -1360,7 +1364,7 @@ Custom defined settings per element:
 
         this.updateForm();
         this.render();
-        this.appendControls();
+        this.appendEditorControls();
     }
     Element.prototype.updateForm = function() {
         if (parseInt(this.options.layout.use_grid, 10) == 1) {
@@ -1388,7 +1392,7 @@ Custom defined settings per element:
     }
     Element.prototype.generateStyles = function() {
         var css = '';
-
+        return '';
         // =====================================================================
         // Layout
         // =====================================================================
@@ -1544,12 +1548,14 @@ Custom defined settings per element:
     }
     Element.prototype.render = function() {
         // Update the element's user set content
-        $('#' + this.id).html(this.options.content());
+        $('#' + this.id).html(this.content());
+
+        // console.log(this.controls['Heading']);
 
         // Update the element's style
         $('#' + this.id).attr('style', this.generateStyles());
     }
-    Element.prototype.appendControls = function() {
+    Element.prototype.appendEditorControls = function() {
         var html = '';
 
         html += '     <div class="sq-element-controls">';
@@ -1597,7 +1603,7 @@ Custom defined settings per element:
         WindowHTML += '     </div>';
         WindowHTML += ' </div>';
 
-        if ($('.sq-windows-root').length == 0) {
+        if ($('.sq-windows-root').lengthgth == 0) {
             $('body').prepend('<div class="sq-windows-root"></div>');
         }
 
@@ -1606,7 +1612,7 @@ Custom defined settings per element:
         this.root = $('#sq-window-' + this.id);
     }
     EditorWindow.prototype.events = function() {
-        var self = this;
+           var self = this;
 
         // Button for closing the elements window
         self.root.find('.sq-window-close').off('click');
@@ -1708,17 +1714,28 @@ Custom defined settings per element:
 
         // Private property, must be accessed only via setter and getter
         this._value = undefined;
-
-        this.init();
-    }
-    SquaresControl.prototype.init = function() {
-
     }
     SquaresControl.prototype.getVal = function() {
-        return this.getValue();
+        var v = this._value;
+
+        try {
+            // v = this.getValue();
+        } catch (err) {
+            // console.log('Failed to set value for control:');
+            // console.log(err);
+        }
+
+        return v;
     }
     SquaresControl.prototype.setVal = function(v) {
-        this.setValue(v);
+        this._value = v;
+
+        try {
+            // this.setValue(v);
+        } catch (err) {
+            // console.log('Failed to get value for control:');
+            // console.log(err);
+        }
     }
 
     // Generates a form with tabs
@@ -1767,7 +1784,6 @@ Custom defined settings per element:
 
                         // here
                         var controlHTML = control.HTML();
-                        // console.log(controlHTML);
 
                         if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
                             html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';

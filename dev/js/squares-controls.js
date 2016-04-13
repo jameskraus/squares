@@ -10,8 +10,7 @@
             return parseInt($('#' + this.elementID).val(), 10);
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            $('#' + this.elementID).val(parseInt(v, 10));
         },
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
@@ -26,11 +25,10 @@
     $.squaresRegisterControl({
         type: 'float',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            return parseFloat($('#' + this.elementID).val());
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            $('#' + this.elementID).val(parseFloat(v));
         },
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
@@ -39,11 +37,10 @@
     $.squaresRegisterControl({
         type: 'text',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            return $('#' + this.elementID).val();
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            $('#' + this.elementID).val(v);
         },
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
@@ -52,11 +49,18 @@
     $.squaresRegisterControl({
         type: 'checkbox',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            if ($('#' + this.elementID).get(0).checked === true) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            if (parseInt(v, 10) === 1) {
+                $('#' + this.elementID).get(0).checked = true;
+            } else {
+                $('#' + this.elementID).get(0).checked = false;
+            }
         },
         HTML: function() {
             return '<input type="checkbox" id="'+ this.elementID +'">';
@@ -65,11 +69,10 @@
     $.squaresRegisterControl({
         type: 'color',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            return $('#' + this.elementID).val();
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            $('#' + this.elementID).val(v);
         },
         HTML: function() {
             return '<input type="color" id="'+ this.elementID +'">';
@@ -78,30 +81,33 @@
     $.squaresRegisterControl({
         type: 'select',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            return $('#' + this.elementID).val();
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            $('#' + this.elementID).val(v);
         },
         HTML: function() {
             var html = '';
 
             html += '<select id="'+ this.elementID +'">';
+            // to do
+            html += '</select>';
+
+            return html;
         }
     });
     $.squaresRegisterControl({
         type: 'box model',
         getValue: function() {
-            return parseInt($('#' + this.elementID).val(), 10);
+            // to do
+            return 1;
         },
         setValue: function(v) {
-            var newVal = parseInt(v, 10);
-            $('#' + this.elementID).val(newVal);
+            // to do
         },
         HTML: function() {
-            // console.log(self);
-            return 'test';
+            // to do
+            return 'box model control';
         }
     });
 })(jQuery, window, document);
