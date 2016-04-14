@@ -18,7 +18,7 @@
         events: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.value = self.validate(this.val);
+                self.updateVal();
             });
         }
     });
@@ -32,6 +32,12 @@
         },
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID, function() {
+                self.updateVal();
+            });
         }
     });
     $.squaresRegisterControl({
@@ -44,12 +50,18 @@
         },
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID, function() {
+                self.updateVal();
+            });
         }
     });
     $.squaresRegisterControl({
         type: 'checkbox',
         getValue: function() {
-            if ($('#' + this.elementID).get(0).checked === true) {
+            if ($('#' + this.elementID).get(0).checked == true) {
                 return 1;
             } else {
                 return 0;
@@ -64,6 +76,12 @@
         },
         HTML: function() {
             return '<input type="checkbox" id="'+ this.elementID +'">';
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID, function() {
+                self.updateVal();
+            });
         }
     });
     $.squaresRegisterControl({
@@ -76,6 +94,12 @@
         },
         HTML: function() {
             return '<input type="color" id="'+ this.elementID +'">';
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID, function() {
+                self.updateVal();
+            });
         }
     });
     $.squaresRegisterControl({
@@ -94,20 +118,63 @@
             html += '</select>';
 
             return html;
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID, function() {
+                self.updateVal();
+            });
         }
     });
     $.squaresRegisterControl({
         type: 'box model',
         getValue: function() {
-            // to do
-            return 1;
+            this._value.margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
+            this._value.margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
+            this._value.margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
+            this._value.margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
+
+            this._value.padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
+            this._value.padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
+            this._value.padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
+            this._value.padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
         },
         setValue: function(v) {
-            // to do
+            $('#squares-element-option-boxmodel-margin-top').val(this._value.margin.top);
+            $('#squares-element-option-boxmodel-margin-bottom').val(this._value.margin.bottom);
+            $('#squares-element-option-boxmodel-margin-left').val(this._value.margin.left);
+            $('#squares-element-option-boxmodel-margin-right').val(this._value.margin.right);
+
+            $('#squares-element-option-boxmodel-padding-top').val(this._value.padding.top);
+            $('#squares-element-option-boxmodel-padding-bottom').val(this._value.padding.bottom);
+            $('#squares-element-option-boxmodel-padding-left').val(this._value.padding.left);
+            $('#squares-element-option-boxmodel-padding-right').val(this._value.padding.right);
         },
         HTML: function() {
-            // to do
-            return 'box model control';
+            var html = '';
+
+            html += '<div class="sq-boxmodel-margin" id="'+ this.elementID +'">';
+            html += '   <div id="sq-boxmodel-label-margin">margin</div>';
+            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-top">';
+            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-bottom">';
+            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-left">';
+            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-right">';
+            html += '   <div class="sq-boxmodel-padding">';
+            html += '       <div id="sq-boxmodel-label-padding">padding</div>';
+            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-top">';
+            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-bottom">';
+            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-left">';
+            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-right">';
+            html += '   </div>';
+            html += '</div>';
+
+            return html;
+        },
+        events: function() {
+            var self = this;
+            $(document).on('change', '#' + this.elementID + ' input', function() {
+                self.updateVal();
+            });
         }
     });
 })(jQuery, window, document);

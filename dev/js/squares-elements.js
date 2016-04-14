@@ -26,7 +26,7 @@
             }
         },
         content: function() {
-            return '<'+ this.controls['Heading'].getVal() +' id="'+ this.controls['ID'].getVal() +'" style="'+ this.controls['CSS'].getVal() +'" class="'+ this.controls['Classes'].getVal() +'">Lorem Ipsum</'+ this.controls['Heading'].getVal() +'>';
+            return '<'+ this.controls['heading']['Heading'].getVal() +' id="'+ this.controls['general']['ID'].getVal() +'" style="'+ this.controls['general']['CSS'].getVal() +'" class="'+ this.controls['general']['Classes'].getVal() +'">Lorem Ipsum</'+ this.controls['heading']['Heading'].getVal() +'>';
             return 'asd';
         }
     });

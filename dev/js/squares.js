@@ -1239,8 +1239,12 @@ Custom defined controls per element:
                             v = options[g][op];
                         }
 
-                        this.controls[option.name] = new SquaresControl(controlOptions, option.name, option.group, option.options);
-                        this.controls[option.name].setVal(v);
+                        if (this.controls[g] === undefined) {
+                            this.controls[g] = {};
+                        }
+
+                        this.controls[g][option.name] = new SquaresControl(controlOptions, option.name, option.group, g, option.options);
+                        this.controls[g][option.name].setVal(v);
                     }
                 }
             }
@@ -1249,61 +1253,50 @@ Custom defined controls per element:
     Element.prototype.getSettingsForm = function() {
         // Loop over all controls and get the HTML from each control
         // Also add a label with the name of the control
+        var html = '';
 
-        // Generates a settings form for this element
-        return generateForm(this.settings.options, this.controls);
+        // Create tabs
+        html += '<div class="sq-window-tab-buttons-group">';
+        var groupCount = 0;
+        for (var g in this.controls) {
+            html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'">'+ g +'</div>';
+            groupCount++;
+        }
+        html += '</div>';
+
+        // Create content for each tab
+        html += '<div class="sq-window-tab-content-wrap">';
+
+        var groupCount = 0;
+        for (var g in this.controls) {
+            html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'">';
+
+            var tabGroup = this.controls[g];
+            groupCount++;
+
+            for (var c in tabGroup) {
+                var control = tabGroup[c];
+
+                html += '<div class="squares-form-control '+ control.elementClass +'">';
+                html += '<label for="'+ control.elementID +'">'+ control.name +'</label>';
+                html += control.HTML();
+                html += '</div>';
+            }
+
+            html += '</div>';
+        }
+        html += '</div>';
+        return html;
     }
     Element.prototype.loadOptions = function() {
-        // Loads its options in the settings window
-        // Attempts to find the correct input field using the ID
-        // generated from the "generateFormElementIDFromName" function.
+        // Load the current options of the element in the settings window
 
-        for (var g in this.settings.options) {
-            if (this.settings.options.hasOwnProperty(g)) {
-                var group = this.settings.options[g];
+        for (var g in this.controls) {
+            var tabGroup = this.controls[g];
 
-                for (var op in group) {
-                    if (group.hasOwnProperty(op)) {
-                        var option = group[op];
-                        var id = generateFormElementIDFromName(option.name);
-
-                        if (option.type == 'text') {
-                            $('#' + id).val(this.options[g][op]);
-                        }
-                        if (option.type == 'int') {
-                            $('#' + id).val(parseInt(this.options[g][op], 10));
-                        }
-                        if (option.type == 'float') {
-                            $('#' + id).val(parseFloat(this.options[g][op], 10));
-                        }
-                        if (option.type == 'checkbox') {
-                            if (parseInt(this.options[g][op], 10) == 1) {
-                                $('#' + id).get(0).checked = true;
-                            } else {
-                                $('#' + id).get(0).checked = false;
-                            }
-                        }
-                        if (option.type == 'color') {
-                            $('#' + id).val(this.options[g][op]);
-                        }
-
-                        if (option.type == 'select') {
-                            $('#' + id).val(this.options[g][op]);
-                        }
-
-                        if (option.type == 'box model') {
-                            $('#squares-element-option-boxmodel-margin-top').val(parseInt(this.options[g][op].margin.top));
-                            $('#squares-element-option-boxmodel-margin-bottom').val(parseInt(this.options[g][op].margin.bottom));
-                            $('#squares-element-option-boxmodel-margin-left').val(parseInt(this.options[g][op].margin.left));
-                            $('#squares-element-option-boxmodel-margin-right').val(parseInt(this.options[g][op].margin.right));
-
-                            $('#squares-element-option-boxmodel-padding-top').val(parseInt(this.options[g][op].padding.top));
-                            $('#squares-element-option-boxmodel-padding-bottom').val(parseInt(this.options[g][op].padding.bottom));
-                            $('#squares-element-option-boxmodel-padding-left').val(parseInt(this.options[g][op].padding.left));
-                            $('#squares-element-option-boxmodel-padding-right').val(parseInt(this.options[g][op].padding.right));
-                        }
-                    }
-                }
+            for (var c in tabGroup) {
+                var control = tabGroup[c];
+                control.loadVal();
             }
         }
 
@@ -1313,72 +1306,66 @@ Custom defined controls per element:
         // Updates its options based on the input fields loaded
         // in the current Settings window.
 
-        for (var g in this.settings.options) {
-            if (this.settings.options.hasOwnProperty(g)) {
-                var group = this.settings.options[g];
-
-                for (var op in group) {
-                    if (group.hasOwnProperty(op)) {
-                        var option = group[op];
-                        var id = generateFormElementIDFromName(option.name);
-
-                        if (option.type == 'text') {
-                            this.options[g][op] = $('#' + id).val();
-                        }
-                        if (option.type == 'int') {
-                            this.options[g][op] = parseInt($('#' + id).val(), 10);
-                        }
-                        if (option.type == 'float') {
-                            this.options[g][op] = parseFloat($('#' + id).val(), 10);
-                        }
-                        if (option.type == 'checkbox') {
-                            if ($('#' + id).get(0).checked) {
-                                this.options[g][op] = 1;
-                            } else {
-                                this.options[g][op] = 0;
-                            }
-                        }
-                        if (option.type == 'color') {
-                            this.options[g][op] = $('#' + id).val();
-                        }
-
-                        if (option.type == 'select') {
-                            this.options[g][op] = $('#' + id).val();
-                        }
-
-                        if (option.type == 'box model') {
-                            this.options[g][op].margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
-                            this.options[g][op].margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
-                            this.options[g][op].margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
-                            this.options[g][op].margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
-
-                            this.options[g][op].padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
-                            this.options[g][op].padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
-                            this.options[g][op].padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
-                            this.options[g][op].padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
-                        }
-                    }
-                }
-            }
-        }
+        // for (var g in this.settings.options) {
+        //     if (this.settings.options.hasOwnProperty(g)) {
+        //         var group = this.settings.options[g];
+        //
+        //         for (var op in group) {
+        //             if (group.hasOwnProperty(op)) {
+        //                 var option = group[op];
+        //                 var id = generateFormElementIDFromName(option.name);
+        //
+        //                 if (option.type == 'text') {
+        //                     this.options[g][op] = $('#' + id).val();
+        //                 }
+        //                 if (option.type == 'int') {
+        //                     this.options[g][op] = parseInt($('#' + id).val(), 10);
+        //                 }
+        //                 if (option.type == 'float') {
+        //                     this.options[g][op] = parseFloat($('#' + id).val(), 10);
+        //                 }
+        //                 if (option.type == 'checkbox') {
+        //                     if ($('#' + id).get(0).checked) {
+        //                         this.options[g][op] = 1;
+        //                     } else {
+        //                         this.options[g][op] = 0;
+        //                     }
+        //                 }
+        //                 if (option.type == 'color') {
+        //                     this.options[g][op] = $('#' + id).val();
+        //                 }
+        //
+        //                 if (option.type == 'select') {
+        //                     this.options[g][op] = $('#' + id).val();
+        //                 }
+        //
+        //                 if (option.type == 'box model') {
+        //                     this.options[g][op].margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
+        //                     this.options[g][op].margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
+        //                     this.options[g][op].margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
+        //                     this.options[g][op].margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
+        //
+        //                     this.options[g][op].padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
+        //                     this.options[g][op].padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
+        //                     this.options[g][op].padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
+        //                     this.options[g][op].padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         this.updateForm();
         this.render();
         this.appendEditorControls();
     }
     Element.prototype.updateForm = function() {
-        if (parseInt(this.options.layout.use_grid, 10) == 1) {
-            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.group);
-            $('.' + manualGroupClassName).hide();
-
-            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.group);
-            $('.' + gridGroupClassName).show();
+        if (this.controls['layout']['Use Grid System'].getVal() == 1) {
+            $('.' + this.controls['layout']['Width'].elementClass).hide();
+            $('.' + this.controls['layout']['Column Span'].elementClass).show();
         } else {
-            var manualGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.width.group);
-            $('.' + manualGroupClassName).show();
-
-            var gridGroupClassName = generateFormElementGroupClassFromName(this.settings.options.layout.column_span.group);
-            $('.' + gridGroupClassName).hide();
+            $('.' + this.controls['layout']['Width'].elementClass).show();
+            $('.' + this.controls['layout']['Column Span'].elementClass).hide();
         }
     }
     Element.prototype.getUserCSS = function() {
@@ -1603,7 +1590,7 @@ Custom defined controls per element:
         WindowHTML += '     </div>';
         WindowHTML += ' </div>';
 
-        if ($('.sq-windows-root').lengthgth == 0) {
+        if ($('.sq-windows-root').length == 0) {
             $('body').prepend('<div class="sq-windows-root"></div>');
         }
 
@@ -1691,12 +1678,13 @@ Custom defined controls per element:
         this.root.hide();
     }
 
-    function SquaresControl(s, name, group, options) {
+    function SquaresControl(s, name, group, tabGroup, options) {
         // The 's' argument is the array coming from the registeredControls array
 
         // Automatically generated at the time of object creation
         this.id = Math.floor(Math.random() * 9999) + 1;
         this.elementID = 'squares-control-' + this.id;
+        this.elementClass = 'squares-element-option-group';
 
         // Settings coming from the registered controls catalog
         // referenced in the 'this' variable, so 'this' can be accessed within
@@ -1709,136 +1697,55 @@ Custom defined controls per element:
 
         // These variables are specific for each individual control
         this.name = name;
-        this.options = group;
-        this.group = options;
+        this.options = options;
+        this.group = group;
+        this.tabGroup = tabGroup;
 
         // Private property, must be accessed only via setter and getter
         this._value = undefined;
+
+        // Update this.elementClass
+        if (this.group !== undefined) {
+            this.elementClass = 'squares-element-option-group-' + this.group.toLowerCase().replace(/\s/g, '-');
+        }
+
+        this.events = s.events;
+        this.events();
     }
     SquaresControl.prototype.getVal = function() {
         var v = this._value;
 
         try {
-            // v = this.getValue();
+            v = this.getValue();
         } catch (err) {
-            // console.log('Failed to set value for control:');
-            // console.log(err);
+
         }
 
-        return v;
+        if (v !== undefined) {
+            return v;
+        } else {
+            return this._value;
+        }
     }
     SquaresControl.prototype.setVal = function(v) {
         this._value = v;
 
         try {
-            // this.setValue(v);
+            this.setValue(v);
         } catch (err) {
-            // console.log('Failed to get value for control:');
-            // console.log(err);
+            this._value = v;
         }
     }
-
-    // Generates a form with tabs
-    // o = options, c = controls
-    function generateForm(o, c) {
-        var html = '';
-
-        // Create tabs
-        html += '<div class="sq-window-tab-buttons-group">';
-        var groupCount = 0;
-        for (var g in o) {
-            if (o.hasOwnProperty(g)) {
-                html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'">'+ g +'</div>';
-                groupCount++;
-            }
-        }
-        html += '</div>';
-
-        // Create content for each tab
-        html += '<div class="sq-window-tab-content-wrap">';
-
-        var groupCount = 0;
-        for (var g in o) {
-            if (o.hasOwnProperty(g)) {
-                html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'">';
-
-                var group = o[g];
-                groupCount++;
-
-                var optionCount = 0;
-                for (var op in group) {
-                    if (group.hasOwnProperty(op)) {
-                        optionCount++;
-                        var option = group[op];
-                        var control = c[option.name];
-                        var id = generateFormElementIDFromName(option.name);
-                        var className = '';
-
-                        if (option.group !== undefined) {
-                            className = generateFormElementGroupClassFromName(option.group);
-                        }
-
-                        html += '<div class="squares-form-control '+ className +'">';
-
-                        html += '<label for="'+ id +'">'+ option.name +'</label>';
-
-                        // here
-                        var controlHTML = control.HTML();
-
-                        if (option.type == 'text' || option.type == 'int' || option.type == 'float') {
-                            html += '<input type="text" placeholder="'+ option.name +'" id="'+ id +'">';
-                        }
-                        if (option.type == 'checkbox') {
-                            html += '<input type="checkbox" placeholder="'+ option.name +'" id="'+ id +'">';
-                        }
-                        if (option.type == 'color') {
-                            html += '<input type="color" placeholder="'+ option.name +'" id="'+ id +'">';
-                        }
-
-                        if (option.type == 'select') {
-                            html += '<select id="'+ id +'">';
-
-                            for (var k=0; k<option.options.length; k++) {
-                                html += '<option value="'+ option.options[k] +'">'+ option.options[k] +'</option>';
-                            }
-
-                            html += '</select>';
-                        }
-
-                        if (option.type == 'box model') {
-                            html += '<div class="sq-boxmodel-margin">';
-                            html += '   <div id="sq-boxmodel-label-margin">margin</div>';
-                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-top">';
-                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-bottom">';
-                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-left">';
-                            html += '   <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-margin-right">';
-                            html += '   <div class="sq-boxmodel-padding">';
-                            html += '       <div id="sq-boxmodel-label-padding">padding</div>';
-                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-top">';
-                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-bottom">';
-                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-left">';
-                            html += '       <input type="text" class="sq-boxmodel-input" id="squares-element-option-boxmodel-padding-right">';
-                            html += '   </div>';
-                            html += '</div>';
-                        }
-
-                        // end form control wrapper
-                        html += '</div>';
-                    }
-                }
-
-                html += '</div>';
-            }
-        }
-        html += '</div>';
-        return html;
+    SquaresControl.prototype.loadVal = function() {
+        // Re-sets the control to its stored value
+        this.setValue(this._value);
     }
-    function generateFormElementIDFromName(name) {
-        return 'squares-element-option-' + name.toLowerCase().replace(/\s/g, '-');
+    SquaresControl.prototype.updateVal = function() {
+        // Re-sets the control to its stored value
+        this._value = this.getValue();
     }
-    function generateFormElementGroupClassFromName(name) {
-        return 'squares-element-option-group-' + name.toLowerCase().replace(/\s/g, '-');
-    }
+
+    // Utility
     function hexToRgb(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
