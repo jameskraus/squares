@@ -114,7 +114,11 @@
             var html = '';
 
             html += '<select id="'+ this.elementID +'">';
-            // to do
+
+            for (var i=0; i<this.options.length; i++) {
+                html += '<option value="'+ this.options[i] +'">'+ this.options[i] +'</option>';
+            }
+
             html += '</select>';
 
             return html;

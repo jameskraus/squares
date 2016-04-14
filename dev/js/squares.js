@@ -2,15 +2,12 @@
 
 TO DO:
 
-- API for registering custom form controls
-- move the control registrations in a separate file - squares-controls.js
-- ALL form controls will be "custom", including inputs and checkboxes
-- slider form control
-- add additional controls for the current existing elements
-- generate HTML
 - new UI
     - merge all windows in one window with two tabs - "Elements" and "Settings"
     - resizable window
+- slider form control
+- add additional controls for the current existing elements
+- generate HTML
 
 */
 
@@ -1243,7 +1240,12 @@ Custom defined controls per element:
                             this.controls[g] = {};
                         }
 
-                        this.controls[g][option.name] = new SquaresControl(controlOptions, option.name, option.group, g, option.options);
+                        var self = this;
+                        this.controls[g][option.name] = new SquaresControl(controlOptions, option.name, option.group, g, option.options, function() {
+                            self.updateForm();
+                            self.render();
+                            self.appendEditorControls();
+                        });
                         this.controls[g][option.name].setVal(v);
                     }
                 }
@@ -1302,63 +1304,6 @@ Custom defined controls per element:
 
         this.updateForm();
     }
-    Element.prototype.updateOptions = function() {
-        // Updates its options based on the input fields loaded
-        // in the current Settings window.
-
-        // for (var g in this.settings.options) {
-        //     if (this.settings.options.hasOwnProperty(g)) {
-        //         var group = this.settings.options[g];
-        //
-        //         for (var op in group) {
-        //             if (group.hasOwnProperty(op)) {
-        //                 var option = group[op];
-        //                 var id = generateFormElementIDFromName(option.name);
-        //
-        //                 if (option.type == 'text') {
-        //                     this.options[g][op] = $('#' + id).val();
-        //                 }
-        //                 if (option.type == 'int') {
-        //                     this.options[g][op] = parseInt($('#' + id).val(), 10);
-        //                 }
-        //                 if (option.type == 'float') {
-        //                     this.options[g][op] = parseFloat($('#' + id).val(), 10);
-        //                 }
-        //                 if (option.type == 'checkbox') {
-        //                     if ($('#' + id).get(0).checked) {
-        //                         this.options[g][op] = 1;
-        //                     } else {
-        //                         this.options[g][op] = 0;
-        //                     }
-        //                 }
-        //                 if (option.type == 'color') {
-        //                     this.options[g][op] = $('#' + id).val();
-        //                 }
-        //
-        //                 if (option.type == 'select') {
-        //                     this.options[g][op] = $('#' + id).val();
-        //                 }
-        //
-        //                 if (option.type == 'box model') {
-        //                     this.options[g][op].margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
-        //                     this.options[g][op].margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
-        //                     this.options[g][op].margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
-        //                     this.options[g][op].margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
-        //
-        //                     this.options[g][op].padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
-        //                     this.options[g][op].padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
-        //                     this.options[g][op].padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
-        //                     this.options[g][op].padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        this.updateForm();
-        this.render();
-        this.appendEditorControls();
-    }
     Element.prototype.updateForm = function() {
         if (this.controls['layout']['Use Grid System'].getVal() == 1) {
             $('.' + this.controls['layout']['Width'].elementClass).hide();
@@ -1368,50 +1313,43 @@ Custom defined controls per element:
             $('.' + this.controls['layout']['Column Span'].elementClass).hide();
         }
     }
-    Element.prototype.getUserCSS = function() {
-        return this.settings.options.general.css.val;
-    }
-    Element.prototype.getUserClasses = function() {
-        return this.settings.options.general.classes.val;
-    }
-    Element.prototype.getUserID = function() {
-        return this.settings.options.general.id.val;
-    }
     Element.prototype.generateStyles = function() {
         var css = '';
-        return '';
+        return;
         // =====================================================================
         // Layout
         // =====================================================================
-        var o = this.options.layout;
+        // var o = this.options.layout;
 
+        var o = this.controls['layout'];
+        console.log(o['Box Model'].getVal().margin.top);
         // Box Model
-        if (o.box_model.margin.top !== '' && !isNaN(o.box_model.margin.top)) {
-            css += 'margin-top: ' + o.box_model.margin.top + 'px; ';
+        if (o['Box Model'].getVal().margin.top !== '' && !isNaN(o['Box Model'].getVal().margin.top)) {
+            css += 'margin-top: ' + o['Box Model'].getVal().margin.top + 'px; ';
         }
-        if (o.box_model.margin.bottom !== '' && !isNaN(o.box_model.margin.bottom)) {
-            css += 'margin-bottom: ' + o.box_model.margin.bottom + 'px; ';
+        if (o['Box Model'].getVal().margin.bottom !== '' && !isNaN(o['Box Model'].getVal().margin.bottom)) {
+            css += 'margin-bottom: ' + o['Box Model'].getVal().margin.bottom + 'px; ';
         }
-        if (o.box_model.margin.left !== '' && !isNaN(o.box_model.margin.left)) {
-            css += 'margin-left: ' + o.box_model.margin.left + 'px; ';
+        if (o['Box Model'].getVal().margin.left !== '' && !isNaN(o['Box Model'].getVal().margin.left)) {
+            css += 'margin-left: ' + o['Box Model'].getVal().margin.left + 'px; ';
         }
-        if (o.box_model.margin.right !== '' && !isNaN(o.box_model.margin.right)) {
-            css += 'margin-right: ' + o.box_model.margin.right + 'px; ';
-        }
-
-        if (o.box_model.padding.top !== '' && !isNaN(o.box_model.padding.top)) {
-            css += 'padding-top: ' + o.box_model.padding.top + 'px; ';
-        }
-        if (o.box_model.padding.bottom !== '' && !isNaN(o.box_model.padding.bottom)) {
-            css += 'padding-bottom: ' + o.box_model.padding.bottom + 'px; ';
-        }
-        if (o.box_model.padding.left !== '' && !isNaN(o.box_model.padding.left)) {
-            css += 'padding-left: ' + o.box_model.padding.left + 'px; ';
-        }
-        if (o.box_model.padding.right !== '' && !isNaN(o.box_model.padding.right)) {
-            css += 'padding-right: ' + o.box_model.padding.right + 'px; ';
+        if (o['Box Model'].getVal().margin.right !== '' && !isNaN(o['Box Model'].getVal().margin.right)) {
+            css += 'margin-right: ' + o['Box Model'].getVal().margin.right + 'px; ';
         }
 
+        if (o['Box Model'].getVal().padding.top !== '' && !isNaN(o['Box Model'].getVal().padding.top)) {
+            css += 'padding-top: ' + o['Box Model'].getVal().padding.top + 'px; ';
+        }
+        if (o['Box Model'].getVal().padding.bottom !== '' && !isNaN(o['Box Model'].getVal().padding.bottom)) {
+            css += 'padding-bottom: ' + o['Box Model'].getVal().padding.bottom + 'px; ';
+        }
+        if (o['Box Model'].getVal().padding.left !== '' && !isNaN(o['Box Model'].getVal().padding.left)) {
+            css += 'padding-left: ' + o['Box Model'].getVal().padding.left + 'px; ';
+        }
+        if (o['Box Model'].getVal().padding.right !== '' && !isNaN(o['Box Model'].getVal().padding.right)) {
+            css += 'padding-right: ' + o['Box Model'].getVal().padding.right + 'px; ';
+        }
+        console.log(css);
         if (parseInt(o.use_grid, 10) == 1) {
             // Grid system
             css += 'width: '+ getWidthOfElementInGrid(o.column_span) +'; ';
@@ -1650,11 +1588,6 @@ Custom defined controls per element:
     EditorWindow.prototype.setContent = function(html) {
         var self = this;
         this.root.find('.sq-window-container').html(html);
-
-        // Set an event for all form elements
-        this.root.find('input, select, textarea').on('change', function() {
-            self.dataSource.updateOptions();
-        });
     }
     EditorWindow.prototype.setTitle = function(title) {
         this.root.find('.sq-window-title').html(title);
@@ -1678,7 +1611,7 @@ Custom defined controls per element:
         this.root.hide();
     }
 
-    function SquaresControl(s, name, group, tabGroup, options) {
+    function SquaresControl(s, name, group, tabGroup, options, valueUpdated) {
         // The 's' argument is the array coming from the registeredControls array
 
         // Automatically generated at the time of object creation
@@ -1709,8 +1642,12 @@ Custom defined controls per element:
             this.elementClass = 'squares-element-option-group-' + this.group.toLowerCase().replace(/\s/g, '-');
         }
 
+        // Launch the events provided from the settings
         this.events = s.events;
         this.events();
+
+        // Create a callback function for when the control updates its value
+        this.valueUpdated = valueUpdated;
     }
     SquaresControl.prototype.getVal = function() {
         var v = this._value;
@@ -1743,6 +1680,7 @@ Custom defined controls per element:
     SquaresControl.prototype.updateVal = function() {
         // Re-sets the control to its stored value
         this._value = this.getValue();
+        this.valueUpdated();
     }
 
     // Utility
