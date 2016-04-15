@@ -3,8 +3,6 @@
 TO DO:
 
 - new UI
-    - merge all windows in one window with two tabs - "Elements" and "Settings"
-    - resizable window
 - slider form control
 - add additional controls for the current existing elements
 - generate HTML
@@ -95,7 +93,7 @@ Custom defined controls per element:
 
 ;(function ($, window, document, undefined) {
 
-    var elementsWindow = undefined, elementSettingsWindow = undefined, registeredElements = new Array(), registeredControls = new Array(), editors = new Array();
+    var editorWindow = undefined, registeredElements = new Array(), registeredControls = new Array(), editors = new Array();
 
     // =========================================================================
     // [API]
@@ -137,22 +135,12 @@ Custom defined controls per element:
     /*
     Adds a new element to the catalog.
     Required options for Element registration:
-        - name: sematic name for the Element
-        - iconClass: complete class name from Font Awesome
-        - content(): callback function which returns HTML code to be rendered
-        - (optional) extendOptions - array containing additional controls for
-            the element. For example:
+    - name: sematic name for the Element
+    - iconClass: complete class name from Font Awesome
+    - content(): callback function which returns HTML code to be rendered
+    - (optional) extendOptions - array containing additional controls for
+    the element. For example:
 
-        extendOptions: {
-            heading: { // Control group name
-                heading: { // Control name
-                    name: 'Heading',
-                    type: 'select',
-                    options: ['h1', 'h2', 'h3'],
-                    default: 'h3'
-                }
-            }
-        }
     */
     $.squaresRegisterElement = function(options) {
         registeredElements.push(options);
@@ -161,11 +149,11 @@ Custom defined controls per element:
     /*
     Registers a control that can be added to the element settings window
     Required options for Control registration:
-        - type: int, float, text, color, etc
-        - getValue: getter for the value of the control
-        - setValue: setter for the value of the control
-        - HTML: returns the HTML of the control
-        - events: create events associated with this specific control element
+    - type: int, float, text, color, etc
+    - getValue: getter for the value of the control
+    - setValue: setter for the value of the control
+    - HTML: returns the HTML of the control
+    - events: create events associated with this specific control element
     */
 
     $.squaresRegisterControl = function(options) {
@@ -185,236 +173,14 @@ Custom defined controls per element:
             $(this).data('squares', squaresInstance);
         });
 
-        // Create the windows
-        addWindows();
-        addEvents();
-
-        // Events for dragging elements from the element window to a container.
-        // These events needs to be editor-independant
-        addDragElementsFromWindowEvents();
+        // Create the editor window
+        var editorWindow = new EditorWindow();
 
         // Test initWithSettings
         var s = '{"containers":[{"id":"sq-container-420971","settings":{"elements":[{"id":"sq-element-8451","settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}},"defaults":[],"controls":[]},{"id":"sq-element-983381","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-518081","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]},{"id":"sq-element-754951","settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[],"controls":[]}]}},{"id":"sq-container-793821","settings":{"elements":[{"id":"sq-element-557641","settings":{"name":"Image","iconClass":"fa fa-picture-o"},"defaults":[],"controls":[]},{"id":"sq-element-446891","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-34541","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
-
-    function addWindows() {
-        // Elements Window
-        var elementsWindowContent = '';
-        elementsWindowContent += '<div class="sq-element-thumb-container">';
-        for (var i=0; i<registeredElements.length; i++) {
-            elementsWindowContent += '<div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
-        }
-        elementsWindowContent += '<div class="clear"></div>';
-        elementsWindowContent += '</div>';
-
-        elementsWindow = new EditorWindow();
-        elementsWindow.setTitle('Elements');
-        elementsWindow.setContent(elementsWindowContent);
-        elementsWindow.root.css({ width: 268 });
-
-        // Element Settings Window
-        var elementSettingsWindowContent = 'settings';
-
-        elementSettingsWindow = new EditorWindow();
-        elementSettingsWindow.setTitle('Element Settings');
-        elementSettingsWindow.setContent(elementSettingsWindowContent);
-    }
-    function addEvents() {
-        $(document).on('click', '.sq-add-elements', function() {
-            if (!elementsWindow.visible) {
-                var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
-                var y = $(this).closest('.sq-root-container').offset().top;
-                elementsWindow.show(x + 20, y + 20);
-            }
-
-            elementSettingsWindow.hide();
-
-            console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
-        });
-        $(document).on('click', '.sq-element', function() {
-            if (!elementSettingsWindow.visible) {
-                var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
-                var y = $(this).offset().top;
-                elementSettingsWindow.show(x, y);
-            }
-
-            var editor = $(this).closest('.sq-root-container').data.editor;
-            var containerIndex = $(this).closest('.sq-container').data('index');
-            var elementIndex = $(this).data('index');
-            var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
-
-            elementsWindow.hide();
-            elementSettingsWindow.setContent(el.getSettingsForm());
-            elementSettingsWindow.dataSource = el;
-            el.loadOptions();
-
-            $('.sq-window-tab-content').hide();
-            $('.sq-window-tab-content[data-tab-index="1"]').show();
-        });
-        $(document).on('click', '.sq-window-tab-button', function() {
-            var index = $(this).data('tab-index');
-            $('.sq-window-tab-content').hide();
-            $('.sq-window-tab-content[data-tab-index="'+ index +'"]').show();
-        });
-    }
-    function addDragElementsFromWindowEvents() {
-        // Drag elements from window to container functionality
-
-        var shouldStartDraggingElementToContainer = false,
-        didStartDraggingElementToContainer = false,
-        draggingElementToContainer = false,
-        virtualIndexOfDraggedElement = -1,
-        draggedElementFromWindowCatalogIndex = -1,
-        thumbElWhenDraggingFromWindow = undefined,
-        targetEditor = undefined,
-        dummyElementAtMouse = undefined,
-        elementDragMap = undefined;
-        var iex = 0, iey = 0, ix = 0, iy = 0;
-
-        $(document).off('mousedown', '.sq-element-thumb');
-        $(document).on('mousedown', '.sq-element-thumb', function(e) {
-            shouldStartDraggingElementToContainer = true;
-
-            iex = e.pageX;
-            iey = e.pageY;
-
-            thumbElWhenDraggingFromWindow = $(this);
-        });
-        $(document).off('mousemove.elementFromWindow');
-        $(document).on('mousemove.elementFromWindow', function(e) {
-            if (shouldStartDraggingElementToContainer && !didStartDraggingElementToContainer) {
-                if (Math.abs(e.pageX - iex) > 5 || Math.abs(e.pageY - iey) > 5) {
-                    didStartDraggingElementToContainer = true;
-
-                    // Get contents and position of the element thumb
-                    draggedElementFromWindowCatalogIndex = thumbElWhenDraggingFromWindow.data('index');
-
-                    var contents = thumbElWhenDraggingFromWindow.html();
-
-                    ix = thumbElWhenDraggingFromWindow.offset().left;
-                    iy = thumbElWhenDraggingFromWindow.offset().top;
-
-                    // Create a copy of the thumb and place it at mouse location
-                    $('body').prepend('<div id="sq-dragged-element-clone" class="sq-element-thumb">' + contents + '</div>');
-                    dummyElementAtMouse = $('#sq-dragged-element-clone');
-                    dummyElementAtMouse.css({
-                        left: ix,
-                        top: iy,
-                        margin: 0
-                    });
-
-                    // Create a virtual map of all possible positions of the
-                    // dragged element in all editors
-                    elementDragMap = new Array();
-
-                    for (var k=0; k<editors.length; k++) {
-                        var editor = editors[k];
-
-                        for (var i=0; i<editor.settings.containers.length; i++) {
-                            var coords = { x: 0, y: 0 };
-                            var c = editor.host.find('.sq-container[data-index='+ i +']');
-
-                            // if the container has no elements, add one dummy element
-                            // and move on to next container
-                            if (editor.settings.containers[i].settings.elements.length == 0) {
-                                c.append('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
-                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
-                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
-                                elementDragMap.push({ x: x, y: y, elementIndex: 0, containerIndex: i, editorIndex: k });
-                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
-                            }
-
-                            for (var j=0; j<editor.settings.containers[i].settings.elements.length; j++) {
-                                var el = c.find('.sq-element[data-index='+ j +']');
-
-                                el.before('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
-                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
-                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
-                                elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i, editorIndex: k });
-                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
-
-                                // When we reach the end of the elements array, add a dummy element after the last element
-                                if (j == editor.settings.containers[i].settings.elements.length - 1) {
-                                    el.after('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
-                                    var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
-                                    var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
-                                    elementDragMap.push({ x: x, y: y, elementIndex: j+1, containerIndex: i, editorIndex: k });
-                                    $('#sq-dummy-element-dragging-from-window-tmp').remove();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (didStartDraggingElementToContainer) {
-                // Update dummy element at mouse position
-                dummyElementAtMouse.css({
-                    left: ix + e.pageX - iex,
-                    top: iy + e.pageY - iey
-                });
-
-                // Find the closest virtual position to the mouse position
-                var closestIndex = 0;
-                var closestDistance = 999999;
-
-                for (var i=0; i<elementDragMap.length; i++) {
-                    var d = Math.abs(e.pageX - elementDragMap[i].x) + Math.abs(e.pageY - elementDragMap[i].y);
-                    if (d < closestDistance) {
-                        closestDistance = d;
-                        closestIndex = i;
-                    }
-                }
-
-                // If the closest index is different than the current index,
-                // remove the dummy element and insert a new one and the new index
-                if (closestIndex != virtualIndexOfDraggedElement) {
-                    virtualIndexOfDraggedElement = closestIndex;
-
-                    // Remove the current dummy element
-                    $('#sq-dummy-element-dragging-from-window').remove();
-
-                    // Insert a new dummy element at the container/element index
-                    var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
-                    var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
-                    var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
-                    var c = editors[editorIndex].host.find('.sq-container[data-index='+ containerIndex +']');
-
-                    // If the index of the dummy element is bigger than the number
-                    // of elements in that container, insert the dummy at the end
-                    if (elementIndex == editors[editorIndex].settings.containers[containerIndex].settings.elements.length) {
-                        c.append('<div id="sq-dummy-element-dragging-from-window"></div>');
-                    } else {
-                        var e = c.find('.sq-element[data-index='+ elementIndex +']');
-                        e.before('<div id="sq-dummy-element-dragging-from-window"></div>');
-                    }
-                }
-            }
-
-        });
-        $(document).off('mouseup.elementFromWindow');
-        $(document).on('mouseup.elementFromWindow', function() {
-            if (didStartDraggingElementToContainer) {
-                // Remove element clone (at mouse position)
-                dummyElementAtMouse.remove();
-
-                var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
-                var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
-                var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
-
-                editors[editorIndex].addElement(containerIndex, elementIndex, draggedElementFromWindowCatalogIndex);
-            }
-
-            shouldStartDraggingElementToContainer = false;
-            didStartDraggingElementToContainer = false;
-            draggingElementToContainer = false;
-            virtualIndexOfDraggedElement = -1;
-        });
-
-        // [end] Drag elements from window to container functionality
-    }
 
     // The bulk of the functionality goes here.
     // Squares is the "root" class.
@@ -1261,7 +1027,7 @@ Custom defined controls per element:
         html += '<div class="sq-window-tab-buttons-group">';
         var groupCount = 0;
         for (var g in this.controls) {
-            html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'">'+ g +'</div>';
+            html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">'+ g +'</div>';
             groupCount++;
         }
         html += '</div>';
@@ -1271,7 +1037,7 @@ Custom defined controls per element:
 
         var groupCount = 0;
         for (var g in this.controls) {
-            html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'">';
+            html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
 
             var tabGroup = this.controls[g];
             groupCount++;
@@ -1315,14 +1081,13 @@ Custom defined controls per element:
     }
     Element.prototype.generateStyles = function() {
         var css = '';
-        return;
         // =====================================================================
         // Layout
         // =====================================================================
         // var o = this.options.layout;
 
         var o = this.controls['layout'];
-        console.log(o['Box Model'].getVal().margin.top);
+
         // Box Model
         if (o['Box Model'].getVal().margin.top !== '' && !isNaN(o['Box Model'].getVal().margin.top)) {
             css += 'margin-top: ' + o['Box Model'].getVal().margin.top + 'px; ';
@@ -1349,7 +1114,8 @@ Custom defined controls per element:
         if (o['Box Model'].getVal().padding.right !== '' && !isNaN(o['Box Model'].getVal().padding.right)) {
             css += 'padding-right: ' + o['Box Model'].getVal().padding.right + 'px; ';
         }
-        console.log(css);
+        console.log(o['Box Model']);
+        return;
         if (parseInt(o.use_grid, 10) == 1) {
             // Grid system
             css += 'width: '+ getWidthOfElementInGrid(o.column_span) +'; ';
@@ -1507,12 +1273,6 @@ Custom defined controls per element:
         this.ix = 0; // initial window x
         this.iy = 0; // initial window y
 
-        // Data source object for any form elements that a window might contain
-        // For example, the data source for the element settings window will be
-        // the element itself. element.loadOptions() will look for form elements
-        // with specific IDs
-        this.dataSource = undefined;
-
         this.init();
         this.events();
     }
@@ -1521,10 +1281,30 @@ Custom defined controls per element:
 
         WindowHTML += ' <div class="sq-window" id="sq-window-'+ this.id +'">';
         WindowHTML += '     <div class="sq-window-header">';
-        WindowHTML += '         <div class="sq-window-title"></div>';
+        WindowHTML += '         <div class="sq-window-title">Squares</div>';
         WindowHTML += '         <div class="sq-window-close"><i class="fa fa-times"></i></div>';
         WindowHTML += '     </div>';
         WindowHTML += '     <div class="sq-window-container">';
+
+        // Tab buttons
+        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="squares-window-main-tab-group" data-tab-index="0">Elements</div>';
+        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="squares-window-main-tab-group" data-tab-index="1">Settings</div>';
+        WindowHTML += '         <div class="clear"></div>';
+
+        // Elements tab
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="squares-window-main-tab-group" data-tab-index="0" id="sq-window-elements-tab-content">';
+        WindowHTML += '             <div class="sq-element-thumb-container">';
+        for (var i=0; i<registeredElements.length; i++) {
+            WindowHTML += '             <div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
+        }
+        WindowHTML += '                 <div class="clear"></div>';
+        WindowHTML += '             </div>';
+        WindowHTML += '         </div>';
+
+        // Settings tab
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="squares-window-main-tab-group" data-tab-index="1" id="sq-window-settings-tab-content">';
+        WindowHTML += '         </div>';
+
         WindowHTML += '     </div>';
         WindowHTML += ' </div>';
 
@@ -1537,12 +1317,61 @@ Custom defined controls per element:
         this.root = $('#sq-window-' + this.id);
     }
     EditorWindow.prototype.events = function() {
-           var self = this;
+        var self = this;
+
+        // Open the editor window when click on element
+        $(document).on('click', '.sq-element', function() {
+            if (!self.visible) {
+                var x = $(this).offset().left + $(this).closest('.sq-root-container').width() + 40;
+                var y = $(this).offset().top;
+                self.show(x, y);
+            }
+
+            var editor = $(this).closest('.sq-root-container').data.editor;
+            var containerIndex = $(this).closest('.sq-container').data('index');
+            var elementIndex = $(this).data('index');
+            var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
+
+            // open the settings tab
+            $('#sq-window-elements-tab-content').hide();
+            $('#sq-window-settings-tab-content').show();
+
+            // load the element settings
+            $('#sq-window-settings-tab-content').html(el.getSettingsForm());
+            el.loadOptions();
+
+            // go to the first tab of the settings
+            $('.sq-window-tab-content[data-tab-group="sq-element-settings-tab-group"]').hide();
+            $('.sq-window-tab-content[data-tab-group="sq-element-settings-tab-group"][data-tab-index="0"]').show();
+        });
+
+        // Open the window when clicked on the add elements button
+        $(document).on('click', '.sq-add-elements', function() {
+            if (!self.visible) {
+                var x = $(this).closest('.sq-root-container').offset().left + $(this).closest('.sq-root-container').width() + 40;
+                var y = $(this).closest('.sq-root-container').offset().top;
+                self.show(x + 20, y + 20);
+            }
+
+            // Show the elements tab
+            $('#sq-window-elements-tab-content').show();
+            $('#sq-window-settings-tab-content').hide();
+
+            // console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
+        });
+
+        // Tab functionality
+        $(document).on('click', '.sq-window-tab-button', function() {
+            var index = $(this).data('tab-index');
+            var tabGroup = $(this).data('tab-group');
+
+            $('.sq-window-tab-content[data-tab-group="'+ tabGroup +'"]').hide();
+            $('.sq-window-tab-content[data-tab-group="'+ tabGroup +'"][data-tab-index="'+ index +'"]').show();
+        });
 
         // Button for closing the elements window
-        self.root.find('.sq-window-close').off('click');
         self.root.find('.sq-window-close').on('click', function(e) {
-            self.root.hide();
+            self.hide();
         });
 
         // Move the window by dragging its header
@@ -1584,13 +1413,163 @@ Custom defined controls per element:
             self.didStartDragging = false;
             self.dragging = false;
         });
-    }
-    EditorWindow.prototype.setContent = function(html) {
-        var self = this;
-        this.root.find('.sq-window-container').html(html);
-    }
-    EditorWindow.prototype.setTitle = function(title) {
-        this.root.find('.sq-window-title').html(title);
+
+        // =====================================================================
+        // Needs tidying up
+        // Drag elements from window to container functionality
+
+        var shouldStartDraggingElementToContainer = false,
+        didStartDraggingElementToContainer = false,
+        draggingElementToContainer = false,
+        virtualIndexOfDraggedElement = -1,
+        draggedElementFromWindowCatalogIndex = -1,
+        thumbElWhenDraggingFromWindow = undefined,
+        targetEditor = undefined,
+        dummyElementAtMouse = undefined,
+        elementDragMap = undefined;
+        var iex = 0, iey = 0, ix = 0, iy = 0;
+
+        $(document).off('mousedown', '.sq-element-thumb');
+        $(document).on('mousedown', '.sq-element-thumb', function(e) {
+            shouldStartDraggingElementToContainer = true;
+
+            iex = e.pageX;
+            iey = e.pageY;
+
+            thumbElWhenDraggingFromWindow = $(this);
+        });
+        $(document).off('mousemove.elementFromWindow');
+        $(document).on('mousemove.elementFromWindow', function(e) {
+            if (shouldStartDraggingElementToContainer && !didStartDraggingElementToContainer) {
+                if (Math.abs(e.pageX - iex) > 5 || Math.abs(e.pageY - iey) > 5) {
+                    didStartDraggingElementToContainer = true;
+
+                    // Get contents and position of the element thumb
+                    draggedElementFromWindowCatalogIndex = thumbElWhenDraggingFromWindow.data('index');
+
+                    var contents = thumbElWhenDraggingFromWindow.html();
+
+                    ix = thumbElWhenDraggingFromWindow.offset().left;
+                    iy = thumbElWhenDraggingFromWindow.offset().top;
+
+                    // Create a copy of the thumb and place it at mouse location
+                    $('body').prepend('<div id="sq-dragged-element-clone" class="sq-element-thumb">' + contents + '</div>');
+                    dummyElementAtMouse = $('#sq-dragged-element-clone');
+                    dummyElementAtMouse.css({
+                        left: ix,
+                        top: iy,
+                        margin: 0
+                    });
+
+                    // Create a virtual map of all possible positions of the
+                    // dragged element in all editors
+                    elementDragMap = new Array();
+
+                    for (var k=0; k<editors.length; k++) {
+                        var editor = editors[k];
+
+                        for (var i=0; i<editor.settings.containers.length; i++) {
+                            var coords = { x: 0, y: 0 };
+                            var c = editor.host.find('.sq-container[data-index='+ i +']');
+
+                            // if the container has no elements, add one dummy element
+                            // and move on to next container
+                            if (editor.settings.containers[i].settings.elements.length == 0) {
+                                c.append('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
+                                elementDragMap.push({ x: x, y: y, elementIndex: 0, containerIndex: i, editorIndex: k });
+                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
+                            }
+
+                            for (var j=0; j<editor.settings.containers[i].settings.elements.length; j++) {
+                                var el = c.find('.sq-element[data-index='+ j +']');
+
+                                el.before('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
+                                elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i, editorIndex: k });
+                                $('#sq-dummy-element-dragging-from-window-tmp').remove();
+
+                                // When we reach the end of the elements array, add a dummy element after the last element
+                                if (j == editor.settings.containers[i].settings.elements.length - 1) {
+                                    el.after('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+                                    var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
+                                    var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
+                                    elementDragMap.push({ x: x, y: y, elementIndex: j+1, containerIndex: i, editorIndex: k });
+                                    $('#sq-dummy-element-dragging-from-window-tmp').remove();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (didStartDraggingElementToContainer) {
+                // Update dummy element at mouse position
+                dummyElementAtMouse.css({
+                    left: ix + e.pageX - iex,
+                    top: iy + e.pageY - iey
+                });
+
+                // Find the closest virtual position to the mouse position
+                var closestIndex = 0;
+                var closestDistance = 999999;
+
+                for (var i=0; i<elementDragMap.length; i++) {
+                    var d = Math.abs(e.pageX - elementDragMap[i].x) + Math.abs(e.pageY - elementDragMap[i].y);
+                    if (d < closestDistance) {
+                        closestDistance = d;
+                        closestIndex = i;
+                    }
+                }
+
+                // If the closest index is different than the current index,
+                // remove the dummy element and insert a new one and the new index
+                if (closestIndex != virtualIndexOfDraggedElement) {
+                    virtualIndexOfDraggedElement = closestIndex;
+
+                    // Remove the current dummy element
+                    $('#sq-dummy-element-dragging-from-window').remove();
+
+                    // Insert a new dummy element at the container/element index
+                    var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
+                    var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
+                    var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
+                    var c = editors[editorIndex].host.find('.sq-container[data-index='+ containerIndex +']');
+
+                    // If the index of the dummy element is bigger than the number
+                    // of elements in that container, insert the dummy at the end
+                    if (elementIndex == editors[editorIndex].settings.containers[containerIndex].settings.elements.length) {
+                        c.append('<div id="sq-dummy-element-dragging-from-window"></div>');
+                    } else {
+                        var e = c.find('.sq-element[data-index='+ elementIndex +']');
+                        e.before('<div id="sq-dummy-element-dragging-from-window"></div>');
+                    }
+                }
+            }
+
+        });
+        $(document).off('mouseup.elementFromWindow');
+        $(document).on('mouseup.elementFromWindow', function() {
+            if (didStartDraggingElementToContainer) {
+                // Remove element clone (at mouse position)
+                dummyElementAtMouse.remove();
+
+                var containerIndex = elementDragMap[virtualIndexOfDraggedElement].containerIndex;
+                var elementIndex = elementDragMap[virtualIndexOfDraggedElement].elementIndex;
+                var editorIndex = elementDragMap[virtualIndexOfDraggedElement].editorIndex;
+
+                editors[editorIndex].addElement(containerIndex, elementIndex, draggedElementFromWindowCatalogIndex);
+            }
+
+            shouldStartDraggingElementToContainer = false;
+            didStartDraggingElementToContainer = false;
+            draggingElementToContainer = false;
+            virtualIndexOfDraggedElement = -1;
+        });
+
+        // [end] Drag elements from window to container functionality
     }
     EditorWindow.prototype.show = function(x, y) {
         this.visible = true;
