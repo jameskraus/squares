@@ -153,7 +153,7 @@ Custom defined controls per element:
     - getValue: getter for the value of the control
     - setValue: setter for the value of the control
     - HTML: returns the HTML of the control
-    - events: create events associated with this specific control element
+    - init: create events associated with this specific control element, etc
     */
 
     $.squaresRegisterControl = function(options) {
@@ -177,7 +177,7 @@ Custom defined controls per element:
         var editorWindow = new EditorWindow();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-420971","settings":{"elements":[{"id":"sq-element-8451","settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}},"defaults":[],"controls":[]},{"id":"sq-element-983381","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-518081","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]},{"id":"sq-element-754951","settings":{"name":"Heading","iconClass":"fa fa-header"},"defaults":[],"controls":[]}]}},{"id":"sq-container-793821","settings":{"elements":[{"id":"sq-element-557641","settings":{"name":"Image","iconClass":"fa fa-picture-o"},"defaults":[],"controls":[]},{"id":"sq-element-446891","settings":{"name":"Paragraph","iconClass":"fa fa-font"},"defaults":[],"controls":[]},{"id":"sq-element-34541","settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"},"defaults":[],"controls":[]}]}}]}';
+        var s = '{ "containers": [{ "id": "sq-container-420971", "settings": { "elements": [{ "id": "sq-element-8451", "settings": { "name": "Heading", "iconClass": "fa fa-header" }, "options": { "heading": { "heading": "h1" } }, "defaults": [], "controls": [] }] } }] }';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -521,7 +521,7 @@ Custom defined controls per element:
             this.elementDragMap = new Array();
 
             var draggedElementObject = this.settings.containers[this.draggedElementContainerIndex].settings.elements[this.draggedElementIndex];
-            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.options.layout.column_span);
+            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.controls['layout']['Column Span'].getVal());
 
             var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElementWidth +'; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
 
@@ -1084,7 +1084,6 @@ Custom defined controls per element:
         // =====================================================================
         // Layout
         // =====================================================================
-        // var o = this.options.layout;
 
         var o = this.controls['layout'];
 
@@ -1114,27 +1113,26 @@ Custom defined controls per element:
         if (o['Box Model'].getVal().padding.right !== '' && !isNaN(o['Box Model'].getVal().padding.right)) {
             css += 'padding-right: ' + o['Box Model'].getVal().padding.right + 'px; ';
         }
-        console.log(o['Box Model']);
-        return;
-        if (parseInt(o.use_grid, 10) == 1) {
+
+        if (parseInt(o['Use Grid System'].getVal(), 10) == 1) {
             // Grid system
-            css += 'width: '+ getWidthOfElementInGrid(o.column_span) +'; ';
+            css += 'width: '+ getWidthOfElementInGrid(o['Column Span'].getVal()) +'; ';
         } else {
             // Width
-            if (parseInt(o.auto_width, 10) == 1) {
+            if (parseInt(o['Auto Width'].getVal(), 10) == 1) {
                 css += 'width: auto; ';
             } else {
-                if (o.width !== '' && !isNaN(o.width)) {
-                    css += 'width: '+ o.width +'px; ';
+                if (o['Width'].getVal() !== '' && !isNaN(o['Width'].getVal())) {
+                    css += 'width: '+ o['Width'].getVal() +'px; ';
                 }
             }
 
             // Height
-            if (parseInt(o.auto_height, 10) == 1) {
+            if (parseInt(o['Auto Height'].getVal(), 10) == 1) {
                 css += 'height: auto; ';
             } else {
-                if (o.height !== '' && !isNaN(o.height)) {
-                    css += 'height: '+ o.height +'px; ';
+                if (o['Height'].getVal() !== '' && !isNaN(o['Height'].getVal())) {
+                    css += 'height: '+ o['Height'].getVal() +'px; ';
                 }
             }
         }
@@ -1144,95 +1142,95 @@ Custom defined controls per element:
         // =====================================================================
         // Text
         // =====================================================================
-        var o = this.options.text;
+        var o = this.controls['text'];
 
         // Font Family
-        if (o.font_family !== '' && !isNaN(o.font_family)) {
-            css += 'font-family: ' + o.font_family + '; ';
+        if (o['Font Family'].getVal() !== '') {
+            css += 'font-family: ' + o['Font Family'].getVal() + '; ';
         }
 
         // Font Size
-        if (o.font_size !== '' && !isNaN(o.font_size)) {
-            css += 'font-size: ' + o.font_size + 'px; ';
+        if (o['Font Size'].getVal() !== '' && !isNaN(o['Font Size'].getVal())) {
+            css += 'font-size: ' + o['Font Size'].getVal() + 'px; ';
         }
 
         // Font Weight
-        if (o.font_weight !== '' && !isNaN(o.font_weight)) {
-            css += 'font-weight: ' + o.font_weight + '; ';
+        if (o['Font Weight'].getVal() !== '') {
+            css += 'font-weight: ' + o['Font Weight'].getVal() + '; ';
         }
 
         // Font Style
-        if (o.font_style !== '' && !isNaN(o.font_style)) {
-            css += 'font-style: ' + o.font_style + '; ';
+        if (o['Font Style'].getVal() !== '') {
+            css += 'font-style: ' + o['Font Style'].getVal() + '; ';
         }
 
         // Line Height
-        if (o.line_height !== '' && !isNaN(o.line_height)) {
-            css += 'line-height: ' + o.line_height + 'px; ';
+        if (o['Line Height'].getVal() !== '' && !isNaN(o['Line Height'].getVal())) {
+            css += 'line-height: ' + o['Line Height'].getVal() + 'px; ';
         }
 
         // Text Color
-        if (o.text_color !== '') {
-            css += 'color: ' + o.text_color + '; ';
+        if (o['Text Color'].getVal() !== '') {
+            css += 'color: ' + o['Text Color'].getVal() + '; ';
         }
 
         // Text Align
-        if (o.text_align !== '' && !isNaN(o.text_align)) {
-            css += 'text-align: ' + o.text_align + '; ';
+        if (o['Text Align'].getVal() !== '') {
+            css += 'text-align: ' + o['Text Align'].getVal() + '; ';
         }
 
         // Text Decoration
-        if (o.text_decoration !== '' && !isNaN(o.text_decoration)) {
-            css += 'text-decoration: ' + o.text_decoration + '; ';
+        if (o['Text Decoration'].getVal() !== '') {
+            css += 'text-decoration: ' + o['Text Decoration'].getVal() + '; ';
         }
 
         // Text Transform
-        if (o.text_transform !== '' && !isNaN(o.text_transform)) {
-            css += 'text-transform: ' + o.text_transform + '; ';
+        if (o['Text Transform'].getVal() !== '') {
+            css += 'text-transform: ' + o['Text Transform'].getVal() + '; ';
         }
 
         // Text Shadow
-        if (o.text_shadow !== '' && !isNaN(o.text_shadow)) {
-            css += 'text-shadow: ' + o.text_shadow + '; ';
+        if (o['Text Shadow'].getVal() !== '') {
+            css += 'text-shadow: ' + o['Text Shadow'].getVal() + '; ';
         }
 
 
         // =====================================================================
         // Style
         // =====================================================================
-        var o = this.options.style;
+        var o = this.controls['style'];
 
         // Background Color
-        var c_bg = hexToRgb(o.background_color);
-        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.background_opacity +'); ';
+        var c_bg = hexToRgb(o['Background Color'].getVal());
+        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['Background Opacity'].getVal() +'); ';
 
         // Opacity
-        if (o.opacity !== '' && !isNaN(o.opacity)) {
-            css += 'opacity: ' + o.opacity + '; ';
+        if (o['Opacity'].getVal() !== '' && !isNaN(o['Opacity'].getVal())) {
+            css += 'opacity: ' + o['Opacity'].getVal() + '; ';
         }
 
         // Box Shadow
-        if (o.box_shadow !== '' && !isNaN(o.box_shadow)) {
-            css += 'box-shadow: ' + o.box_shadow + '; ';
+        if (o['Box Shadow'].getVal() !== '') {
+            css += 'box-shadow: ' + o['Box Shadow'].getVal() + '; ';
         }
 
         // Border Width
-        if (o.border_width !== '' && !isNaN(o.border_width)) {
-            css += 'border-width: ' + o.border_width + 'px; ';
+        if (o['Border Width'].getVal() !== '' && !isNaN(o['Border Width'].getVal())) {
+            css += 'border-width: ' + o['Border Width'].getVal() + 'px; ';
         }
 
         // Border Style
-        if (o.border_style !== '') {
-            css += 'border-style: ' + o.border_style + '; ';
+        if (o['Border Style'].getVal() !== '') {
+            css += 'border-style: ' + o['Border Style'].getVal() + '; ';
         }
 
         // Border Color
-        var c_bg = hexToRgb(o.border_color);
-        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o.border_opacity +'); ';
+        var c_bg = hexToRgb(o['Border Color'].getVal());
+        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['Border Opacity'].getVal() +'); ';
 
         // Border Radius
-        if (o.border_radius !== '' && !isNaN(o.border_radius)) {
-            css += 'border-radius: ' + o.border_radius + 'px; ';
+        if (o['Border Radius'].getVal() !== '' && !isNaN(o['Border Radius'].getVal())) {
+            css += 'border-radius: ' + o['Border Radius'].getVal() + 'px; ';
         }
 
         return css;
@@ -1622,26 +1620,16 @@ Custom defined controls per element:
         }
 
         // Launch the events provided from the settings
-        this.events = s.events;
-        this.events();
+        this.init = s.init;
+        this.init();
 
         // Create a callback function for when the control updates its value
         this.valueUpdated = valueUpdated;
+
+        // to do: rework the getters and setters
     }
     SquaresControl.prototype.getVal = function() {
-        var v = this._value;
-
-        try {
-            v = this.getValue();
-        } catch (err) {
-
-        }
-
-        if (v !== undefined) {
-            return v;
-        } else {
-            return this._value;
-        }
+        return this._value;
     }
     SquaresControl.prototype.setVal = function(v) {
         this._value = v;
@@ -1649,14 +1637,13 @@ Custom defined controls per element:
         try {
             this.setValue(v);
         } catch (err) {
-            this._value = v;
+
         }
     }
-    SquaresControl.prototype.loadVal = function() {
-        // Re-sets the control to its stored value
+    SquaresControl.prototype.loadVal = function(v) {
         this.setValue(this._value);
     }
-    SquaresControl.prototype.updateVal = function() {
+    SquaresControl.prototype.valueChanged = function() {
         // Re-sets the control to its stored value
         this._value = this.getValue();
         this.valueUpdated();

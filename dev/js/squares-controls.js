@@ -15,10 +15,10 @@
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
@@ -33,10 +33,10 @@
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
@@ -51,10 +51,10 @@
         HTML: function() {
             return '<input type="text" id="'+ this.elementID +'">';
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
@@ -77,10 +77,10 @@
         HTML: function() {
             return '<input type="checkbox" id="'+ this.elementID +'">';
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
@@ -95,10 +95,10 @@
         HTML: function() {
             return '<input type="color" id="'+ this.elementID +'">';
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
@@ -123,25 +123,30 @@
 
             return html;
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID, function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
     $.squaresRegisterControl({
         type: 'box model',
         getValue: function() {
-            this._value.margin.top = parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10);
-            this._value.margin.bottom = parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10);
-            this._value.margin.left = parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10);
-            this._value.margin.right = parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10);
-
-            this._value.padding.top = parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10);
-            this._value.padding.bottom = parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10);
-            this._value.padding.left = parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10);
-            this._value.padding.right = parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10);
+            return {
+                margin: {
+                    top: parseInt($('#squares-element-option-boxmodel-margin-top').val(), 10),
+                    bottom: parseInt($('#squares-element-option-boxmodel-margin-bottom').val(), 10),
+                    left: parseInt($('#squares-element-option-boxmodel-margin-left').val(), 10),
+                    right: parseInt($('#squares-element-option-boxmodel-margin-right').val(), 10)
+                },
+                padding: {
+                    top: parseInt($('#squares-element-option-boxmodel-padding-top').val(), 10),
+                    bottom: parseInt($('#squares-element-option-boxmodel-padding-bottom').val(), 10),
+                    left: parseInt($('#squares-element-option-boxmodel-padding-left').val(), 10),
+                    right: parseInt($('#squares-element-option-boxmodel-padding-right').val(), 10)
+                }
+            }
         },
         setValue: function(v) {
             $('#squares-element-option-boxmodel-margin-top').val(this._value.margin.top);
@@ -174,10 +179,10 @@
 
             return html;
         },
-        events: function() {
+        init: function() {
             var self = this;
             $(document).on('change', '#' + this.elementID + ' input', function() {
-                self.updateVal();
+                self.valueChanged();
             });
         }
     });
