@@ -33,6 +33,15 @@
     $.squaresRegisterElement({
         name: "Image",
         iconClass: "fa fa-picture-o",
+        extendOptions: {
+            image: {
+                url: {
+                    name: 'Image URL',
+                    type: 'text',
+                    default: 'http://www.online-image-editor.com//styles/2014/images/example_image.png'
+                }
+            }
+        },
         content: function() {
             return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
         }

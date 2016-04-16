@@ -224,7 +224,7 @@
             html += '<div class="sq-control-slider" id="'+ this.elementID +'">';
             html += '   <div class="sq-control-slider-track"></div>';
             html += '   <div class="sq-control-slider-ball"></div>';
-            html += '</div">';
+            html += '</div>';
 
             return html;
         },

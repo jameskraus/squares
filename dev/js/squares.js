@@ -178,7 +178,8 @@ Custom defined controls per element:
         var editorWindow = new EditorWindow();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-870221","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-255651","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","background_opacity":0.7928571428571428,"opacity":0.44642857142857145,"border_opacity":0.8571428571428571}}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-220041","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-352351","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","opacity":0.6321428571428571,"border_opacity":0.8571428571428571}}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"id":"sq-container-307581","settings":{"elements":[{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Video","iconClass":"fa fa-video-camera"}},{"settings":{"name":"YouTube","iconClass":"fa fa-youtube"}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -1056,6 +1057,7 @@ Custom defined controls per element:
 
         var groupCount = 0;
         for (var g in this.controls) {
+            console.log(groupCount);
             html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
 
             var tabGroup = this.controls[g];
@@ -1073,6 +1075,7 @@ Custom defined controls per element:
             html += '</div>';
         }
         html += '</div>';
+
         return html;
     }
     Element.prototype.loadOptions = function() {
