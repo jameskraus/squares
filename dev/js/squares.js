@@ -2,10 +2,12 @@
 
 TO DO:
 
-- new UI
 - slider form control
 - add additional controls for the current existing elements
+- new UI
 - generate HTML
+- move the grid system in a CSS file
+- add grid options for responsiveness
 
 */
 
@@ -123,7 +125,7 @@ Custom defined controls per element:
 
     // Gets the current state as JS object of an editor, selected by its host
     $.squaresGetCurrentSettings = function(host) {
-
+        return host.data.editor.generateJSON();
     };
 
     // Called at the end to generate the final HTML code to be inserted in the
@@ -177,7 +179,7 @@ Custom defined controls per element:
         var editorWindow = new EditorWindow();
 
         // Test initWithSettings
-        var s = '{ "containers": [{ "id": "sq-container-420971", "settings": { "elements": [{ "id": "sq-element-8451", "settings": { "name": "Heading", "iconClass": "fa fa-header" }, "options": { "heading": { "heading": "h1" } }, "defaults": [], "controls": [] }] } }] }';
+        var s = '{"containers":[{"id":"sq-container-240061","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-448601","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"}}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -321,6 +323,8 @@ Custom defined controls per element:
         } else {
             this.root.find('.sq-add-elements').show();
         }
+
+        console.log($.squaresGetCurrentSettings(this.host));
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -521,7 +525,7 @@ Custom defined controls per element:
             this.elementDragMap = new Array();
 
             var draggedElementObject = this.settings.containers[this.draggedElementContainerIndex].settings.elements[this.draggedElementIndex];
-            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.controls['layout']['Column Span'].getVal());
+            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.controls['layout']['column_span'].getVal());
 
             var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElementWidth +'; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
 
@@ -677,7 +681,6 @@ Custom defined controls per element:
         // Redraw
         self.redraw();
     };
-
     Squares.prototype.generateJSON = function() {
         var settings = $.extend(true, {}, this.settings);
 
@@ -689,13 +692,17 @@ Custom defined controls per element:
                 var e = $.extend(true, {}, c.settings.elements[j]);
 
                 e.settings = subtract(e.settings, elementDefaultSettings);
-                e.options = subtract(e.options, e.defaults);
-
-                // clean
                 e.settings = clean(e.settings);
-                e.options = clean(e.options);
 
-                c.settings.elements[j] = e;
+                // Get the current values of the controls
+                var options = e.getCurrentOptions();
+                options = subtract(options, e.defaults);
+                options = clean(options);
+
+                c.settings.elements[j] = {
+                    settings: e.settings,
+                    options: options
+                };
             }
 
             settings.containers[i] = c;
@@ -1007,12 +1014,13 @@ Custom defined controls per element:
                         }
 
                         var self = this;
-                        this.controls[g][option.name] = new SquaresControl(controlOptions, option.name, option.group, g, option.options, function() {
+
+                        this.controls[g][op] = new SquaresControl(controlOptions, option.name, option.group, g, option.options, function() {
                             self.updateForm();
                             self.render();
                             self.appendEditorControls();
                         });
-                        this.controls[g][option.name].setVal(v);
+                        this.controls[g][op].setVal(v);
                     }
                 }
             }
@@ -1071,12 +1079,12 @@ Custom defined controls per element:
         this.updateForm();
     }
     Element.prototype.updateForm = function() {
-        if (this.controls['layout']['Use Grid System'].getVal() == 1) {
-            $('.' + this.controls['layout']['Width'].elementClass).hide();
-            $('.' + this.controls['layout']['Column Span'].elementClass).show();
+        if (this.controls['layout']['use_grid'].getVal() == 1) {
+            $('.' + this.controls['layout']['width'].elementClass).hide();
+            $('.' + this.controls['layout']['column_span'].elementClass).show();
         } else {
-            $('.' + this.controls['layout']['Width'].elementClass).show();
-            $('.' + this.controls['layout']['Column Span'].elementClass).hide();
+            $('.' + this.controls['layout']['width'].elementClass).show();
+            $('.' + this.controls['layout']['column_span'].elementClass).hide();
         }
     }
     Element.prototype.generateStyles = function() {
@@ -1088,51 +1096,51 @@ Custom defined controls per element:
         var o = this.controls['layout'];
 
         // Box Model
-        if (o['Box Model'].getVal().margin.top !== '' && !isNaN(o['Box Model'].getVal().margin.top)) {
-            css += 'margin-top: ' + o['Box Model'].getVal().margin.top + 'px; ';
+        if (o['box_model'].getVal().margin.top !== '' && !isNaN(o['box_model'].getVal().margin.top)) {
+            css += 'margin-top: ' + o['box_model'].getVal().margin.top + 'px; ';
         }
-        if (o['Box Model'].getVal().margin.bottom !== '' && !isNaN(o['Box Model'].getVal().margin.bottom)) {
-            css += 'margin-bottom: ' + o['Box Model'].getVal().margin.bottom + 'px; ';
+        if (o['box_model'].getVal().margin.bottom !== '' && !isNaN(o['box_model'].getVal().margin.bottom)) {
+            css += 'margin-bottom: ' + o['box_model'].getVal().margin.bottom + 'px; ';
         }
-        if (o['Box Model'].getVal().margin.left !== '' && !isNaN(o['Box Model'].getVal().margin.left)) {
-            css += 'margin-left: ' + o['Box Model'].getVal().margin.left + 'px; ';
+        if (o['box_model'].getVal().margin.left !== '' && !isNaN(o['box_model'].getVal().margin.left)) {
+            css += 'margin-left: ' + o['box_model'].getVal().margin.left + 'px; ';
         }
-        if (o['Box Model'].getVal().margin.right !== '' && !isNaN(o['Box Model'].getVal().margin.right)) {
-            css += 'margin-right: ' + o['Box Model'].getVal().margin.right + 'px; ';
-        }
-
-        if (o['Box Model'].getVal().padding.top !== '' && !isNaN(o['Box Model'].getVal().padding.top)) {
-            css += 'padding-top: ' + o['Box Model'].getVal().padding.top + 'px; ';
-        }
-        if (o['Box Model'].getVal().padding.bottom !== '' && !isNaN(o['Box Model'].getVal().padding.bottom)) {
-            css += 'padding-bottom: ' + o['Box Model'].getVal().padding.bottom + 'px; ';
-        }
-        if (o['Box Model'].getVal().padding.left !== '' && !isNaN(o['Box Model'].getVal().padding.left)) {
-            css += 'padding-left: ' + o['Box Model'].getVal().padding.left + 'px; ';
-        }
-        if (o['Box Model'].getVal().padding.right !== '' && !isNaN(o['Box Model'].getVal().padding.right)) {
-            css += 'padding-right: ' + o['Box Model'].getVal().padding.right + 'px; ';
+        if (o['box_model'].getVal().margin.right !== '' && !isNaN(o['box_model'].getVal().margin.right)) {
+            css += 'margin-right: ' + o['box_model'].getVal().margin.right + 'px; ';
         }
 
-        if (parseInt(o['Use Grid System'].getVal(), 10) == 1) {
+        if (o['box_model'].getVal().padding.top !== '' && !isNaN(o['box_model'].getVal().padding.top)) {
+            css += 'padding-top: ' + o['box_model'].getVal().padding.top + 'px; ';
+        }
+        if (o['box_model'].getVal().padding.bottom !== '' && !isNaN(o['box_model'].getVal().padding.bottom)) {
+            css += 'padding-bottom: ' + o['box_model'].getVal().padding.bottom + 'px; ';
+        }
+        if (o['box_model'].getVal().padding.left !== '' && !isNaN(o['box_model'].getVal().padding.left)) {
+            css += 'padding-left: ' + o['box_model'].getVal().padding.left + 'px; ';
+        }
+        if (o['box_model'].getVal().padding.right !== '' && !isNaN(o['box_model'].getVal().padding.right)) {
+            css += 'padding-right: ' + o['box_model'].getVal().padding.right + 'px; ';
+        }
+
+        if (parseInt(o['use_grid'].getVal(), 10) == 1) {
             // Grid system
-            css += 'width: '+ getWidthOfElementInGrid(o['Column Span'].getVal()) +'; ';
+            css += 'width: '+ getWidthOfElementInGrid(o['column_span'].getVal()) +'; ';
         } else {
             // Width
-            if (parseInt(o['Auto Width'].getVal(), 10) == 1) {
+            if (parseInt(o['auto_width'].getVal(), 10) == 1) {
                 css += 'width: auto; ';
             } else {
-                if (o['Width'].getVal() !== '' && !isNaN(o['Width'].getVal())) {
-                    css += 'width: '+ o['Width'].getVal() +'px; ';
+                if (o['width'].getVal() !== '' && !isNaN(o['width'].getVal())) {
+                    css += 'width: '+ o['width'].getVal() +'px; ';
                 }
             }
 
             // Height
-            if (parseInt(o['Auto Height'].getVal(), 10) == 1) {
+            if (parseInt(o['auto_height'].getVal(), 10) == 1) {
                 css += 'height: auto; ';
             } else {
-                if (o['Height'].getVal() !== '' && !isNaN(o['Height'].getVal())) {
-                    css += 'height: '+ o['Height'].getVal() +'px; ';
+                if (o['height'].getVal() !== '' && !isNaN(o['height'].getVal())) {
+                    css += 'height: '+ o['height'].getVal() +'px; ';
                 }
             }
         }
@@ -1145,53 +1153,53 @@ Custom defined controls per element:
         var o = this.controls['text'];
 
         // Font Family
-        if (o['Font Family'].getVal() !== '') {
-            css += 'font-family: ' + o['Font Family'].getVal() + '; ';
+        if (o['font_family'].getVal() !== '') {
+            css += 'font-family: ' + o['font_family'].getVal() + '; ';
         }
 
         // Font Size
-        if (o['Font Size'].getVal() !== '' && !isNaN(o['Font Size'].getVal())) {
-            css += 'font-size: ' + o['Font Size'].getVal() + 'px; ';
+        if (o['font_size'].getVal() !== '' && !isNaN(o['font_size'].getVal())) {
+            css += 'font-size: ' + o['font_size'].getVal() + 'px; ';
         }
 
         // Font Weight
-        if (o['Font Weight'].getVal() !== '') {
-            css += 'font-weight: ' + o['Font Weight'].getVal() + '; ';
+        if (o['font_weight'].getVal() !== '') {
+            css += 'font-weight: ' + o['font_weight'].getVal() + '; ';
         }
 
         // Font Style
-        if (o['Font Style'].getVal() !== '') {
-            css += 'font-style: ' + o['Font Style'].getVal() + '; ';
+        if (o['font_style'].getVal() !== '') {
+            css += 'font-style: ' + o['font_style'].getVal() + '; ';
         }
 
         // Line Height
-        if (o['Line Height'].getVal() !== '' && !isNaN(o['Line Height'].getVal())) {
-            css += 'line-height: ' + o['Line Height'].getVal() + 'px; ';
+        if (o['line_height'].getVal() !== '' && !isNaN(o['line_height'].getVal())) {
+            css += 'line-height: ' + o['line_height'].getVal() + 'px; ';
         }
 
         // Text Color
-        if (o['Text Color'].getVal() !== '') {
-            css += 'color: ' + o['Text Color'].getVal() + '; ';
+        if (o['text_color'].getVal() !== '') {
+            css += 'color: ' + o['text_color'].getVal() + '; ';
         }
 
         // Text Align
-        if (o['Text Align'].getVal() !== '') {
-            css += 'text-align: ' + o['Text Align'].getVal() + '; ';
+        if (o['text_align'].getVal() !== '') {
+            css += 'text-align: ' + o['text_align'].getVal() + '; ';
         }
 
         // Text Decoration
-        if (o['Text Decoration'].getVal() !== '') {
-            css += 'text-decoration: ' + o['Text Decoration'].getVal() + '; ';
+        if (o['text_decoration'].getVal() !== '') {
+            css += 'text-decoration: ' + o['text_decoration'].getVal() + '; ';
         }
 
         // Text Transform
-        if (o['Text Transform'].getVal() !== '') {
-            css += 'text-transform: ' + o['Text Transform'].getVal() + '; ';
+        if (o['text_transform'].getVal() !== '') {
+            css += 'text-transform: ' + o['text_transform'].getVal() + '; ';
         }
 
         // Text Shadow
-        if (o['Text Shadow'].getVal() !== '') {
-            css += 'text-shadow: ' + o['Text Shadow'].getVal() + '; ';
+        if (o['text_shadow'].getVal() !== '') {
+            css += 'text-shadow: ' + o['text_shadow'].getVal() + '; ';
         }
 
 
@@ -1201,36 +1209,36 @@ Custom defined controls per element:
         var o = this.controls['style'];
 
         // Background Color
-        var c_bg = hexToRgb(o['Background Color'].getVal());
-        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['Background Opacity'].getVal() +'); ';
+        var c_bg = hexToRgb(o['background_color'].getVal());
+        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['background_opacity'].getVal() +'); ';
 
         // Opacity
-        if (o['Opacity'].getVal() !== '' && !isNaN(o['Opacity'].getVal())) {
-            css += 'opacity: ' + o['Opacity'].getVal() + '; ';
+        if (o['opacity'].getVal() !== '' && !isNaN(o['opacity'].getVal())) {
+            css += 'opacity: ' + o['opacity'].getVal() + '; ';
         }
 
         // Box Shadow
-        if (o['Box Shadow'].getVal() !== '') {
-            css += 'box-shadow: ' + o['Box Shadow'].getVal() + '; ';
+        if (o['box_shadow'].getVal() !== '') {
+            css += 'box-shadow: ' + o['box_shadow'].getVal() + '; ';
         }
 
         // Border Width
-        if (o['Border Width'].getVal() !== '' && !isNaN(o['Border Width'].getVal())) {
-            css += 'border-width: ' + o['Border Width'].getVal() + 'px; ';
+        if (o['border_width'].getVal() !== '' && !isNaN(o['border_width'].getVal())) {
+            css += 'border-width: ' + o['border_width'].getVal() + 'px; ';
         }
 
         // Border Style
-        if (o['Border Style'].getVal() !== '') {
-            css += 'border-style: ' + o['Border Style'].getVal() + '; ';
+        if (o['border_style'].getVal() !== '') {
+            css += 'border-style: ' + o['border_style'].getVal() + '; ';
         }
 
         // Border Color
-        var c_bg = hexToRgb(o['Border Color'].getVal());
-        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['Border Opacity'].getVal() +'); ';
+        var c_bg = hexToRgb(o['border_color'].getVal());
+        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['border_opacity'].getVal() +'); ';
 
         // Border Radius
-        if (o['Border Radius'].getVal() !== '' && !isNaN(o['Border Radius'].getVal())) {
-            css += 'border-radius: ' + o['Border Radius'].getVal() + 'px; ';
+        if (o['border_radius'].getVal() !== '' && !isNaN(o['border_radius'].getVal())) {
+            css += 'border-radius: ' + o['border_radius'].getVal() + 'px; ';
         }
 
         return css;
@@ -1238,8 +1246,6 @@ Custom defined controls per element:
     Element.prototype.render = function() {
         // Update the element's user set content
         $('#' + this.id).html(this.content());
-
-        // console.log(this.controls['Heading']);
 
         // Update the element's style
         $('#' + this.id).attr('style', this.generateStyles());
@@ -1254,6 +1260,24 @@ Custom defined controls per element:
         html += '     </div>';
 
         $('#' + this.id).append(html);
+    }
+    Element.prototype.getCurrentOptions = function() {
+        // Loop over all controls and put their values in an associative array
+
+        var options = {};
+
+        for (var controlGroupName in this.controls) {
+            for (var controlName in this.controls[controlGroupName]) {
+                var c = this.controls[controlGroupName][controlName];
+                if (!options[controlGroupName]) {
+                    options[controlGroupName] = {};
+                }
+
+                options[controlGroupName][controlName] = c.getVal();
+            }
+        }
+
+        return options;
     }
 
     function EditorWindow() {
@@ -1354,8 +1378,6 @@ Custom defined controls per element:
             // Show the elements tab
             $('#sq-window-elements-tab-content').show();
             $('#sq-window-settings-tab-content').hide();
-
-            // console.log($(this).closest('.sq-root-container').data.editor.generateJSON());
         });
 
         // Tab functionality
