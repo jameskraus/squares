@@ -2,7 +2,6 @@
 
 TO DO:
 
-- slider form control
 - add additional controls for the current existing elements
 - new UI
 - generate HTML
@@ -179,7 +178,7 @@ Custom defined controls per element:
         var editorWindow = new EditorWindow();
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-240061","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-448601","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"}}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-870221","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-255651","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","background_opacity":0.7928571428571428,"opacity":0.44642857142857145,"border_opacity":0.8571428571428571}}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -891,12 +890,20 @@ Custom defined controls per element:
                 },
                 background_opacity: {
                     name: 'Background Opacity',
-                    type: 'float',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
                     default: '1'
                 },
                 opacity: {
                     name: 'Opacity',
-                    type: 'float',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
                     default: '1'
                 },
                 box_shadow: {
@@ -922,7 +929,11 @@ Custom defined controls per element:
                 },
                 border_opacity: {
                     name: 'Border Opacity',
-                    type: 'float',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
                     default: '1'
                 },
                 border_radius: {

@@ -186,4 +186,103 @@
             });
         }
     });
+    $.squaresRegisterControl({
+        type: 'slider',
+        getValue: function() {
+            var v = 0;
+
+            // Get the ball position
+            var ball = $('#' + this.elementID).find('.sq-control-slider-ball');
+            var ballPosition = ball.position().left;
+
+            // Get the track width
+            var track = $('#' + this.elementID).find('.sq-control-slider-track');
+            var trackWidth = track.outerWidth();
+
+            // Calculate value
+            var progress = ballPosition / trackWidth;
+            v = this.options.min + (this.options.max - this.options.min) * progress;
+
+            return v;
+        },
+        setValue: function(v) {
+            var progress = (v - this.options.min) / (this.options.max - this.options.min);
+
+            var ball = $('#' + this.elementID).find('.sq-control-slider-ball');
+
+            // Get the track width
+            var track = $('#' + this.elementID).find('.sq-control-slider-track');
+            var trackWidth = track.outerWidth();
+
+            ball.css({
+                left: trackWidth * progress
+            });
+        },
+        HTML: function() {
+            var html = '';
+
+            html += '<div class="sq-control-slider" id="'+ this.elementID +'">';
+            html += '   <div class="sq-control-slider-track"></div>';
+            html += '   <div class="sq-control-slider-ball"></div>';
+            html += '</div">';
+
+            return html;
+        },
+        init: function() {
+            var self = this;
+            var ix = 0, iex = 0, dragging = false, ball = undefined, track = undefined;
+
+            // Ball dragging
+            $(document).on('mousedown', '#' + self.elementID + ' .sq-control-slider-ball', function(e) {
+                ball = $('#' + self.elementID).find('.sq-control-slider-ball');
+                track = $('#' + self.elementID).find('.sq-control-slider-track');
+                ix = ball.position().left;
+                iex = e.pageX;
+
+                dragging = true;
+            });
+            $(document).on('mousemove.' + this.elementID, function(e) {
+                if (dragging) {
+                    var o = ix - iex + e.pageX;
+
+                    if (o < 0) o = 0;
+                    if (o > track.outerWidth()) o = track.outerWidth();
+
+                    ball.css({
+                        left: o
+                    });
+
+                    self.valueChanged();
+                }
+            });
+            $(document).on('mouseup.' + this.elementID, function(e) {
+                if (dragging) {
+                    dragging = false;
+                    self.valueChanged();
+                }
+            });
+
+            // Click on the track
+            $(document).on('mousedown', '#' + self.elementID + ' .sq-control-slider-track', function(e) {
+                ball = $('#' + self.elementID).find('.sq-control-slider-ball');
+                track = $('#' + self.elementID).find('.sq-control-slider-track');
+
+                // Set the ball to the mouse position
+                var o = e.pageX - track.offset().left;
+
+                if (o < 0) o = 0;
+                if (o > track.outerWidth()) o = track.outerWidth();
+
+                ball.css({
+                    left: o
+                });
+
+                // Start dragging
+                ix = ball.position().left;
+                iex = e.pageX;
+
+                dragging = true;
+            });
+        }
+    });
 })(jQuery, window, document);
