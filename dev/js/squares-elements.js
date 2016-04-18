@@ -18,7 +18,7 @@
             }
         },
         content: function() {
-            return '<p id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">'+ this.controls.text.text.getVal() +'</p>';
+            return '<p id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'">'+ this.controls.text.text.getVal() +'</p>';
         }
     });
     $.squaresRegisterElement({
@@ -41,7 +41,6 @@
         },
         content: function() {
             return '<'+ this.controls['heading']['heading'].getVal() +' id="'+ this.controls['general']['id'].getVal() +'" style="'+ this.controls['general']['css'].getVal() +'" class="'+ this.controls['general']['classes'].getVal() +'">'+ this.controls.heading.text.getVal() +'</'+ this.controls['heading']['heading'].getVal() +'>';
-            return 'asd';
         }
     });
     $.squaresRegisterElement({
@@ -67,7 +66,19 @@
             }
         },
         content: function() {
-            return '<img src="http://www.online-image-editor.com//styles/2014/images/example_image.png" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
+            var html = '';
+
+            if (parseInt(this.controls.image.image_is_a_link.getVal(), 10) == 1) {
+                html += '<a href="'+ this.controls.image.link_to.getVal() +'">';
+            }
+
+            html += '<img src="'+ this.controls.image.url.getVal() +'" id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'">';
+
+            if (parseInt(this.controls.image.image_is_a_link.getVal(), 10) == 1) {
+                html += '</a>';
+            }
+
+            return html;
         }
     });
     $.squaresRegisterElement({
@@ -103,7 +114,19 @@
             }
         },
         content: function() {
-            return '<video autoplay id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'"><source src="http://html5demos.com/assets/dizzy.mp4" type="video/mp4"><source src="http://html5demos.com/assets/dizzy.webm" type="video/webm"><source src="http://html5demos.com/assets/dizzy.ogg" type="video/ogg"></video>';
+            var html = '';
+
+            if (parseInt(this.controls.video.video_is_a_link.getVal(), 10) == 1) {
+                html += '<a href="'+ this.controls.video.link_to.getVal() +'">';
+            }
+
+            html += '<video autoplay id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"><source src="'+ this.controls.video.mp4_url.getVal() +'" type="video/mp4"><source src="'+ this.controls.video.webm_url.getVal() +'" type="video/webm"><source src="'+ this.controls.video.ogg_url.getVal() +'" type="video/ogg"></video>';
+
+            if (parseInt(this.controls.video.video_is_a_link.getVal(), 10) == 1) {
+                html += '</a>';
+            }
+
+            return html;
         }
     });
     $.squaresRegisterElement({
@@ -124,8 +147,24 @@
             }
         },
         content: function() {
-            // use the same width/height as the element
-            return '<iframe id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'" width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>';
+            // to do:
+            // get the embed code from the controls, wrap it in a div, apply ID, CSS and classes to the DIV and set the iframe to 100% width and height
+            // also implement the "allow fullscreen" option
+
+            var embedCode = this.controls.youtube.embed_code.getVal();
+            var html = '';
+
+            html += '<div id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'">';
+
+            // Allow fullscreen
+
+            // Set width/height
+
+            html += embedCode;
+
+            html += '</div>';
+
+            return html;
         }
     });
     $.squaresRegisterElement({
@@ -146,7 +185,7 @@
             }
         },
         content: function() {
-            return '<input type="button" value="'+ this.controls.button.text.getVal() +'" id="'+ this.id +'" style="'+ this.styles +'" class="'+ this.classes +'">';
+            return '<a href="'+ this.controls.button.link_to.getVal() +'"><input type="button" value="'+ this.controls.button.text.getVal() +'" id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"></a>';
         }
     });
 })(jQuery, window, document);
