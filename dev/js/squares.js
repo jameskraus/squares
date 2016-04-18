@@ -69,26 +69,27 @@ Common controls for all elements:
 Custom defined controls per element:
 ---------------------------------
 
-- Image
-- URL
-- Image is a link (checkbox)
-- Link to
-- Video
-- WEBM url
-- OGG url
-- MP4 url
-- Video is a link (checkbox)
-- Link to
-- YouTube Video
-- Embed code
-- Button
-- Link to
-- Text
-- Heading
-- Heading tag index
-- Text
 - Paragraph
-- Text (large)
+    - Text (large)
+- Heading
+    - Heading tag index
+    - Text
+- Image
+    - URL
+    - Image is a link (checkbox)
+    - Link to
+- Video
+    - WEBM url
+    - OGG url
+    - MP4 url
+    - Video is a link (checkbox)
+    - Link to
+- YouTube Video
+    - Embed code
+- Button
+    - Link to
+    - Text
+
 
 */
 
@@ -180,6 +181,7 @@ Custom defined controls per element:
         // Test initWithSettings
         var s = '{"containers":[{"id":"sq-container-220041","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-352351","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","opacity":0.6321428571428571,"border_opacity":0.8571428571428571}}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"id":"sq-container-307581","settings":{"elements":[{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Video","iconClass":"fa fa-video-camera"}},{"settings":{"name":"YouTube","iconClass":"fa fa-youtube"}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -750,8 +752,8 @@ Custom defined controls per element:
     var elementDefaultSettings = {
         name: 'Untitled Element',
         iconClass: 'fa fa-cube',
-        extendOptions: [],
-        options: {
+        controls: [],
+        defaultControls: {
             general: {
                 id: {
                     name: 'ID',
@@ -825,7 +827,7 @@ Custom defined controls per element:
                     default: 1
                 }
             },
-            text: {
+            text_style: {
                 font_family: {
                     name: 'Font Family',
                     type: 'text',
@@ -972,14 +974,14 @@ Custom defined controls per element:
         this.init(options);
     }
     Element.prototype.init = function(options) {
-        // Merge the extendOptions into the options
-        this.settings.options = $.extend(true, {}, this.settings.options, this.settings.extendOptions);
+        // Merge the custom controls with the default controls
+        this.settings.controls = $.extend(true, {}, this.settings.defaultControls, this.settings.controls);
 
-        // Create associative array from this.settings.options containing default values
+        // Create associative array from this.settings.controls containing default values
         // Used only for compression
-        for (var g in this.settings.options) {
-            if (this.settings.options.hasOwnProperty(g)) {
-                var group = this.settings.options[g];
+        for (var g in this.settings.controls) {
+            if (this.settings.controls.hasOwnProperty(g)) {
+                var group = this.settings.controls[g];
 
                 if (!this.defaults[g]) {
                     this.defaults[g] = {};
@@ -996,9 +998,9 @@ Custom defined controls per element:
         }
 
         // Create controls
-        for (var g in this.settings.options) {
-            if (this.settings.options.hasOwnProperty(g)) {
-                var group = this.settings.options[g];
+        for (var g in this.settings.controls) {
+            if (this.settings.controls.hasOwnProperty(g)) {
+                var group = this.settings.controls[g];
 
                 for (var op in group) {
                     if (group.hasOwnProperty(op)) {
@@ -1057,7 +1059,6 @@ Custom defined controls per element:
 
         var groupCount = 0;
         for (var g in this.controls) {
-            console.log(groupCount);
             html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
 
             var tabGroup = this.controls[g];
@@ -1066,7 +1067,7 @@ Custom defined controls per element:
             for (var c in tabGroup) {
                 var control = tabGroup[c];
 
-                html += '<div class="squares-form-control '+ control.elementClass +'">';
+                html += '<div class="sq-form-control '+ control.elementClass +'">';
                 html += '<label for="'+ control.elementID +'">'+ control.name +'</label>';
                 html += control.HTML();
                 html += '</div>';
@@ -1164,7 +1165,7 @@ Custom defined controls per element:
         // =====================================================================
         // Text
         // =====================================================================
-        var o = this.controls['text'];
+        var o = this.controls['text_style'];
 
         // Font Family
         if (o['font_family'].getVal() !== '') {
@@ -1323,12 +1324,12 @@ Custom defined controls per element:
         WindowHTML += '     <div class="sq-window-container">';
 
         // Tab buttons
-        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="squares-window-main-tab-group" data-tab-index="0">Elements</div>';
-        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="squares-window-main-tab-group" data-tab-index="1">Settings</div>';
+        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="sq-window-main-tab-group" data-tab-index="0">Elements</div>';
+        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="sq-window-main-tab-group" data-tab-index="1">Settings</div>';
         WindowHTML += '         <div class="clear"></div>';
 
         // Elements tab
-        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="squares-window-main-tab-group" data-tab-index="0" id="sq-window-elements-tab-content">';
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="0" id="sq-window-elements-tab-content">';
         WindowHTML += '             <div class="sq-element-thumb-container">';
         for (var i=0; i<registeredElements.length; i++) {
             WindowHTML += '             <div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
@@ -1338,7 +1339,7 @@ Custom defined controls per element:
         WindowHTML += '         </div>';
 
         // Settings tab
-        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="squares-window-main-tab-group" data-tab-index="1" id="sq-window-settings-tab-content">';
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" id="sq-window-settings-tab-content">';
         WindowHTML += '         </div>';
 
         WindowHTML += '     </div>';
@@ -1629,8 +1630,8 @@ Custom defined controls per element:
 
         // Automatically generated at the time of object creation
         this.id = Math.floor(Math.random() * 9999) + 1;
-        this.elementID = 'squares-control-' + this.id;
-        this.elementClass = 'squares-element-option-group';
+        this.elementID = 'sq-control-' + this.id;
+        this.elementClass = 'sq-element-option-group';
 
         // Settings coming from the registered controls catalog
         // referenced in the 'this' variable, so 'this' can be accessed within
@@ -1652,7 +1653,7 @@ Custom defined controls per element:
 
         // Update this.elementClass
         if (this.group !== undefined) {
-            this.elementClass = 'squares-element-option-group-' + this.group.toLowerCase().replace(/\s/g, '-');
+            this.elementClass = 'sq-element-option-group-' + this.group.toLowerCase().replace(/\s/g, '-');
         }
 
         // Launch the events provided from the settings
