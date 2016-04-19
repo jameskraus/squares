@@ -537,7 +537,7 @@
             html += '               <option value="col-lg-9">9 Columns</option>';
             html += '               <option value="col-lg-10">10 Columns</option>';
             html += '               <option value="col-lg-11">11 Columns</option>';
-            html += '               <option value="col-xs-12">12 Columns</option>';
+            html += '               <option value="col-lg-12">12 Columns</option>';
             html += '           </select>';
             html += '       </div>';
             html += '       <div class="sq-grid-system-control-visible">';

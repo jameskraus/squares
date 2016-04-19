@@ -2,8 +2,7 @@
 
 TO DO:
 
-- move the grid system in a CSS file
-- add grid options for responsiveness
+- reordering components is bugged
 - generate HTML
 - including the default controls to an element must be an option, set to true by default
 - new UI
@@ -114,6 +113,7 @@ The usage scenario is the following (for now):
         var s = '{"containers":[{"id":"sq-container-220041","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-352351","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","opacity":0.6321428571428571,"border_opacity":0.8571428571428571}}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"id":"sq-container-307581","settings":{"elements":[{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Video","iconClass":"fa fa-video-camera"}},{"settings":{"name":"YouTube","iconClass":"fa fa-youtube"}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-298901","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -734,22 +734,22 @@ The usage scenario is the following (for now):
                     default: {
                         xs: {
                             use: 0,
-                            class: 'col-xs-1',
+                            class: 'col-xs-12',
                             visible: 0
                         },
                         sm: {
                             use: 0,
-                            class: 'col-sm-1',
+                            class: 'col-sm-12',
                             visible: 0
                         },
                         md: {
                             use: 0,
-                            class: 'col-md-1',
+                            class: 'col-md-12',
                             visible: 1
                         },
                         lg: {
                             use: 1,
-                            class: 'col-lg-1',
+                            class: 'col-lg-12',
                             visible: 1
                         },
                     }
@@ -972,7 +972,13 @@ The usage scenario is the following (for now):
                         var v = option.default;
 
                         if (options !== undefined && options[g] !== undefined && options[g][op] !== undefined) {
-                            v = options[g][op];
+                            console.log('there is a value');
+                            if (typeof(options[g][op]) == 'object') {
+                                v = $.extend(true, {}, option.default, options[g][op]);
+                            } else {
+                                v = options[g][op];
+                            }
+                            console.log(v);
                         }
 
                         if (this.controls[g] === undefined) {
@@ -986,6 +992,7 @@ The usage scenario is the following (for now):
                             self.render();
                             self.appendEditorControls();
                         });
+
                         this.controls[g][op].setVal(v);
                     }
                 }
@@ -1091,7 +1098,7 @@ The usage scenario is the following (for now):
 
         if (parseInt(o['use_grid'].getVal(), 10) == 1) {
             // Grid system
-            css += 'width: '+ getWidthOfElementInGrid(o['column_span'].getVal()) +'; ';
+
         } else {
             // Width
             if (parseInt(o['auto_width'].getVal(), 10) == 1) {
@@ -1210,12 +1217,56 @@ The usage scenario is the following (for now):
 
         return css;
     }
+    Element.prototype.generateLayoutClass = function() {
+        var o = this.controls['layout'];
+
+        if (parseInt(o['use_grid'].getVal(), 10) == 1) {
+            var classes = '';
+            var v = o['column_span'].getVal();
+
+            if (parseInt(v.xs.use, 10) == 1) {
+                classes += v.xs.class + ' ';
+
+                if (parseInt(v.xs.visible, 10) == 0) {
+                    classes += ' hidden-xs';
+                }
+            }
+            if (parseInt(v.sm.use, 10) == 1) {
+                classes += v.sm.class + ' ';
+
+                if (parseInt(v.sm.visible, 10) == 0) {
+                    classes += ' hidden-sm';
+                }
+            }
+            if (parseInt(v.md.use, 10) == 1) {
+                classes += v.md.class + ' ';
+
+                if (parseInt(v.md.visible, 10) == 0) {
+                    classes += ' hidden-md';
+                }
+            }
+            if (parseInt(v.lg.use, 10) == 1) {
+                classes += v.lg.class + ' ';
+
+                if (parseInt(v.lg.visible, 10) == 0) {
+                    classes += ' hidden-lg';
+                }
+            }
+
+            return classes;
+        } else {
+            return '';
+        }
+    }
     Element.prototype.render = function() {
         // Update the element's user set content
         $('#' + this.id).html(this.content());
 
         // Update the element's style
         $('#' + this.id).attr('style', this.generateStyles());
+
+        // Add layout classes to the element
+        $('#' + this.id).attr('class', 'sq-element ' + this.generateLayoutClass());
     }
     Element.prototype.appendEditorControls = function() {
         var html = '';
