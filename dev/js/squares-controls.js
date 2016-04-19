@@ -303,4 +303,368 @@
             });
         }
     });
+    $.squaresRegisterControl({
+        type: 'grid system',
+        getValue: function() {
+            // tmp
+            var res = {
+                xs: {
+                    use: 1,
+                    class: 'col-xs-1',
+                    visible: 1
+                },
+                sm: {
+                    use: 1,
+                    class: 'col-sm-1',
+                    visible: 1
+                },
+                md: {
+                    use: 1,
+                    class: 'col-md-1',
+                    visible: 1
+                },
+                lg: {
+                    use: 1,
+                    class: 'col-lg-1',
+                    visible: 1
+                },
+            };
+
+            var root = $('#' + this.elementID);
+
+            // XS ---------
+            var xsGroup = root.find('.sq-grid-system-control-res-group-xs');
+
+            // Use
+            if (xsGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked) {
+                res.xs.use = 1;
+            } else {
+                res.xs.use = 0;
+            }
+
+            // Class
+            res.xs.class = xsGroup.find('.sq-grid-system-control-select-colspan').val();
+
+            // Visible
+            if (xsGroup.find('.sq-grid-system-control-visible').hasClass('sq-grid-system-control-visible-not')) {
+                res.xs.visible = 0;
+            } else {
+                res.xs.visible = 1;
+            }
+
+            // SM ---------
+            var smGroup = root.find('.sq-grid-system-control-res-group-sm');
+
+            // Use
+            if (smGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked) {
+                res.sm.use = 1;
+            } else {
+                res.sm.use = 0;
+            }
+
+            // Class
+            res.sm.class = smGroup.find('.sq-grid-system-control-select-colspan').val();
+
+            // Visible
+            if (smGroup.find('.sq-grid-system-control-visible').hasClass('sq-grid-system-control-visible-not')) {
+                res.sm.visible = 0;
+            } else {
+                res.sm.visible = 1;
+            }
+
+            // MD ---------
+            var mdGroup = root.find('.sq-grid-system-control-res-group-md');
+
+            // Use
+            if (mdGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked) {
+                res.md.use = 1;
+            } else {
+                res.md.use = 0;
+            }
+
+            // Class
+            res.md.class = mdGroup.find('.sq-grid-system-control-select-colspan').val();
+
+            // Visible
+            if (mdGroup.find('.sq-grid-system-control-visible').hasClass('sq-grid-system-control-visible-not')) {
+                res.md.visible = 0;
+            } else {
+                res.md.visible = 1;
+            }
+
+            // LG ---------
+            var lgGroup = root.find('.sq-grid-system-control-res-group-lg');
+
+            // Use
+            if (lgGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked) {
+                res.lg.use = 1;
+            } else {
+                res.lg.use = 0;
+            }
+
+            // Class
+            res.lg.class = lgGroup.find('.sq-grid-system-control-select-colspan').val();
+
+            // Visible
+            if (lgGroup.find('.sq-grid-system-control-visible').hasClass('sq-grid-system-control-visible-not')) {
+                res.lg.visible = 0;
+            } else {
+                res.lg.visible = 1;
+            }
+
+            return res;
+        },
+        setValue: function(v) {
+            var root = $('#' + this.elementID);
+
+            // XS ---------
+            var xsGroup = root.find('.sq-grid-system-control-res-group-xs');
+
+            // Use
+            if (parseInt(v.xs.use, 10) == 1) {
+                xsGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = true;
+                xsGroup.find('select').removeAttr('disabled');
+                xsGroup.find('.sq-grid-system-control-visible').removeClass('sq-control-disabled');
+            } else {
+                xsGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = false;
+                xsGroup.find('select').attr('disabled', 'disabled');
+                xsGroup.find('.sq-grid-system-control-visible').addClass('sq-control-disabled');
+            }
+
+            // Class
+            xsGroup.find('.sq-grid-system-control-select-colspan').val(v.xs.class);
+
+            // Visible
+            if (parseInt(v.xs.visible, 10) == 1) {
+                xsGroup.find('.sq-grid-system-control-visible').removeClass('sq-grid-system-control-visible-not');
+            } else {
+                xsGroup.find('.sq-grid-system-control-visible').addClass('sq-grid-system-control-visible-not');
+            }
+
+            // SM ---------
+            var smGroup = root.find('.sq-grid-system-control-res-group-sm');
+
+            // Use
+            if (parseInt(v.sm.use, 10) == 1) {
+                smGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = true;
+                smGroup.find('select').removeAttr('disabled');
+                smGroup.find('.sq-grid-system-control-visible').removeClass('sq-control-disabled');
+            } else {
+                smGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = false;
+                smGroup.find('select').attr('disabled', 'disabled');
+                smGroup.find('.sq-grid-system-control-visible').addClass('sq-control-disabled');
+            }
+
+            // Class
+            smGroup.find('.sq-grid-system-control-select-colspan').val(v.sm.class);
+
+            // Visible
+            if (parseInt(v.sm.visible, 10) == 1) {
+                smGroup.find('.sq-grid-system-control-visible').removeClass('sq-grid-system-control-visible-not');
+            } else {
+                smGroup.find('.sq-grid-system-control-visible').addClass('sq-grid-system-control-visible-not');
+            }
+
+            // MD ---------
+            var mdGroup = root.find('.sq-grid-system-control-res-group-md');
+
+            // Use
+            if (parseInt(v.md.use, 10) == 1) {
+                mdGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = true;
+                mdGroup.find('select').removeAttr('disabled');
+                mdGroup.find('.sq-grid-system-control-visible').removeClass('sq-control-disabled');
+            } else {
+                mdGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = false;
+                mdGroup.find('select').attr('disabled', 'disabled');
+                mdGroup.find('.sq-grid-system-control-visible').addClass('sq-control-disabled');
+            }
+
+            // Class
+            mdGroup.find('.sq-grid-system-control-select-colspan').val(v.md.class);
+
+            // Visible
+            if (parseInt(v.md.visible, 10) == 1) {
+                mdGroup.find('.sq-grid-system-control-visible').removeClass('sq-grid-system-control-visible-not');
+            } else {
+                mdGroup.find('.sq-grid-system-control-visible').addClass('sq-grid-system-control-visible-not');
+            }
+
+            // LG ---------
+            var lgGroup = root.find('.sq-grid-system-control-res-group-lg');
+
+            // Use
+            if (parseInt(v.lg.use, 10) == 1) {
+                lgGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = true;
+                lgGroup.find('select').removeAttr('disabled');
+                lgGroup.find('.sq-grid-system-control-visible').removeClass('sq-control-disabled');
+            } else {
+                lgGroup.find('.sq-grid-system-control-res-use-checkbox').get(0).checked = false;
+                lgGroup.find('select').attr('disabled', 'disabled');
+                lgGroup.find('.sq-grid-system-control-visible').addClass('sq-control-disabled');
+            }
+
+            // Class
+            lgGroup.find('.sq-grid-system-control-select-colspan').val(v.lg.class);
+
+            // Visible
+            if (parseInt(v.lg.visible, 10) == 1) {
+                lgGroup.find('.sq-grid-system-control-visible').removeClass('sq-grid-system-control-visible-not');
+            } else {
+                lgGroup.find('.sq-grid-system-control-visible').addClass('sq-grid-system-control-visible-not');
+            }
+        },
+        HTML: function() {
+            var html = '';
+
+            html += '<div class="sq-grid-system-control" id="'+ this.elementID +'">';
+
+            // LG
+            html += '   <div class="sq-grid-system-control-res-group sq-grid-system-control-res-group-lg">';
+            html += '       <div class="sq-grid-system-control-res-name">LG</div>';
+            html += '       <div class="sq-grid-system-control-res-use">';
+            html += '           <input type="checkbox" class="sq-grid-system-control-res-use-checkbox">';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-colspan">';
+            html += '           <select class="sq-grid-system-control-select-colspan">';
+            html += '               <option value="col-lg-1">1 Column</option>';
+            html += '               <option value="col-lg-2">2 Columns</option>';
+            html += '               <option value="col-lg-3">3 Columns</option>';
+            html += '               <option value="col-lg-4">4 Columns</option>';
+            html += '               <option value="col-lg-5">5 Columns</option>';
+            html += '               <option value="col-lg-6">6 Column</option>';
+            html += '               <option value="col-lg-7">7 Columns</option>';
+            html += '               <option value="col-lg-8">8 Columns</option>';
+            html += '               <option value="col-lg-9">9 Columns</option>';
+            html += '               <option value="col-lg-10">10 Columns</option>';
+            html += '               <option value="col-lg-11">11 Columns</option>';
+            html += '               <option value="col-xs-12">12 Columns</option>';
+            html += '           </select>';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-visible">';
+            html += '           <i class="fa fa-eye" aria-hidden="true"></i>';
+            html += '           <i class="fa fa-eye-slash" aria-hidden="true"></i>';
+            html += '       </div>';
+            html += '   </div>';
+
+            // MD
+            html += '   <div class="sq-grid-system-control-res-group sq-grid-system-control-res-group-md">';
+            html += '       <div class="sq-grid-system-control-res-name">MD</div>';
+            html += '       <div class="sq-grid-system-control-res-use">';
+            html += '           <input type="checkbox" class="sq-grid-system-control-res-use-checkbox">';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-colspan">';
+            html += '           <select class="sq-grid-system-control-select-colspan">';
+            html += '               <option value="col-md-1">1 Column</option>';
+            html += '               <option value="col-md-2">2 Columns</option>';
+            html += '               <option value="col-md-3">3 Columns</option>';
+            html += '               <option value="col-md-4">4 Columns</option>';
+            html += '               <option value="col-md-5">5 Columns</option>';
+            html += '               <option value="col-md-6">6 Column</option>';
+            html += '               <option value="col-md-7">7 Columns</option>';
+            html += '               <option value="col-md-8">8 Columns</option>';
+            html += '               <option value="col-md-9">9 Columns</option>';
+            html += '               <option value="col-md-10">10 Columns</option>';
+            html += '               <option value="col-md-11">11 Columns</option>';
+            html += '               <option value="col-md-12">12 Columns</option>';
+            html += '           </select>';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-visible">';
+            html += '           <i class="fa fa-eye" aria-hidden="true"></i>';
+            html += '           <i class="fa fa-eye-slash" aria-hidden="true"></i>';
+            html += '       </div>';
+            html += '   </div>';
+
+            // SM
+            html += '   <div class="sq-grid-system-control-res-group sq-grid-system-control-res-group-sm">';
+            html += '       <div class="sq-grid-system-control-res-name">SM</div>';
+            html += '       <div class="sq-grid-system-control-res-use">';
+            html += '           <input type="checkbox" class="sq-grid-system-control-res-use-checkbox">';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-colspan">';
+            html += '           <select class="sq-grid-system-control-select-colspan">';
+            html += '               <option value="col-sm-1">1 Column</option>';
+            html += '               <option value="col-sm-2">2 Columns</option>';
+            html += '               <option value="col-sm-3">3 Columns</option>';
+            html += '               <option value="col-sm-4">4 Columns</option>';
+            html += '               <option value="col-sm-5">5 Columns</option>';
+            html += '               <option value="col-sm-6">6 Column</option>';
+            html += '               <option value="col-sm-7">7 Columns</option>';
+            html += '               <option value="col-sm-8">8 Columns</option>';
+            html += '               <option value="col-sm-9">9 Columns</option>';
+            html += '               <option value="col-sm-10">10 Columns</option>';
+            html += '               <option value="col-sm-11">11 Columns</option>';
+            html += '               <option value="col-sm-12">12 Columns</option>';
+            html += '           </select>';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-visible">';
+            html += '           <i class="fa fa-eye" aria-hidden="true"></i>';
+            html += '           <i class="fa fa-eye-slash" aria-hidden="true"></i>';
+            html += '       </div>';
+            html += '   </div>';
+
+            // XS
+            html += '   <div class="sq-grid-system-control-res-group sq-grid-system-control-res-group-xs">';
+            html += '       <div class="sq-grid-system-control-res-name">XS</div>';
+            html += '       <div class="sq-grid-system-control-res-use">';
+            html += '           <input type="checkbox" class="sq-grid-system-control-res-use-checkbox">';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-colspan">';
+            html += '           <select class="sq-grid-system-control-select-colspan">';
+            html += '               <option value="col-xs-1">1 Column</option>';
+            html += '               <option value="col-xs-2">2 Columns</option>';
+            html += '               <option value="col-xs-3">3 Columns</option>';
+            html += '               <option value="col-xs-4">4 Columns</option>';
+            html += '               <option value="col-xs-5">5 Columns</option>';
+            html += '               <option value="col-xs-6">6 Column</option>';
+            html += '               <option value="col-xs-7">7 Columns</option>';
+            html += '               <option value="col-xs-8">8 Columns</option>';
+            html += '               <option value="col-xs-9">9 Columns</option>';
+            html += '               <option value="col-xs-10">10 Columns</option>';
+            html += '               <option value="col-xs-11">11 Columns</option>';
+            html += '               <option value="col-xs-12">12 Columns</option>';
+            html += '           </select>';
+            html += '       </div>';
+            html += '       <div class="sq-grid-system-control-visible">';
+            html += '           <i class="fa fa-eye" aria-hidden="true"></i>';
+            html += '           <i class="fa fa-eye-slash" aria-hidden="true"></i>';
+            html += '       </div>';
+            html += '   </div>';
+
+            // end
+            html += '   <div class="clear"></div>';
+            html += '</div>';
+
+            return html;
+        },
+        init: function() {
+            var self = this;
+            // self.valueChanged();
+
+            // "Use" checkboxes
+            $(document).on('change', '#' + this.elementID + ' .sq-grid-system-control-res-use-checkbox', function() {
+                // Enable/disable the other inputs from this resolution group
+
+                if ($(this).get(0).checked) {
+                    $(this).closest('.sq-grid-system-control-res-group').find('select').removeAttr('disabled');
+                    $(this).closest('.sq-grid-system-control-res-group').find('.sq-grid-system-control-visible').removeClass('sq-control-disabled');
+                } else {
+                    $(this).closest('.sq-grid-system-control-res-group').find('select').attr('disabled', 'disabled');
+                    $(this).closest('.sq-grid-system-control-res-group').find('.sq-grid-system-control-visible').addClass('sq-control-disabled');
+                }
+
+                self.valueChanged();
+            });
+
+            // Toggle visibility
+            $(document).on('click', '#' + this.elementID + ' .sq-grid-system-control-visible', function() {
+                $(this).toggleClass('sq-grid-system-control-visible-not');
+                self.valueChanged();
+            });
+
+            // Select colspan
+            $(document).on('change', '#' + this.elementID + ' .sq-grid-system-control-select-colspan', function() {
+                self.valueChanged();
+            });
+        }
+    });
 })(jQuery, window, document);

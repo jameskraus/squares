@@ -2,11 +2,11 @@
 
 TO DO:
 
-- add additional controls for the current existing elements
-- new UI
-- generate HTML
 - move the grid system in a CSS file
 - add grid options for responsiveness
+- generate HTML
+- including the default controls to an element must be an option, set to true by default
+- new UI
 
 */
 
@@ -28,69 +28,6 @@ The usage scenario is the following (for now):
 4. Include the "squares.css" file in the front-end
 5. Insert the previously generated HTML code
 
-[tmp]
-
-Element Controls
-=========================================
-
-Common controls for all elements:
----------------------------------
-
-- General:
-- ID
-- Class
-- CSS
-- Layout
-- Box model widget - margin, padding
-- col span
-- Text
-- font-family
-- font-size
-- font-weight
-- font-style
-- line-height
-- color
-- text-align
-- text-decoration
-- text-transform
-- text-shadow
-- Style
-- background-color
-- background-color opacity
-- opacity
-- box-shadow
-- border width
-- border style
-- border color
-- border opacity
-- border radius
-
-
-Custom defined controls per element:
----------------------------------
-
-- Paragraph
-    - Text (large)
-- Heading
-    - Heading tag index
-    - Text
-- Image
-    - URL
-    - Image is a link (checkbox)
-    - Link to
-- Video
-    - WEBM url
-    - OGG url
-    - MP4 url
-    - Video is a link (checkbox)
-    - Link to
-- YouTube Video
-    - Embed code
-- Button
-    - Link to
-    - Text
-
-
 */
 
 ;(function ($, window, document, undefined) {
@@ -99,11 +36,6 @@ Custom defined controls per element:
 
     // =========================================================================
     // [API]
-
-    // The following functions allow to initialize the editor with a previously
-    // saved settings/content, get the current settings/content and generate
-    // HTML content for the end user.
-
 
     // Create an editor with previously stored settings in JSON format.
     // The "host" parameter is the root element of the editor. It contains
@@ -796,11 +728,31 @@ Custom defined controls per element:
                     default: 1
                 },
                 column_span: {
-                    name: 'Column Span',
-                    type: 'select',
+                    name: 'Grid Settings',
+                    type: 'grid system',
                     group: 'Layout Grid',
-                    options: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
-                    default: 12
+                    default: {
+                        xs: {
+                            use: 0,
+                            class: 'col-xs-1',
+                            visible: 0
+                        },
+                        sm: {
+                            use: 0,
+                            class: 'col-sm-1',
+                            visible: 0
+                        },
+                        md: {
+                            use: 0,
+                            class: 'col-md-1',
+                            visible: 1
+                        },
+                        lg: {
+                            use: 1,
+                            class: 'col-lg-1',
+                            visible: 1
+                        },
+                    }
                 },
                 width: {
                     name: 'Width',

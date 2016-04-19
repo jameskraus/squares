@@ -141,3 +141,38 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
+/* GRID SYSTEM */
+.sq-grid-system-control-res-group {
+    display: flex;
+    margin-bottom: 10px;
+}
+.sq-grid-system-control-res-name, .sq-grid-system-control-res-use, .sq-grid-system-control-colspan, .sq-grid-system-control-visible {
+    float: left;
+}
+.sq-grid-system-control-res-name, .sq-grid-system-control-res-use, .sq-grid-system-control-visible {
+    width: 32px;
+}
+.sq-grid-system-control-res-name, .sq-grid-system-control-visible {
+    line-height: 32px;
+    text-align: center;
+}
+.sq-grid-system-control-visible {
+    cursor: pointer;
+}
+.sq-grid-system-control-visible.sq-control-disabled {
+    cursor: auto;
+    opacity: 0.5;
+}
+.sq-grid-system-control-visible .fa-eye-slash {
+    display: none;
+}
+.sq-grid-system-control-visible-not .fa-eye-slash {
+    display: inline;
+}
+.sq-grid-system-control-visible-not .fa-eye {
+    display: none;
+}
+.sq-grid-system-control-colspan {
+    flex: 1;
+}
