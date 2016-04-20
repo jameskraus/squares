@@ -2,8 +2,9 @@
 
 TO DO:
 
-- generate HTML
-- including the default controls to an element must be an option, set to true by default
+- fix the youtube element
+- fix the button element
+- add lots of elements
 - new UI
 
 */
@@ -49,7 +50,7 @@ The usage scenario is the following (for now):
         }
 
         // Init the new editor
-        var squaresInstance = new Squares(host, settings);
+        var squaresInstance = new Squares(host, JSON.parse(settings));
         editors.push(squaresInstance);
     };
 
@@ -61,7 +62,7 @@ The usage scenario is the following (for now):
     // Called at the end to generate the final HTML code to be inserted in the
     // front-end.
     $.squaresGenerateHTML = function(host) {
-
+        return host.data.editor.generateHTML();
     };
 
     /*
@@ -113,7 +114,8 @@ The usage scenario is the following (for now):
         var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-298901","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
-        $.squaresInitWithSettings($('.squares').first(), JSON.parse(s));
+        var s = '{"containers":[{"id":"sq-container-775191","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"general":{"id":"element-1-id","classes":"some-class","css":"background: red;"},"layout":{"box_model":{"margin":{"top":20,"bottom":20}},"use_grid":0},"text_style":{"font_family":"serif","font_size":"39","font_style":"italic","line_height":"auto","text_color":"#ffffff","text_align":"center","text_decoration":"underline","text_transform":"uppercase"},"style":{"background_color":"#f5fc58","background_opacity":0.5571428571428572,"opacity":0.29642857142857143,"box_shadow":"0 0 10px black","border_width":2,"border_style":"dashed","border_color":"#00f92b","border_opacity":0.5285714285714286,"border_radius":100},"heading":{"heading":"h1"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
+        $.squaresInitWithSettings($('.squares').first(), s);
         // $.squaresInitWithSettings($('.squares').first());
     });
 
@@ -256,8 +258,6 @@ The usage scenario is the following (for now):
         } else {
             this.root.find('.sq-add-elements').show();
         }
-
-        console.log($.squaresGetCurrentSettings(this.host));
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -645,6 +645,19 @@ The usage scenario is the following (for now):
 
         return JSON.stringify(settings);
     }
+    Squares.prototype.generateHTML = function() {
+        // function generating the HTML code that will be used in the end product
+
+        var html = '';
+
+        for (var i=0; i<this.settings.containers.length; i++) {
+            var c = this.settings.containers[i];
+
+            html += c.generateHTML();
+        }
+
+        return html;
+    }
 
     // The "Container" class servs literally as a container
     // for Element objects, similar to Bootstrap's "row" class.
@@ -676,6 +689,23 @@ The usage scenario is the following (for now):
         html += '     <div class="sq-container-move"></div>';
 
         $('#' + this.id).append(html);
+    }
+    Container.prototype.generateHTML = function() {
+        // function generating the HTML code that will be used in the end product
+
+        var html = '';
+
+        html += '<div class="squares-container">';
+
+        for (var i=0; i<this.settings.elements.length; i++) {
+            var e = this.settings.elements[i];
+            html += e.generateHTML();
+        }
+
+        html += '<div class="squares-clear"></div>'
+        html += '</div>';
+
+        return html;
     }
 
     // The element object will represent a single piece of content.
@@ -912,6 +942,8 @@ The usage scenario is the following (for now):
         // Settings are used only for initialization
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
 
+        // console.log(this.settings);
+
         // This array will contain only the default values for each option and
         // it will be used only for compressing the generated JSON
         this.defaults = new Array();
@@ -929,6 +961,15 @@ The usage scenario is the following (for now):
     Element.prototype.init = function(options) {
         // Merge the custom controls with the default controls
         this.settings.controls = $.extend(true, {}, this.settings.defaultControls, this.settings.controls);
+
+        // Remove the default style controls if the option is specified
+        if (this.settings.useStyleControls === false) {
+            this.settings.controls.style = undefined;
+        }
+        // Remove the default text style controls if the option is specified
+        if (this.settings.useTextStyleControls === false) {
+            this.settings.controls.text_style = undefined;
+        }
 
         // Create associative array from this.settings.controls containing default values
         // Used only for compression
@@ -973,13 +1014,11 @@ The usage scenario is the following (for now):
                         var v = option.default;
 
                         if (options !== undefined && options[g] !== undefined && options[g][op] !== undefined) {
-                            console.log('there is a value');
                             if (typeof(options[g][op]) == 'object') {
                                 v = $.extend(true, {}, option.default, options[g][op]);
                             } else {
                                 v = options[g][op];
                             }
-                            console.log(v);
                         }
 
                         if (this.controls[g] === undefined) {
@@ -1071,29 +1110,29 @@ The usage scenario is the following (for now):
         var o = this.controls['layout'];
 
         // Box Model
-        if (o['box_model'].getVal().margin.top !== '' && !isNaN(o['box_model'].getVal().margin.top)) {
+        if (isNumeric(o['box_model'].getVal().margin.top)) {
             css += 'margin-top: ' + o['box_model'].getVal().margin.top + 'px; ';
         }
-        if (o['box_model'].getVal().margin.bottom !== '' && !isNaN(o['box_model'].getVal().margin.bottom)) {
+        if (isNumeric(o['box_model'].getVal().margin.bottom)) {
             css += 'margin-bottom: ' + o['box_model'].getVal().margin.bottom + 'px; ';
         }
-        if (o['box_model'].getVal().margin.left !== '' && !isNaN(o['box_model'].getVal().margin.left)) {
+        if (isNumeric(o['box_model'].getVal().margin.left)) {
             css += 'margin-left: ' + o['box_model'].getVal().margin.left + 'px; ';
         }
-        if (o['box_model'].getVal().margin.right !== '' && !isNaN(o['box_model'].getVal().margin.right)) {
+        if (isNumeric(o['box_model'].getVal().margin.right)) {
             css += 'margin-right: ' + o['box_model'].getVal().margin.right + 'px; ';
         }
 
-        if (o['box_model'].getVal().padding.top !== '' && !isNaN(o['box_model'].getVal().padding.top)) {
+        if (isNumeric(o['box_model'].getVal().padding.top)) {
             css += 'padding-top: ' + o['box_model'].getVal().padding.top + 'px; ';
         }
-        if (o['box_model'].getVal().padding.bottom !== '' && !isNaN(o['box_model'].getVal().padding.bottom)) {
+        if (isNumeric(o['box_model'].getVal().padding.bottom)) {
             css += 'padding-bottom: ' + o['box_model'].getVal().padding.bottom + 'px; ';
         }
-        if (o['box_model'].getVal().padding.left !== '' && !isNaN(o['box_model'].getVal().padding.left)) {
+        if (isNumeric(o['box_model'].getVal().padding.left)) {
             css += 'padding-left: ' + o['box_model'].getVal().padding.left + 'px; ';
         }
-        if (o['box_model'].getVal().padding.right !== '' && !isNaN(o['box_model'].getVal().padding.right)) {
+        if (isNumeric(o['box_model'].getVal().padding.right)) {
             css += 'padding-right: ' + o['box_model'].getVal().padding.right + 'px; ';
         }
 
@@ -1127,93 +1166,96 @@ The usage scenario is the following (for now):
         // =====================================================================
         var o = this.controls['text_style'];
 
-        // Font Family
-        if (o['font_family'].getVal() !== '') {
-            css += 'font-family: ' + o['font_family'].getVal() + '; ';
-        }
+        if (o) {
+            // Font Family
+            if (o['font_family'].getVal() !== '') {
+                css += 'font-family: ' + o['font_family'].getVal() + '; ';
+            }
 
-        // Font Size
-        if (o['font_size'].getVal() !== '' && !isNaN(o['font_size'].getVal())) {
-            css += 'font-size: ' + o['font_size'].getVal() + 'px; ';
-        }
+            // Font Size
+            if (isNumeric(o['font_size'].getVal())) {
+                css += 'font-size: ' + o['font_size'].getVal() + 'px; ';
+            }
 
-        // Font Weight
-        if (o['font_weight'].getVal() !== '') {
-            css += 'font-weight: ' + o['font_weight'].getVal() + '; ';
-        }
+            // Font Weight
+            if (o['font_weight'].getVal() !== '') {
+                css += 'font-weight: ' + o['font_weight'].getVal() + '; ';
+            }
 
-        // Font Style
-        if (o['font_style'].getVal() !== '') {
-            css += 'font-style: ' + o['font_style'].getVal() + '; ';
-        }
+            // Font Style
+            if (o['font_style'].getVal() !== '') {
+                css += 'font-style: ' + o['font_style'].getVal() + '; ';
+            }
 
-        // Line Height
-        if (o['line_height'].getVal() !== '' && !isNaN(o['line_height'].getVal())) {
-            css += 'line-height: ' + o['line_height'].getVal() + 'px; ';
-        }
+            // Line Height
+            if (isNumeric(o['line_height'].getVal())) {
+                css += 'line-height: ' + o['line_height'].getVal() + 'px; ';
+            }
 
-        // Text Color
-        if (o['text_color'].getVal() !== '') {
-            css += 'color: ' + o['text_color'].getVal() + '; ';
-        }
+            // Text Color
+            if (o['text_color'].getVal() !== '') {
+                css += 'color: ' + o['text_color'].getVal() + '; ';
+            }
 
-        // Text Align
-        if (o['text_align'].getVal() !== '') {
-            css += 'text-align: ' + o['text_align'].getVal() + '; ';
-        }
+            // Text Align
+            if (o['text_align'].getVal() !== '') {
+                css += 'text-align: ' + o['text_align'].getVal() + '; ';
+            }
 
-        // Text Decoration
-        if (o['text_decoration'].getVal() !== '') {
-            css += 'text-decoration: ' + o['text_decoration'].getVal() + '; ';
-        }
+            // Text Decoration
+            if (o['text_decoration'].getVal() !== '') {
+                css += 'text-decoration: ' + o['text_decoration'].getVal() + '; ';
+            }
 
-        // Text Transform
-        if (o['text_transform'].getVal() !== '') {
-            css += 'text-transform: ' + o['text_transform'].getVal() + '; ';
-        }
+            // Text Transform
+            if (o['text_transform'].getVal() !== '') {
+                css += 'text-transform: ' + o['text_transform'].getVal() + '; ';
+            }
 
-        // Text Shadow
-        if (o['text_shadow'].getVal() !== '') {
-            css += 'text-shadow: ' + o['text_shadow'].getVal() + '; ';
+            // Text Shadow
+            if (o['text_shadow'].getVal() !== '') {
+                css += 'text-shadow: ' + o['text_shadow'].getVal() + '; ';
+            }
         }
-
 
         // =====================================================================
         // Style
         // =====================================================================
         var o = this.controls['style'];
 
-        // Background Color
-        var c_bg = hexToRgb(o['background_color'].getVal());
-        css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['background_opacity'].getVal() +'); ';
+        if (o) {
+            // Background Color
+            var c_bg = hexToRgb(o['background_color'].getVal());
+            css += 'background-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['background_opacity'].getVal() +'); ';
 
-        // Opacity
-        if (o['opacity'].getVal() !== '' && !isNaN(o['opacity'].getVal())) {
-            css += 'opacity: ' + o['opacity'].getVal() + '; ';
-        }
+            // Opacity
+            if (isNumeric(o['opacity'].getVal())) {
+                css += 'opacity: ' + o['opacity'].getVal() + '; ';
+            }
 
-        // Box Shadow
-        if (o['box_shadow'].getVal() !== '') {
-            css += 'box-shadow: ' + o['box_shadow'].getVal() + '; ';
-        }
+            // Box Shadow
+            if (o['box_shadow'].getVal() !== '') {
+                css += 'box-shadow: ' + o['box_shadow'].getVal() + '; ';
+            }
 
-        // Border Width
-        if (o['border_width'].getVal() !== '' && !isNaN(o['border_width'].getVal())) {
-            css += 'border-width: ' + o['border_width'].getVal() + 'px; ';
-        }
+            // Border Width
+            if (isNumeric(o['border_width'].getVal())) {
+                css += 'border-width: ' + o['border_width'].getVal() + 'px; ';
+            }
 
-        // Border Style
-        if (o['border_style'].getVal() !== '') {
-            css += 'border-style: ' + o['border_style'].getVal() + '; ';
-        }
+            // Border Style
+            if (o['border_style'].getVal() !== '') {
+                css += 'border-style: ' + o['border_style'].getVal() + '; ';
+            }
 
-        // Border Color
-        var c_bg = hexToRgb(o['border_color'].getVal());
-        css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['border_opacity'].getVal() +'); ';
+            // Border Color
+            var c_bg = hexToRgb(o['border_color'].getVal());
+            css += 'border-color: rgba('+ c_bg.r +', '+ c_bg.g +', '+ c_bg.b +', '+ o['border_opacity'].getVal() +'); ';
 
-        // Border Radius
-        if (o['border_radius'].getVal() !== '' && !isNaN(o['border_radius'].getVal())) {
-            css += 'border-radius: ' + o['border_radius'].getVal() + 'px; ';
+            // Border Radius
+            if (isNumeric(o['border_radius'].getVal())) {
+                css += 'border-radius: ' + o['border_radius'].getVal() + 'px; ';
+            }
         }
 
         return css;
@@ -1229,31 +1271,30 @@ The usage scenario is the following (for now):
                 classes += v.xs.class + ' ';
 
                 if (parseInt(v.xs.visible, 10) == 0) {
-                    classes += ' hidden-xs';
+                    classes += 'hidden-xs ';
                 }
             }
             if (parseInt(v.sm.use, 10) == 1) {
                 classes += v.sm.class + ' ';
 
                 if (parseInt(v.sm.visible, 10) == 0) {
-                    classes += ' hidden-sm';
+                    classes += 'hidden-sm ';
                 }
             }
             if (parseInt(v.md.use, 10) == 1) {
                 classes += v.md.class + ' ';
 
                 if (parseInt(v.md.visible, 10) == 0) {
-                    classes += ' hidden-md';
+                    classes += 'hidden-md ';
                 }
             }
             if (parseInt(v.lg.use, 10) == 1) {
                 classes += v.lg.class + ' ';
 
                 if (parseInt(v.lg.visible, 10) == 0) {
-                    classes += ' hidden-lg';
+                    classes += 'hidden-lg ';
                 }
             }
-
             return classes;
         } else {
             return '';
@@ -1297,6 +1338,17 @@ The usage scenario is the following (for now):
         }
 
         return options;
+    }
+    Element.prototype.generateHTML = function() {
+        // function generating the HTML code that will be used in the end product
+
+        var html = '';
+
+        html += '<div id="'+ this.id +'" class="squares-element '+ this.generateLayoutClass() +'" style="'+ this.generateStyles() +'">';
+        html += this.content();
+        html += '</div>';
+
+        return html;
     }
 
     function EditorWindow() {
@@ -1758,6 +1810,9 @@ The usage scenario is the following (for now):
         var elementWidth = columnWidth * span;
 
         return elementWidth + '%';
+    }
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
 })(jQuery, window, document);

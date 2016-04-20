@@ -1,3 +1,18 @@
+/* Some fixes */
+
+.squares-clear {
+    clear: both;
+}
+.squares-element {
+    float: left;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.squares-element img, .squares-element video {
+    max-width: 100%;
+}
+
 /* Contains Bootstrap's grid system, with some features removed. */
 
 
