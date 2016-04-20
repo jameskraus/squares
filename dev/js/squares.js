@@ -2,7 +2,6 @@
 
 TO DO:
 
-- reordering components is bugged
 - generate HTML
 - including the default controls to an element must be an option, set to true by default
 - new UI
@@ -459,9 +458,11 @@ The usage scenario is the following (for now):
             this.elementDragMap = new Array();
 
             var draggedElementObject = this.settings.containers[this.draggedElementContainerIndex].settings.elements[this.draggedElementIndex];
-            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.controls['layout']['column_span'].getVal());
 
-            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElementWidth +'; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
+            this.draggedElementWidth = getWidthOfElementInGrid(draggedElementObject.controls['layout']['column_span'].getVal());
+            this.draggedElementWidth = this.draggedElement.outerWidth();
+
+            var dummyElementHTML = '<div id="sq-dummy-element-tmp" style="width: '+ this.draggedElementWidth +'px; height: '+ this.draggedElement.outerHeight() +'px;"></div>';
 
             this.draggedElement.hide();
             for (var i=0; i<this.settings.containers.length; i++) {

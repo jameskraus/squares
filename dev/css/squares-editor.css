@@ -219,6 +219,7 @@
 }
 #sq-dummy-element-tmp {
     float: left;
+    background: red;
 }
 
 .sq-element img, .sq-element video, .sq-element iframe {
