@@ -2,10 +2,10 @@
 
 TO DO:
 
+- new UI
 - fix the youtube element
 - fix the button element
-- add lots of elements
-- new UI
+- add lots of elements (as many as possible from Bootstrap)
 
 */
 
@@ -1368,24 +1368,30 @@ The usage scenario is the following (for now):
 
         this.init();
         this.events();
+        this.show(600, 100);
     }
     EditorWindow.prototype.init = function() {
         var WindowHTML = '';
 
         WindowHTML += ' <div class="sq-window" id="sq-window-'+ this.id +'">';
         WindowHTML += '     <div class="sq-window-header">';
-        WindowHTML += '         <div class="sq-window-title">Squares</div>';
+        WindowHTML += '         <div class="sq-window-main-nav">';
+        WindowHTML += '             <div id="sq-window-main-nav-button-elements" class="sq-window-main-nav-button" data-tab-group="sq-window-main-tab-group" data-tab-index="0" data-tab-button><i class="fa fa-cube" aria-hidden="true"></i></div>';
+        WindowHTML += '             <div id="sq-window-main-nav-button-settings" class="sq-window-main-nav-button" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-button><i class="fa fa-cog" aria-hidden="true"></i></div>';
+        WindowHTML += '         </div>';
         WindowHTML += '         <div class="sq-window-close"><i class="fa fa-times"></i></div>';
         WindowHTML += '     </div>';
         WindowHTML += '     <div class="sq-window-container">';
 
-        // Tab buttons
-        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="sq-window-main-tab-group" data-tab-index="0">Elements</div>';
-        WindowHTML += '         <div class="sq-window-tab-button sq-window-main-tab-button" data-tab-group="sq-window-main-tab-group" data-tab-index="1">Settings</div>';
-        WindowHTML += '         <div class="clear"></div>';
-
         // Elements tab
-        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="0" id="sq-window-elements-tab-content">';
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="0" data-tab-content id="sq-window-elements-tab-content">';
+        WindowHTML += '             <div class="sq-window-main-tab-header">';
+        WindowHTML += '                 <h1>Elements</h1>';
+        WindowHTML += '                 <div id="sq-window-elements-search">';
+        WindowHTML += '                     <i class="fa fa-search" aria-hidden="true"></i>';
+        WindowHTML += '                     <input type="text" id="sq-window-elements-search">';
+        WindowHTML += '                 </div>';
+        WindowHTML += '             </div>';
         WindowHTML += '             <div class="sq-element-thumb-container">';
         for (var i=0; i<registeredElements.length; i++) {
             WindowHTML += '             <div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
@@ -1395,7 +1401,9 @@ The usage scenario is the following (for now):
         WindowHTML += '         </div>';
 
         // Settings tab
-        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" id="sq-window-settings-tab-content">';
+        WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-content id="sq-window-settings-tab-content">';
+        WindowHTML += '             <div class="sq-window-main-tab-header"><h1>Settings</h1></div>';
+        WindowHTML += '             <div id="sq-window-settings-tab-inner-content"></div>';
         WindowHTML += '         </div>';
 
         WindowHTML += '     </div>';
@@ -1429,8 +1437,12 @@ The usage scenario is the following (for now):
             $('#sq-window-elements-tab-content').hide();
             $('#sq-window-settings-tab-content').show();
 
+            // Tabs
+            $('.sq-window-main-nav-button').removeClass('active');
+            $('#sq-window-main-nav-button-settings').addClass('active');
+
             // load the element settings
-            $('#sq-window-settings-tab-content').html(el.getSettingsForm());
+            $('#sq-window-settings-tab-inner-content').html(el.getSettingsForm());
             el.loadOptions();
 
             // go to the first tab of the settings
@@ -1449,15 +1461,22 @@ The usage scenario is the following (for now):
             // Show the elements tab
             $('#sq-window-elements-tab-content').show();
             $('#sq-window-settings-tab-content').hide();
+
+            // Tabs
+            $('.sq-window-main-nav-button').removeClass('active');
+            $('#sq-window-main-nav-button-elements').addClass('active');
         });
 
-        // Tab functionality
-        $(document).on('click', '.sq-window-tab-button', function() {
+        // Main Nav Tab functionality
+        $(document).on('click', '[data-tab-button]', function() {
             var index = $(this).data('tab-index');
             var tabGroup = $(this).data('tab-group');
 
-            $('.sq-window-tab-content[data-tab-group="'+ tabGroup +'"]').hide();
-            $('.sq-window-tab-content[data-tab-group="'+ tabGroup +'"][data-tab-index="'+ index +'"]').show();
+            $('[data-tab-button][data-tab-group="'+ tabGroup +'"]').removeClass('active');
+            $(this).addClass('active');
+
+            $('[data-tab-content][data-tab-group="'+ tabGroup +'"]').hide();
+            $('[data-tab-content][data-tab-group="'+ tabGroup +'"][data-tab-index="'+ index +'"]').show();
         });
 
         // Button for closing the elements window
@@ -1672,9 +1691,6 @@ The usage scenario is the following (for now):
                 top: y
             });
         }
-
-        $('.sq-window-active').removeClass('sq-window-active');
-        this.root.addClass('sq-window-active');
     }
     EditorWindow.prototype.hide = function() {
         this.visible = false;
