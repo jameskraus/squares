@@ -114,7 +114,7 @@ The usage scenario is the following (for now):
         var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
         var s = '{"containers":[{"id":"sq-container-298901","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
-        var s = '{"containers":[{"id":"sq-container-775191","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"general":{"id":"element-1-id","classes":"some-class","css":"background: red;"},"layout":{"box_model":{"margin":{"top":20,"bottom":20}},"use_grid":0},"text_style":{"font_family":"serif","font_size":"39","font_style":"italic","line_height":"auto","text_color":"#ffffff","text_align":"center","text_decoration":"underline","text_transform":"uppercase"},"style":{"background_color":"#f5fc58","background_opacity":0.5571428571428572,"opacity":0.29642857142857143,"box_shadow":"0 0 10px black","border_width":2,"border_style":"dashed","border_color":"#00f92b","border_opacity":0.5285714285714286,"border_radius":100},"heading":{"heading":"h1"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
+        var s = '{"containers":[{"id":"sq-container-775191","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"general":{"id":"element-1-id","classes":"some-class","css":"background: red;"},"layout":{"box_model":{"margin":{"top":20,"bottom":20}},"use_grid":0},"font":{"font_family":"serif","font_size":"39","font_style":"italic","line_height":"auto","text_color":"#ffffff","text_align":"center","text_decoration":"underline","text_transform":"uppercase"},"style":{"background_color":"#f5fc58","background_opacity":0.5571428571428572,"opacity":0.29642857142857143,"box_shadow":"0 0 10px black","border_width":2,"border_style":"dashed","border_color":"#00f92b","border_opacity":0.5285714285714286,"border_radius":100},"heading":{"heading":"h1"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
         $.squaresInitWithSettings($('.squares').first(), s);
         // $.squaresInitWithSettings($('.squares').first());
     });
@@ -810,7 +810,7 @@ The usage scenario is the following (for now):
                     default: 1
                 }
             },
-            text_style: {
+            font: {
                 font_family: {
                     name: 'Font Family',
                     type: 'text',
@@ -967,8 +967,8 @@ The usage scenario is the following (for now):
             this.settings.controls.style = undefined;
         }
         // Remove the default text style controls if the option is specified
-        if (this.settings.useTextStyleControls === false) {
-            this.settings.controls.text_style = undefined;
+        if (this.settings.useFontControls === false) {
+            this.settings.controls.font = undefined;
         }
 
         // Create associative array from this.settings.controls containing default values
@@ -1045,20 +1045,24 @@ The usage scenario is the following (for now):
         var html = '';
 
         // Create tabs
-        html += '<div class="sq-window-tab-buttons-group">';
+        html += '<div id="sq-window-settings-sidebar">';
+        html += '   <div id="sq-window-settings-sidebar-inner-wrap">';
         var groupCount = 0;
         for (var g in this.controls) {
-            html += '<div class="sq-window-tab-button" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">'+ g +'</div>';
+            html += '<div class="sq-window-settings-sidebar-button" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group" data-tab-button>';
+            html += '   <div class="sq-window-settings-sidebar-button-icon"><i class="fa fa-toggle-on" aria-hidden="true"></i></div>';
+            html += '   <div class="sq-window-settings-sidebar-button-title">'+ g +'</div>';
+            html += '</div>';
             groupCount++;
         }
+        html += '   </div>';
         html += '</div>';
 
         // Create content for each tab
-        html += '<div class="sq-window-tab-content-wrap">';
-
         var groupCount = 0;
         for (var g in this.controls) {
-            html += '<div class="sq-window-tab-content" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
+            html += '<div class="sq-settings-window-content" data-tab-content data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
+            html += '   <div class="sq-settings-window-content-overflow-wrap sq-window-content">';
 
             var tabGroup = this.controls[g];
             groupCount++;
@@ -1072,9 +1076,9 @@ The usage scenario is the following (for now):
                 html += '</div>';
             }
 
+            html += '   </div>';
             html += '</div>';
         }
-        html += '</div>';
 
         return html;
     }
@@ -1164,7 +1168,7 @@ The usage scenario is the following (for now):
         // =====================================================================
         // Text
         // =====================================================================
-        var o = this.controls['text_style'];
+        var o = this.controls['font'];
 
         if (o) {
             // Font Family
@@ -1411,7 +1415,9 @@ The usage scenario is the following (for now):
         // Settings tab
         WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-content id="sq-window-settings-tab-content">';
         WindowHTML += '             <div class="sq-window-main-tab-header"><h1>Settings</h1></div>';
-        WindowHTML += '             <div id="sq-window-settings-tab-inner-content" class="sq-window-content"></div>';
+        WindowHTML += '             <div id="sq-window-settings-tab-inner-content">';
+        WindowHTML += '                 <div id="sq-window-settings-tab-inner-content-inner-wrap"></div>';
+        WindowHTML += '             </div>';
         WindowHTML += '         </div>';
 
         WindowHTML += '     </div>';
@@ -1465,21 +1471,24 @@ The usage scenario is the following (for now):
             var elementIndex = $(this).data('index');
             var el = editor.settings.containers[containerIndex].settings.elements[elementIndex];
 
-            // open the settings tab
+            // Open the settings tab
             $('#sq-window-elements-tab-content').hide();
             $('#sq-window-settings-tab-content').show();
 
-            // Tabs
+            // Highlight the settings tab
             $('.sq-window-main-nav-button').removeClass('active');
             $('#sq-window-main-nav-button-settings').addClass('active');
 
-            // load the element settings
-            $('#sq-window-settings-tab-inner-content').html(el.getSettingsForm());
+            // Load the element settings
+            $('#sq-window-settings-tab-inner-content-inner-wrap').html(el.getSettingsForm());
             el.loadOptions();
 
-            // go to the first tab of the settings
-            $('.sq-window-tab-content[data-tab-group="sq-element-settings-tab-group"]').hide();
-            $('.sq-window-tab-content[data-tab-group="sq-element-settings-tab-group"][data-tab-index="0"]').show();
+            // Go to the first tab of the settings
+            $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"]').hide();
+            $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"][data-tab-index="0"]').show();
+
+            // Highlight the first tab button
+            $('[data-tab-button][data-tab-group="sq-element-settings-tab-group"]').removeClass('active').first().addClass('active');
         });
 
         // Open the window when clicked on the add elements button
@@ -1499,7 +1508,7 @@ The usage scenario is the following (for now):
             $('#sq-window-main-nav-button-elements').addClass('active');
         });
 
-        // Main Nav Tab functionality
+        // Generic Tab functionality
         $(document).on('click', '[data-tab-button]', function() {
             var index = $(this).data('tab-index');
             var tabGroup = $(this).data('tab-group');

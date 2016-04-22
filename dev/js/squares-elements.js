@@ -133,7 +133,7 @@
         name: "YouTube",
         iconClass: "fa fa-youtube",
         useStyleControls: false,
-        useTextStyleControls: false,
+        useFontControls: false,
         controls: {
             youtube: {
                 embed_code: {
