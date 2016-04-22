@@ -1389,12 +1389,20 @@ The usage scenario is the following (for now):
         WindowHTML += '                 <h1>Elements</h1>';
         WindowHTML += '                 <div id="sq-window-elements-search">';
         WindowHTML += '                     <i class="fa fa-search" aria-hidden="true"></i>';
-        WindowHTML += '                     <input type="text" id="sq-window-elements-search">';
+        WindowHTML += '                     <input type="text" id="sq-window-elements-search-input">';
         WindowHTML += '                 </div>';
         WindowHTML += '             </div>';
-        WindowHTML += '             <div class="sq-element-thumb-container">';
+        WindowHTML += '             <div class="sq-window-content">';
+        WindowHTML += '                 <div id="sq-no-elements-found">No elements found.</div>';
         for (var i=0; i<registeredElements.length; i++) {
-            WindowHTML += '             <div class="sq-element-thumb" data-index="' + i + '"><i class="' + registeredElements[i].iconClass + '"></i></div>';
+            WindowHTML += '             <div class="sq-element-thumb" data-index="' + i + '">';
+            WindowHTML += '                 <div class="sq-element-thumb-icon">';
+            WindowHTML += '                     <i class="' + registeredElements[i].iconClass + '"></i>';
+            WindowHTML += '                 </div>';
+            WindowHTML += '                 <div class="sq-element-thumb-title">';
+            WindowHTML += '                     <h2>'+ registeredElements[i].name +'</h2>';
+            WindowHTML += '                 </div>';
+            WindowHTML += '             </div>';
         }
         WindowHTML += '                 <div class="clear"></div>';
         WindowHTML += '             </div>';
@@ -1403,7 +1411,7 @@ The usage scenario is the following (for now):
         // Settings tab
         WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-content id="sq-window-settings-tab-content">';
         WindowHTML += '             <div class="sq-window-main-tab-header"><h1>Settings</h1></div>';
-        WindowHTML += '             <div id="sq-window-settings-tab-inner-content"></div>';
+        WindowHTML += '             <div id="sq-window-settings-tab-inner-content" class="sq-window-content"></div>';
         WindowHTML += '         </div>';
 
         WindowHTML += '     </div>';
@@ -1419,6 +1427,30 @@ The usage scenario is the following (for now):
     }
     EditorWindow.prototype.events = function() {
         var self = this;
+
+        // Search field
+        $(document).on('keyup', '#sq-window-elements-search-input', function() {
+            var v = $(this).val().toLowerCase();
+
+            var elementsFound = false;
+
+            $('.sq-element-thumb').each(function() {
+                var elementTitle = $(this).find('h2').html();
+
+                if (elementTitle.toLowerCase().indexOf(v) >= 0) {
+                    elementsFound = true;
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (!elementsFound) {
+                $('#sq-no-elements-found').show();
+            } else {
+                $('#sq-no-elements-found').hide();
+            }
+        });
 
         // Open the editor window when click on element
         $(document).on('click', '.sq-element', function() {

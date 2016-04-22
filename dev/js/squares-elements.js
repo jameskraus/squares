@@ -7,7 +7,7 @@
     // Register built-in elements using the public API
     $.squaresRegisterElement({
         name: "Paragraph",
-        iconClass: "fa fa-font",
+        iconClass: "fa fa-paragraph",
         controls: {
             text: {
                 text: {
@@ -23,7 +23,7 @@
     });
     $.squaresRegisterElement({
         name: "Heading",
-        iconClass: "fa fa-header",
+        iconClass: "fa fa-tag",
         controls: {
             heading: {
                 text: {
@@ -45,7 +45,7 @@
     });
     $.squaresRegisterElement({
         name: "Image",
-        iconClass: "fa fa-picture-o",
+        iconClass: "fa fa-camera",
         controls: {
             image: {
                 url: {
@@ -171,7 +171,7 @@
     });
     $.squaresRegisterElement({
         name: "Button",
-        iconClass: "fa fa-hand-pointer-o",
+        iconClass: "fa fa-link",
         controls: {
             button: {
                 text: {
