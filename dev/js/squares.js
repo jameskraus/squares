@@ -3,6 +3,8 @@
 TO DO:
 
 - new UI
+    - style the form controls
+    - create a 'switch' control
 - fix the youtube element
 - fix the button element
 - add lots of elements (as many as possible from Bootstrap)
@@ -1055,7 +1057,6 @@ The usage scenario is the following (for now):
 
         // Create tabs
         html += '<div id="sq-window-settings-sidebar">';
-        html += '   <div id="sq-window-settings-sidebar-inner-wrap">';
         var groupCount = 0;
         for (var g in this.controls) {
             var icon = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
@@ -1070,14 +1071,15 @@ The usage scenario is the following (for now):
             html += '</div>';
             groupCount++;
         }
-        html += '   </div>';
         html += '</div>';
 
+
         // Create content for each tab
+        html += '<div class="sq-settings-window-content-wrap">';
+
         var groupCount = 0;
         for (var g in this.controls) {
-            html += '<div class="sq-settings-window-content" data-tab-content data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
-            html += '   <div class="sq-settings-window-content-overflow-wrap sq-window-content">';
+            html += '<div class="sq-window-content" data-tab-content data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
 
             var tabGroup = this.controls[g];
             groupCount++;
@@ -1091,9 +1093,10 @@ The usage scenario is the following (for now):
                 html += '</div>';
             }
 
-            html += '   </div>';
             html += '</div>';
         }
+
+        html += '</div>';
 
         return html;
     }
@@ -1431,7 +1434,7 @@ The usage scenario is the following (for now):
         WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-content id="sq-window-settings-tab-content">';
         WindowHTML += '             <div class="sq-window-main-tab-header"><h1>Settings</h1></div>';
         WindowHTML += '             <div id="sq-window-settings-tab-inner-content">';
-        WindowHTML += '                 <div id="sq-window-settings-tab-inner-content-inner-wrap"></div>';
+
         WindowHTML += '             </div>';
         WindowHTML += '         </div>';
 
@@ -1495,9 +1498,9 @@ The usage scenario is the following (for now):
             $('#sq-window-main-nav-button-settings').addClass('active');
 
             // Load the element settings
-            $('#sq-window-settings-tab-inner-content-inner-wrap').html(el.getSettingsForm());
+            $('#sq-window-settings-tab-inner-content').html(el.getSettingsForm());
             el.loadOptions();
-
+            return;
             // Go to the first tab of the settings
             $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"]').hide();
             $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"][data-tab-index="0"]').show();

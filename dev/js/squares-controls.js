@@ -235,6 +235,7 @@
             ball.css({
                 left: trackWidth * progress
             });
+
         },
         HTML: function() {
             var html = '';

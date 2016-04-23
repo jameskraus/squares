@@ -309,16 +309,10 @@
 }
 
 #sq-window-settings-tab-inner-content {
-    display: table;
     width: 100%;
-}
-#sq-window-settings-tab-inner-content-inner-wrap {
-    width: 100%;
-    display: table-row;
+    display: flex;
 }
 #sq-window-settings-sidebar {
-    display: table-cell;
-    vertical-align: top;
     width: 64px;
     background: #f7f7f7;
     border-right: 1px solid #dbdbdb;
@@ -326,10 +320,8 @@
 #sq-window-settings-sidebar-inner-wrap {
     width: 64px;
 }
-.sq-settings-window-content {
-    display: table-cell;
-}
-.sq-settings-window-content-overflow-wrap {
+.sq-settings-window-content-wrap {
+    flex: 1;
     max-height: 500px;
     overflow-y: auto;
 }
