@@ -929,6 +929,12 @@ The usage scenario is the following (for now):
                 },
             }
         },
+        defaultControlGroupIcons: {
+            general: 'fa fa-wrench',
+            layout: 'fa fa-th-large',
+            font: 'fa fa-font',
+            style: 'fa fa-paint-brush'
+        },
         content: function() {
             return '';
         }
@@ -961,6 +967,9 @@ The usage scenario is the following (for now):
     Element.prototype.init = function(options) {
         // Merge the custom controls with the default controls
         this.settings.controls = $.extend(true, {}, this.settings.defaultControls, this.settings.controls);
+
+        // Merge the custom control group icons with the default control group icons
+        this.settings.controlGroupIcons = $.extend(true, {}, this.settings.defaultControlGroupIcons, this.settings.controlGroupIcons);
 
         // Remove the default style controls if the option is specified
         if (this.settings.useStyleControls === false) {
@@ -1049,8 +1058,14 @@ The usage scenario is the following (for now):
         html += '   <div id="sq-window-settings-sidebar-inner-wrap">';
         var groupCount = 0;
         for (var g in this.controls) {
+            var icon = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+
+            if (this.settings.controlGroupIcons[g]) {
+                icon = '<i class="'+ this.settings.controlGroupIcons[g] +'" aria-hidden="true"></i>';
+            }
+
             html += '<div class="sq-window-settings-sidebar-button" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group" data-tab-button>';
-            html += '   <div class="sq-window-settings-sidebar-button-icon"><i class="fa fa-toggle-on" aria-hidden="true"></i></div>';
+            html += '   <div class="sq-window-settings-sidebar-button-icon">'+ icon +'</div>';
             html += '   <div class="sq-window-settings-sidebar-button-title">'+ g +'</div>';
             html += '</div>';
             groupCount++;

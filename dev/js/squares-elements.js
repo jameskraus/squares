@@ -17,13 +17,16 @@
                 }
             }
         },
+        controlGroupIcons: {
+            text: 'fa fa-ellipsis-h'
+        },
         content: function() {
             return '<p id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'">'+ this.controls.text.text.getVal() +'</p>';
         }
     });
     $.squaresRegisterElement({
         name: "Heading",
-        iconClass: "fa fa-tag",
+        iconClass: "fa fa-header",
         controls: {
             heading: {
                 text: {
@@ -38,6 +41,9 @@
                     default: 'h3'
                 }
             }
+        },
+        controlGroupIcons: {
+            heading: 'fa fa-header'
         },
         content: function() {
             return '<'+ this.controls['heading']['heading'].getVal() +' id="'+ this.controls['general']['id'].getVal() +'" style="'+ this.controls['general']['css'].getVal() +'" class="'+ this.controls['general']['classes'].getVal() +'">'+ this.controls.heading.text.getVal() +'</'+ this.controls['heading']['heading'].getVal() +'>';
@@ -65,6 +71,9 @@
                 }
             }
         },
+        controlGroupIcons: {
+            image: 'fa fa-camera'
+        },
         content: function() {
             var html = '';
 
@@ -84,6 +93,7 @@
     $.squaresRegisterElement({
         name: "Video",
         iconClass: "fa fa-video-camera",
+        useFontControls: false,
         controls: {
             video: {
                 mp4_url: {
@@ -112,6 +122,9 @@
                     default: '#'
                 }
             }
+        },
+        controlGroupIcons: {
+            video: 'fa fa-video-camera'
         },
         content: function() {
             var html = '';
@@ -147,6 +160,9 @@
                     default: 1
                 },
             }
+        },
+        controlGroupIcons: {
+            youtube: 'fa fa-youtube'
         },
         content: function() {
             // to do:
@@ -185,6 +201,9 @@
                     default: '#'
                 },
             }
+        },
+        controlGroupIcons: {
+            button: 'fa fa-link'
         },
         content: function() {
             return '<a href="'+ this.controls.button.link_to.getVal() +'"><input type="button" value="'+ this.controls.button.text.getVal() +'" id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"></a>';
