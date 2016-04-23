@@ -3,8 +3,7 @@
 TO DO:
 
 - new UI
-    - style the form controls
-    - create a 'switch' control
+    - editor UI
 - fix the youtube element
 - fix the button element
 - add lots of elements (as many as possible from Bootstrap)
@@ -757,7 +756,7 @@ The usage scenario is the following (for now):
                 },
                 use_grid: {
                     name: 'Use Grid System',
-                    type: 'checkbox',
+                    type: 'switch',
                     default: 1
                 },
                 column_span: {
@@ -795,7 +794,7 @@ The usage scenario is the following (for now):
                 },
                 auto_width: {
                     name: 'Auto Width',
-                    type: 'checkbox',
+                    type: 'switch',
                     group: 'Layout Manual',
                     default: 1
                 },
@@ -807,7 +806,7 @@ The usage scenario is the following (for now):
                 },
                 auto_height: {
                     name: 'Auto Height',
-                    type: 'checkbox',
+                    type: 'switch',
                     group: 'Layout Manual',
                     default: 1
                 }
@@ -1088,8 +1087,14 @@ The usage scenario is the following (for now):
                 var control = tabGroup[c];
 
                 html += '<div class="sq-form-control '+ control.elementClass +'">';
-                html += '<label for="'+ control.elementID +'">'+ control.name +'</label>';
-                html += control.HTML();
+
+                if (control.customLabel) {
+                    html += control.HTML();
+                } else {
+                    html += '<label for="'+ control.elementID +'">'+ control.name +'</label>';
+                    html += control.HTML();
+                }
+
                 html += '</div>';
             }
 
@@ -1758,7 +1763,6 @@ The usage scenario is the following (for now):
 
     function SquaresControl(s, name, group, tabGroup, options, valueUpdated) {
         // The 's' argument is the array coming from the registeredControls array
-
         // Automatically generated at the time of object creation
         this.id = Math.floor(Math.random() * 9999) + 1;
         this.elementID = 'sq-control-' + this.id;
@@ -1794,7 +1798,8 @@ The usage scenario is the following (for now):
         // Create a callback function for when the control updates its value
         this.valueUpdated = valueUpdated;
 
-        // to do: rework the getters and setters
+        // Inline label flag
+        this.customLabel = s.customLabel;
     }
     SquaresControl.prototype.getVal = function() {
         return this._value;

@@ -186,6 +186,44 @@
 .sq-grid-system-control-colspan {
     flex: 1;
 }
-an {
-    flex: 1;
+
+/* SWITCH */
+
+.sq-control-switch {
+    float: left;
+    width: 39px;
+    height: 24px;
+    background: #b8b8b8;
+    border-radius: 24px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s cubic-bezier(.55,0,.1,1);
+    -moz-transition: background 0.2s cubic-bezier(.55,0,.1,1);
+    -webkit-transition: background 0.2s cubic-bezier(.55,0,.1,1);
+}
+.sq-control-switch-ball {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 20px;
+    transition: left 0.2s cubic-bezier(.55,0,.1,1);
+    -moz-transition: left 0.2s cubic-bezier(.55,0,.1,1);
+    -webkit-transition: left 0.2s cubic-bezier(.55,0,.1,1);
+}
+.sq-control-switch.active {
+    background: #2196f3;
+}
+.sq-control-switch.active .sq-control-switch-ball {
+    left: 17px;
+    top: 2px;
+}
+.sq-control-switch-label {
+    cursor: pointer;
+    height: 24px;
+    line-height: 24px;
+    float: left;
+    margin-left: 8px;
 }

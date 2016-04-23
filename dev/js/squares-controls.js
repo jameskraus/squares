@@ -668,4 +668,49 @@
             });
         }
     });
+    $.squaresRegisterControl({
+        type: 'switch',
+        customLabel: true,
+        getValue: function() {
+            var v = 0;
+
+            if ($('#' + this.elementID).hasClass('active')) {
+                v = 1;
+            }
+
+            return v;
+        },
+        setValue: function(v) {
+            if (parseInt(v, 10) == 1) {
+                $('#' + this.elementID).addClass('active');
+            } else {
+                $('#' + this.elementID).removeClass('active');
+            }
+        },
+        HTML: function() {
+            var html = '';
+
+            html += '<div class="sq-control-switch" id="'+ this.elementID +'">';
+            html += '   <div class="sq-control-switch-ball"></div>';
+            html += '</div>';
+
+            html += '<div class="sq-control-switch-label" id="'+ this.elementID +'-label">'+ this.name +'</div>';
+            html += '<div class="clear"></div>';
+
+            return html;
+        },
+        init: function() {
+            var self = this;
+            var ix = 0, iex = 0, dragging = false;
+
+            $(document).on('click', '#' + this.elementID, function() {
+                $(this).toggleClass('active');
+                self.valueChanged();
+            });
+            $(document).on('click', '#' + this.elementID + '-label', function() {
+                $('#' + self.elementID).toggleClass('active');
+                self.valueChanged();
+            });
+        }
+    });
 })(jQuery, window, document);

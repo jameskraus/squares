@@ -61,7 +61,7 @@
                 },
                 image_is_a_link: {
                     name: 'Image is a Link',
-                    type: 'checkbox',
+                    type: 'switch',
                     default: 0
                 },
                 link_to: {
@@ -113,7 +113,7 @@
                 },
                 video_is_a_link: {
                     name: 'Video is a Link',
-                    type: 'checkbox',
+                    type: 'switch',
                     default: 0
                 },
                 link_to: {
@@ -156,7 +156,7 @@
                 },
                 allow_fullscreen: {
                     name: 'Allow Fullscreen',
-                    type: 'checkbox',
+                    type: 'switch',
                     default: 1
                 },
             }
