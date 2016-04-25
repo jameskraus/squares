@@ -13,6 +13,21 @@
     max-width: 100%;
 }
 
+.squares-button {
+    text-decoration: none;
+    text-align: center;
+}
+.squares-button:hover {
+    filter: brightness(1.1);
+    -moz-filter: brightness(1.1);
+    -webkit-filter: brightness(1.1);
+}
+.squares-button:active {
+    filter: brightness(0.9);
+    -moz-filter: brightness(0.9);
+    -webkit-filter: brightness(0.9);
+}
+
 /* Contains Bootstrap's grid system, with some features removed. */
 
 

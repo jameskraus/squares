@@ -701,7 +701,6 @@
         },
         init: function() {
             var self = this;
-            var ix = 0, iex = 0, dragging = false;
 
             $(document).on('click', '#' + this.elementID, function() {
                 $(this).toggleClass('active');
@@ -709,6 +708,41 @@
             });
             $(document).on('click', '#' + this.elementID + '-label', function() {
                 $('#' + self.elementID).toggleClass('active');
+                self.valueChanged();
+            });
+        }
+    });
+    $.squaresRegisterControl({
+        type: 'button group',
+        getValue: function() {
+            var v = $('#' + this.elementID).find('.active[data-button-value]').data('button-value');
+
+            return v;
+        },
+        setValue: function(v) {
+            $('#' + this.elementID).find('[data-button-value]').removeClass('active');
+            $('#' + this.elementID).find('[data-button-value="'+ v +'"]').addClass('active');
+        },
+        HTML: function() {
+            var html = '';
+
+            html += '<div class="sq-control-button-group" id="'+ this.elementID +'">';
+
+            for (var i=0; i<this.options.length; i++) {
+                html += '<div class="sq-control-button-group-button" data-button-value="'+ this.options[i] +'">'+ this.options[i] +'</div>';
+            }
+
+            html += '</div>';
+
+            return html;
+        },
+        init: function() {
+            var self = this;
+
+            $(document).on('click', '#' + this.elementID + ' .sq-control-button-group-button', function() {
+                $(this).siblings().removeClass('active').removeClass('no-border-right');
+                $(this).prev().addClass('no-border-right');
+                $(this).addClass('active');
                 self.valueChanged();
             });
         }

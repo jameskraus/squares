@@ -227,13 +227,66 @@
                     type: 'text',
                     default: '#'
                 },
+                new_tab: {
+                    name: 'Open in New Tab',
+                    type: 'switch',
+                    default: 0
+                },
+                display: {
+                    name: 'Display',
+                    type: 'button group',
+                    options: ['inline-block', 'block'],
+                    default: 'inline-block'
+                },
+                height: {
+                    name: 'Height',
+                    type: 'int',
+                    default: 44
+                },
+                bg_color: {
+                    name: 'Background Color',
+                    type: 'color',
+                    default: '#2196f3'
+                },
+                text_color: {
+                    name: 'Text Color',
+                    type: 'color',
+                    default: '#ffffff'
+                },
+                border_radius: {
+                    name: 'Border Radius',
+                    type: 'int',
+                    default: 10
+                },
+                padding: {
+                    name: 'Padding Left/Right',
+                    type: 'int',
+                    default: 20
+                },
             }
         },
         controlGroupIcons: {
             button: 'fa fa-link'
         },
         content: function() {
-            return '<a href="'+ this.controls.button.link_to.getVal() +'"><input type="button" value="'+ this.controls.button.text.getVal() +'" id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"></a>';
+            var buttonStyle = '';
+
+            buttonStyle += 'display: ' + this.controls.button.display.getVal() + '; ';
+            buttonStyle += 'height: ' + this.controls.button.height.getVal() + 'px; ';
+            buttonStyle += 'line-height: ' + this.controls.button.height.getVal() + 'px; ';
+            buttonStyle += 'background-color: ' + this.controls.button.bg_color.getVal() + '; ';
+            buttonStyle += 'color: ' + this.controls.button.text_color.getVal() + '; ';
+            buttonStyle += 'border-radius: ' + this.controls.button.border_radius.getVal() + 'px; ';
+            buttonStyle += 'padding-left: ' + this.controls.button.padding.getVal() + 'px; ';
+            buttonStyle += 'padding-right: ' + this.controls.button.padding.getVal() + 'px; ';
+
+            var newTab = '';
+
+            if (parseInt(this.controls.button.new_tab.getVal(), 10) == 1) {
+                newTab = 'target="_blank"';
+            }
+
+            return '<div id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"><a href="'+ this.controls.button.link_to.getVal() +'" style="'+ buttonStyle +'" '+ newTab +' class="squares-button">'+ this.controls.button.text.getVal() +'</a></div>';
         }
     });
 })(jQuery, window, document);
