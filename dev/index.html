@@ -75,17 +75,17 @@
     <script>
     ;(function ($, window, document, undefined) {
         $(document).ready(function() {
-            // $('#generate-json').on('click', function() {
-            //     var currentSettings = $.squaresGetCurrentSettings($('#content'));
-            //     $('#generated-json').val(currentSettings);
-            //
-            //     $.squaresInitWithSettings($('#content'), currentSettings);
-            // });
-            // $('#generate-html').on('click', function() {
-            //     var html = $.squaresGenerateHTML($('#content'));
-            //     $('#generated-html').val(html);
-            //     $('#test-result-container').html(html);
-            // });
+            $('#generate-json').on('click', function() {
+                var currentSettings = $.squaresGetCurrentSettings($('#content'));
+                $('#generated-json').val(currentSettings);
+
+                $.squaresInitWithSettings($('#content'), currentSettings);
+            });
+            $('#generate-html').on('click', function() {
+                var html = $.squaresGenerateHTML($('#content'));
+                $('#generated-html').val(html);
+                $('#test-result-container').html(html);
+            });
         });
     })(jQuery, window, document);
     </script>

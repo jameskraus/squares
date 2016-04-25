@@ -4,7 +4,6 @@ TO DO:
 
 - new UI
     - editor UI
-- fix the youtube element
 - fix the button element
 - add lots of elements (as many as possible from Bootstrap)
 

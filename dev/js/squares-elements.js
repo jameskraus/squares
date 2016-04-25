@@ -152,13 +152,28 @@
                 embed_code: {
                     name: 'Embed Code',
                     type: 'textarea',
-                    default: '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0" allowfullscreen></iframe>'
+                    default: '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0"></iframe>'
                 },
                 allow_fullscreen: {
                     name: 'Allow Fullscreen',
                     type: 'switch',
                     default: 1
                 },
+                iframe_width: {
+                    name: 'iframe Width',
+                    type: 'int',
+                    default: 320
+                },
+                iframe_auto_width: {
+                    name: 'iframe Auto Width',
+                    type: 'switch',
+                    default: 1
+                },
+                iframe_height: {
+                    name: 'iframe Height',
+                    type: 'int',
+                    default: 320
+                }
             }
         },
         controlGroupIcons: {
@@ -175,8 +190,20 @@
             html += '<div id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'">';
 
             // Allow fullscreen
+            embedCode = embedCode.replace('allowfullscreen', '');
+            if (parseInt(this.controls.youtube.allow_fullscreen.getVal(), 10) == 1 && embedCode.indexOf('allowfullscreen') == -1) {
+                embedCode = embedCode.replace('></iframe>', ' allowfullscreen></iframe>');
+            }
 
-            // Set width/height
+            // Set width
+            if (parseInt(this.controls.youtube.iframe_auto_width.getVal(), 10) == 1) {
+                embedCode = embedCode.replace(/width="\d+"/g, 'width="100%"');
+            } else {
+                embedCode = embedCode.replace(/width="\d+"/g, 'width="'+ this.controls.youtube.iframe_width.getVal() +'px"');
+            }
+
+            // Set height
+            embedCode = embedCode.replace(/height="\d+"/g, 'height="'+ this.controls.youtube.iframe_height.getVal() +'px"');
 
             html += embedCode;
 
