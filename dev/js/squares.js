@@ -2,8 +2,6 @@
 
 TO DO:
 
-- new UI
-    - editor UI
 - add lots of elements (as many as possible from Bootstrap)
 
 */
@@ -343,6 +341,24 @@ The usage scenario is the following (for now):
         });
 
         // [end] Reorder containers functionality
+
+        // Delete element button
+        $(document).off('click.' + this.id, '#sq-delete-element-button');
+        $(document).on('click.' + this.id, '#sq-delete-element-button', function() {
+            var elementID = $(this).data('element-id');
+
+            // Search for the element
+            for (var i=0; i<self.settings.containers.length; i++) {
+                var c = self.settings.containers[i];
+
+                for (var j=0; j<c.settings.elements.length; j++) {
+                    if (c.settings.elements[j].id == elementID) {
+                        c.removeElementAtIndex(j);
+                        self.redraw();
+                    }
+                }
+            }
+        });
     };
     Squares.prototype.startDraggingContainer = function(e) {
         if (Math.abs(e.pageX - this.iex) > 5 || Math.abs(e.pageY - this.iey) > 5) {
@@ -680,6 +696,9 @@ The usage scenario is the following (for now):
         // Assign a unique ID
         e.id = 'sq-element-' + Math.floor(Math.random() * 99999) + 1;
     }
+    Container.prototype.removeElementAtIndex = function(i) {
+        this.settings.elements.splice(i, 1);
+    }
     Container.prototype.render = function() {
         // Nothing to render for now
     }
@@ -926,7 +945,7 @@ The usage scenario is the following (for now):
                     type: 'text',
                     default: ''
                 }
-            },
+            }
         },
         defaultControlGroupIcons: {
             general: 'fa fa-wrench',
@@ -1068,6 +1087,13 @@ The usage scenario is the following (for now):
             html += '</div>';
             groupCount++;
         }
+
+        // Append delete element tab button
+        html += '<div class="sq-window-settings-sidebar-button" data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group" data-tab-button>';
+        html += '   <div class="sq-window-settings-sidebar-button-icon"><i class="fa fa-trash-o" aria-hidden="true"></i></div>';
+        html += '   <div class="sq-window-settings-sidebar-button-title">Delete</div>';
+        html += '</div>';
+
         html += '</div>';
 
 
@@ -1098,6 +1124,14 @@ The usage scenario is the following (for now):
 
             html += '</div>';
         }
+
+        // Create content for the delete element tab
+        html += '<div class="sq-window-content" data-tab-content data-tab-index="'+ groupCount +'" data-tab-group="sq-element-settings-tab-group">';
+        html += '   <div class="sq-form-control">';
+        html += '       <p>Delete Element?</p>';
+        html += '       <div id="sq-delete-element-button" data-element-id="'+ this.id +'">Delete</div>';
+        html += '   </div>';
+        html += '</div>';
 
         html += '</div>';
 

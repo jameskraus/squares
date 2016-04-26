@@ -346,6 +346,29 @@
     user-select: none;
 }
 
+#sq-delete-element-button {
+    display: block;
+    height: 44px;
+    border-radius: 3px;
+    background: #2196f3;
+    color: white;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+#sq-delete-element-button:hover {
+    filter: brightness(1.1);
+    -moz-filter: brightness(1.1);
+    -webkit-filter: brightness(1.1);
+}
+#sq-delete-element-button:active {
+    filter: brightness(0.9);
+    -moz-filter: brightness(0.9);
+    -webkit-filter: brightness(0.9);
+}
+
 /* [END] WINDOW */
 
 /* elements while dragging from elements window */
