@@ -596,7 +596,7 @@ The usage scenario is the following (for now):
         this.root.append(addContainerButtonHTML);
     };
     Squares.prototype.appendAddElementsButton = function() {
-        var addElementsButtonHTML = '<div class="sq-add-elements"><i class="fa fa-cubes"></i></div>';
+        var addElementsButtonHTML = '<div class="sq-add-elements"><i class="fa fa-cube"></i></div>';
 
         this.root.append(addElementsButtonHTML);
     };
@@ -716,23 +716,6 @@ The usage scenario is the following (for now):
         iconClass: 'fa fa-cube',
         controls: [],
         defaultControls: {
-            general: {
-                id: {
-                    name: 'ID',
-                    type: 'text',
-                    default: ''
-                },
-                classes: {
-                    name: 'Classes',
-                    type: 'text',
-                    default: ''
-                },
-                css: {
-                    name: 'CSS',
-                    type: 'text',
-                    default: ''
-                }
-            },
             layout: {
                 box_model: {
                     name: 'Box Model',
@@ -809,6 +792,66 @@ The usage scenario is the following (for now):
                     default: 1
                 }
             },
+            style: {
+                background_color: {
+                    name: 'Background Color',
+                    type: 'color',
+                    default: '#ffffff'
+                },
+                background_opacity: {
+                    name: 'Background Opacity',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
+                    default: '0'
+                },
+                opacity: {
+                    name: 'Opacity',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
+                    default: '1'
+                },
+                box_shadow: {
+                    name: 'Box Shadow',
+                    type: 'text',
+                    default: 'none'
+                },
+                border_width: {
+                    name: 'Border Width',
+                    type: 'int',
+                    default: '0'
+                },
+                border_style: {
+                    name: 'Border Style',
+                    type: 'select',
+                    options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
+                    default: 'none'
+                },
+                border_color: {
+                    name: 'Border Color',
+                    type: 'color',
+                    default: '#000000'
+                },
+                border_opacity: {
+                    name: 'Border Opacity',
+                    type: 'slider',
+                    options: {
+                        min: 0,
+                        max: 1
+                    },
+                    default: '1'
+                },
+                border_radius: {
+                    name: 'Border Radius',
+                    type: 'int',
+                    default: '0'
+                },
+            },
             font: {
                 font_family: {
                     name: 'Font Family',
@@ -867,66 +910,23 @@ The usage scenario is the following (for now):
                     default: ''
                 }
             },
-            style: {
-                background_color: {
-                    name: 'Background Color',
-                    type: 'color',
-                    default: '#ffffff'
-                },
-                background_opacity: {
-                    name: 'Background Opacity',
-                    type: 'slider',
-                    options: {
-                        min: 0,
-                        max: 1
-                    },
-                    default: '1'
-                },
-                opacity: {
-                    name: 'Opacity',
-                    type: 'slider',
-                    options: {
-                        min: 0,
-                        max: 1
-                    },
-                    default: '1'
-                },
-                box_shadow: {
-                    name: 'Box Shadow',
+            general: {
+                id: {
+                    name: 'ID',
                     type: 'text',
-                    default: 'none'
+                    default: ''
                 },
-                border_width: {
-                    name: 'Border Width',
-                    type: 'int',
-                    default: '0'
+                classes: {
+                    name: 'Classes',
+                    type: 'text',
+                    default: ''
                 },
-                border_style: {
-                    name: 'Border Style',
-                    type: 'select',
-                    options: [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-                    default: 'none'
-                },
-                border_color: {
-                    name: 'Border Color',
-                    type: 'color',
-                    default: '#000000'
-                },
-                border_opacity: {
-                    name: 'Border Opacity',
-                    type: 'slider',
-                    options: {
-                        min: 0,
-                        max: 1
-                    },
-                    default: '1'
-                },
-                border_radius: {
-                    name: 'Border Radius',
-                    type: 'int',
-                    default: '0'
-                },
-            }
+                css: {
+                    name: 'CSS',
+                    type: 'text',
+                    default: ''
+                }
+            },
         },
         defaultControlGroupIcons: {
             general: 'fa fa-wrench',
@@ -965,10 +965,10 @@ The usage scenario is the following (for now):
     }
     Element.prototype.init = function(options) {
         // Merge the custom controls with the default controls
-        this.settings.controls = $.extend(true, {}, this.settings.defaultControls, this.settings.controls);
+        this.settings.controls = $.extend(true, {}, this.settings.controls, this.settings.defaultControls);
 
         // Merge the custom control group icons with the default control group icons
-        this.settings.controlGroupIcons = $.extend(true, {}, this.settings.defaultControlGroupIcons, this.settings.controlGroupIcons);
+        this.settings.controlGroupIcons = $.extend(true, {}, this.settings.controlGroupIcons, this.settings.defaultControlGroupIcons);
 
         // Remove the default style controls if the option is specified
         if (this.settings.useStyleControls === false) {
@@ -1340,8 +1340,6 @@ The usage scenario is the following (for now):
 
         html += '     <div class="sq-element-controls">';
         html += '         <div class="sq-element-control-drag"></div>';
-        html += '         <div class="sq-element-control-edit"><i class="fa fa-cog"></i></div>';
-        html += '         <div class="sq-element-control-delete"><i class="fa fa-trash-o"></i></div>';
         html += '     </div>';
 
         $('#' + this.id).append(html);
@@ -1503,7 +1501,7 @@ The usage scenario is the following (for now):
             // Load the element settings
             $('#sq-window-settings-tab-inner-content').html(el.getSettingsForm());
             el.loadOptions();
-            return;
+
             // Go to the first tab of the settings
             $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"]').hide();
             $('[data-tab-content][data-tab-group="sq-element-settings-tab-group"][data-tab-index="0"]').show();
