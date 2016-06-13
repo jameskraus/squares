@@ -57,7 +57,7 @@
                 url: {
                     name: 'Image URL',
                     type: 'text',
-                    default: 'http://www.online-image-editor.com//styles/2014/images/example_image.png'
+                    default: 'https://webcraftplugins.com/uploads/placeholder_image.png'
                 },
                 image_is_a_link: {
                     name: 'Image is a Link',
@@ -74,6 +74,7 @@
         controlGroupIcons: {
             image: 'fa fa-camera'
         },
+        useFontControls: false,
         content: function() {
             var html = '';
 
@@ -93,23 +94,22 @@
     $.squaresRegisterElement({
         name: "Video",
         iconClass: "fa fa-video-camera",
-        useFontControls: false,
         controls: {
             video: {
                 mp4_url: {
                     name: 'MP4 URL',
                     type: 'text',
-                    default: 'http://html5demos.com/assets/dizzy.mp4'
+                    default: 'http://webcraftplugins.com/uploads/example_video.mp4'
                 },
                 webm_url: {
                     name: 'WEBM URL',
                     type: 'text',
-                    default: 'http://html5demos.com/assets/dizzy.webm'
+                    default: 'http://webcraftplugins.com/uploads/example_video.webm'
                 },
-                ogg_url: {
-                    name: 'OGG URL',
+                ogv_url: {
+                    name: 'OGV URL',
                     type: 'text',
-                    default: 'http://html5demos.com/assets/dizzy.ogg'
+                    default: 'http://webcraftplugins.com/uploads/example_video.ogv'
                 },
                 video_is_a_link: {
                     name: 'Video is a Link',
@@ -123,6 +123,7 @@
                 }
             }
         },
+        useFontControls: false,
         controlGroupIcons: {
             video: 'fa fa-video-camera'
         },
@@ -133,7 +134,7 @@
                 html += '<a href="'+ this.controls.video.link_to.getVal() +'">';
             }
 
-            html += '<video autoplay id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"><source src="'+ this.controls.video.mp4_url.getVal() +'" type="video/mp4"><source src="'+ this.controls.video.webm_url.getVal() +'" type="video/webm"><source src="'+ this.controls.video.ogg_url.getVal() +'" type="video/ogg"></video>';
+            html += '<video autoplay id="'+ this.controls.general.id.getVal() +'" style="'+ this.controls.general.css.getVal() +'" class="'+ this.controls.general.classes.getVal() +'"><source src="'+ this.controls.video.mp4_url.getVal() +'" type="video/mp4"><source src="'+ this.controls.video.webm_url.getVal() +'" type="video/webm"><source src="'+ this.controls.video.ogv_url.getVal() +'" type="video/ogv"></video>';
 
             if (parseInt(this.controls.video.video_is_a_link.getVal(), 10) == 1) {
                 html += '</a>';
@@ -152,7 +153,7 @@
                 embed_code: {
                     name: 'Embed Code',
                     type: 'textarea',
-                    default: '<iframe width="560" height="315" src="https://www.youtube.com/embed/IstWciF_aW0" frameborder="0"></iframe>'
+                    default: '<iframe width="560" height="315" src="https://www.youtube.com/embed/6NC_ODHu5jg" frameborder="0" allowfullscreen></iframe>'
                 },
                 allow_fullscreen: {
                     name: 'Allow Fullscreen',

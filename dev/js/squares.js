@@ -3,6 +3,11 @@
 TO DO:
 
 - add lots of elements (as many as possible from Bootstrap)
+- create test file with empty editor
+- create test file for saving/loading editor state
+- create test file for editor and content side-by-side
+- create how to use guide
+- create API docs
 
 */
 
@@ -38,10 +43,10 @@ The usage scenario is the following (for now):
     // (or will contain a reference to the JS class instance).
     $.squaresInitWithSettings = function(host, settings) {
         // If the host already has an editor attached, remove the editor from the editors array
-        if (host.data('squares')) {
+        if (host.data.editor) {
             for (var i=0; i<editors.length; i++) {
-                if (editors[i].id == host.data('squares').id) {
-                    // editors.splice(i, 1);
+                if (editors[i].id == host.data.editor.id) {
+                    editors.splice(i, 1);
                 }
             }
         }
@@ -90,6 +95,16 @@ The usage scenario is the following (for now):
         registeredControls.push(options);
     }
 
+    $.squaresShowEditorWindow = function(x, y) {
+        editorWindow.show(x, y);
+    }
+    $.squaresHideEditorWindow = function() {
+        editorWindow.hide();
+    }
+    $.squaresExtendElementDefaults = function(extendedDefaults) {
+        elementDefaultSettings = $.extend(true, {}, elementDefaultSettings, extendedDefaults);
+    }
+
     // [END API]
     // =========================================================================
 
@@ -100,19 +115,19 @@ The usage scenario is the following (for now):
         $('.squares').each(function() {
             var squaresInstance = new Squares(this);
             editors.push(squaresInstance);
-            $(this).data('squares', squaresInstance);
+            $(this).data.editor = squaresInstance;
         });
 
         // Create the editor window
-        var editorWindow = new EditorWindow();
+
 
         // Test initWithSettings
-        var s = '{"containers":[{"id":"sq-container-220041","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-352351","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","opacity":0.6321428571428571,"border_opacity":0.8571428571428571}}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"id":"sq-container-307581","settings":{"elements":[{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Video","iconClass":"fa fa-video-camera"}},{"settings":{"name":"YouTube","iconClass":"fa fa-youtube"}}]}}]}';
-        var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
-        var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
-        var s = '{"containers":[{"id":"sq-container-298901","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
-        var s = '{"containers":[{"id":"sq-container-335181","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"general":{"id":"element-1-id","classes":"some-class","css":"background: red;"},"layout":{"box_model":{"margin":{"top":20,"bottom":20}},"use_grid":0},"font":{"font_family":"serif","font_size":"39","font_style":"italic","line_height":"auto","text_color":"#ffffff","text_align":"center","text_decoration":"underline","text_transform":"uppercase"},"style":{"background_color":"#f5fc58","background_opacity":0.5571428571428572,"opacity":0.29642857142857143,"box_shadow":"0 0 10px black","border_width":2,"border_style":"dashed","border_color":"#00f92b","border_opacity":0.5285714285714286,"border_radius":100},"heading":{"heading":"h1"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-paragraph"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Image","iconClass":"fa fa-camera"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Button","iconClass":"fa fa-link"}}]}}]}';
-        $.squaresInitWithSettings($('.squares').first(), s);
+        // var s = '{"containers":[{"id":"sq-container-220041","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"heading":"h1"}}}]}},{"id":"sq-container-352351","settings":{"elements":[{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"text":{"font_size":"18"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":"6"},"style":{"background_color":"#75fa00","opacity":0.6321428571428571,"border_opacity":0.8571428571428571}}},{"settings":{"name":"Button","iconClass":"fa fa-hand-pointer-o"}}]}},{"id":"sq-container-307581","settings":{"elements":[{"settings":{"name":"Image","iconClass":"fa fa-picture-o"}},{"settings":{"name":"Video","iconClass":"fa fa-video-camera"}},{"settings":{"name":"YouTube","iconClass":"fa fa-youtube"}}]}}]}';
+        // var s = '{"containers":[{"id":"sq-container-229951","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}}]}}]}';
+        // var s = '{"containers":[{"id":"sq-container-718651","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"heading":{"text":"Lorem Ipsum31231","heading":"h2"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"text":{"text":"Pellentes2131231ue habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."}}}]}}]}';
+        // var s = '{"containers":[{"id":"sq-container-298901","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"}},{"settings":{"name":"Image","iconClass":"fa fa-picture-o"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-font"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}}]}}]}';
+        // var s = '{"containers":[{"id":"sq-container-335181","settings":{"elements":[{"settings":{"name":"Heading","iconClass":"fa fa-header"},"options":{"general":{"id":"element-1-id","classes":"some-class","css":"background: red;"},"layout":{"box_model":{"margin":{"top":20,"bottom":20}},"use_grid":0},"font":{"font_family":"serif","font_size":"39","font_style":"italic","line_height":"auto","text_color":"#ffffff","text_align":"center","text_decoration":"underline","text_transform":"uppercase"},"style":{"background_color":"#f5fc58","background_opacity":0.5571428571428572,"opacity":0.29642857142857143,"box_shadow":"0 0 10px black","border_width":2,"border_style":"dashed","border_color":"#00f92b","border_opacity":0.5285714285714286,"border_radius":100},"heading":{"heading":"h1"}}},{"settings":{"name":"Paragraph","iconClass":"fa fa-paragraph"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Image","iconClass":"fa fa-camera"},"options":{"layout":{"column_span":{"lg":{"class":"col-lg-6"}}}}},{"settings":{"name":"Button","iconClass":"fa fa-link"}}]}}]}';
+        // $.squaresInitWithSettings($('.squares').first(), s);
         // $.squaresInitWithSettings($('.squares').first());
     });
 
@@ -163,30 +178,36 @@ The usage scenario is the following (for now):
         this.newIndexOfDraggedElement = -1;
         this.draggedElementWidth = -1;
 
+        // Selected Element ID
+        this.selectedElementID = undefined;
+
         this.loadSettings(settings);
         this.init();
     };
     Squares.prototype.loadSettings = function(settings) {
         // When settings are loaded, we make sure containers and elements
         // have the correct prototype.
-
         if (settings) {
             // Iterate over all containers
-            for (var i=0; i<settings.containers.length; i++) {
-                var c = settings.containers[i];
+            if (settings.containers) {
+                for (var i=0; i<settings.containers.length; i++) {
+                    var c = settings.containers[i];
 
-                // Add a container and store a reference
-                var newContainer = this.appendContainer();
+                    // Add a container and store a reference
+                    var newContainer = this.appendContainer();
 
-                // Iterate over all elements of the container
-                for (var j=0; j<c.settings.elements.length; j++) {
-                    var e = c.settings.elements[j];
+                    // Iterate over all elements of the container
+                    if (c.settings.elements) {
+                        for (var j=0; j<c.settings.elements.length; j++) {
+                            var e = c.settings.elements[j];
 
-                    // Get the catalog index of the element with the same name
-                    // and insert it in the container
-                    for (var k=0; k<registeredElements.length; k++) {
-                        if (e.settings.name == registeredElements[k].name) {
-                            newContainer.insertElement(k, j, e.options);
+                            // Get the catalog index of the element with the same name
+                            // and insert it in the container
+                            for (var k=0; k<registeredElements.length; k++) {
+                                if (e.settings.name == registeredElements[k].name) {
+                                    newContainer.insertElement(k, j, e.options);
+                                }
+                            }
                         }
                     }
                 }
@@ -211,6 +232,10 @@ The usage scenario is the following (for now):
         this.addUI();
         this.addEvents();
         this.redraw();
+
+        // Editor window
+        editorWindow = new EditorWindow();
+        editorWindow.hide();
     };
     Squares.prototype.redraw = function () {
         // This is the global redraw function.
@@ -255,6 +280,11 @@ The usage scenario is the following (for now):
         } else {
             this.root.find('.sq-add-elements').show();
         }
+
+        // Re-select the currently selected element
+        if (this.selectedElementID) {
+            this.selectElement(this.selectedElementID);
+        }
     };
     Squares.prototype.addEvents = function() {
         var self = this;
@@ -263,6 +293,24 @@ The usage scenario is the following (for now):
         this.host.find('.sq-add-container').off('click');
         this.host.find('.sq-add-container').on('click', function() {
             self.appendContainer();
+            self.redraw();
+        });
+
+        // Delete container button
+        $(document).off('mouseout', '#sq-editor-' + this.id + ' .sq-container');
+        $(document).on('mouseout', '#sq-editor-' + this.id + ' .sq-container', function(e) {
+            if ($(e.target).closest('.sq-container-confirm-delete').length == 0 && !$(e.target).hasClass('sq-container-confirm-delete') &&
+                $(e.target).closest('.sq-container-delete').length == 0 && !$(e.target).hasClass('sq-container-delete')) {
+                $('.sq-container-confirm-delete').hide();
+            }
+        });
+        $(document).off('click', '#sq-editor-' + this.id + ' .sq-container-delete');
+        $(document).on('click', '#sq-editor-' + this.id + ' .sq-container-delete', function() {
+            $(this).siblings('.sq-container-confirm-delete').show();
+        });
+        $(document).off('click', '#sq-editor-' + this.id + ' .sq-container-confirm-delete');
+        $(document).on('click', '#sq-editor-' + this.id + ' .sq-container-confirm-delete', function() {
+            self.deleteContainer($(this).data('container-id'));
             self.redraw();
         });
 
@@ -280,6 +328,7 @@ The usage scenario is the following (for now):
             self.draggedContainerIndex = $(e.target).closest('.sq-container').data('index');
             self.draggedContainer = self.host.find('.sq-container[data-index='+ self.draggedContainerIndex +']');
         });
+
 
         // Elements
         $(document).off('mousedown', '#sq-editor-'+ self.id +' .sq-element');
@@ -461,12 +510,17 @@ The usage scenario is the following (for now):
             this.settings.containers.splice(this.draggedContainerIndex, 1);
             this.settings.containers.splice(this.newIndexOfDraggedContainer, 0, a);
         }
+
         this.redraw();
     }
     Squares.prototype.startDraggingElement = function(e) {
         if (Math.abs(e.pageX - this.iex) > 5 || Math.abs(e.pageY - this.iey) > 5) {
             this.draggingElement = true;
             this.didStartDraggingElement = true;
+
+            // Save the starting posiiton of the draggedElement
+            this.ix = this.draggedElement.offset().left;
+            this.iy = this.draggedElement.offset().top;
 
             // Create a virtual map of all possible positions of the element
             // in each container
@@ -510,7 +564,7 @@ The usage scenario is the following (for now):
             this.draggedElement.show();
 
             // Insert a dummy element
-            this.draggedElement.after('<div id="sq-dummy-element"></div>');
+            this.draggedElement.after('<div id="sq-dummy-element"><div id="sq-dummy-element-inner"></div></div>');
             this.dummyElement = $('#sq-dummy-element');
             this.dummyElement.css({
                 width: this.draggedElementWidth,
@@ -520,13 +574,13 @@ The usage scenario is the following (for now):
             });
 
             // Position the element absolutely
-            this.ix = this.draggedElement.offset().left;
-            this.iy = this.draggedElement.offset().top;
 
             var draggedElementWidth = this.draggedElement.width();
             var draggedElementHeight = this.draggedElement.height();
             var draggedElementHTML = this.draggedElement.clone().attr('id', 'sq-dragged-element').wrap('<div>').parent().html();
+
             this.draggedElement.hide();
+
             $('body').prepend(draggedElementHTML);
             this.draggedElement = $('#sq-dragged-element');
 
@@ -571,10 +625,10 @@ The usage scenario is the following (for now):
             // If the index of the dummy element is bigger than the number
             // of elements in that container, insert the dummy at the end
             if (elementIndex == this.settings.containers[containerIndex].settings.elements.length) {
-                c.append('<div id="sq-dummy-element"></div>');
+                c.append('<div id="sq-dummy-element"><div id="sq-dummy-element-inner"></div></div>');
             } else {
                 var el = c.find('.sq-element[data-index='+ elementIndex +']');
-                el.before('<div id="sq-dummy-element"></div>');
+                el.before('<div id="sq-dummy-element"><div id="sq-dummy-element-inner"></div></div>');
             }
 
             this.dummyElement = $('#sq-dummy-element');
@@ -582,7 +636,6 @@ The usage scenario is the following (for now):
                 width: this.draggedElementWidth,
                 height: this.draggedElement.outerHeight(),
                 margin: this.draggedElement.css('margin'),
-                padding: 0
             });
         }
     }
@@ -607,7 +660,7 @@ The usage scenario is the following (for now):
         this.appendAddElementsButton();
     };
     Squares.prototype.appendAddContainerButton = function() {
-        var addContainerButtonHTML = '<div class="sq-add-container"><i class="fa fa-plus"></i></div>';
+        var addContainerButtonHTML = '<div class="sq-add-container"><i class="fa fa-plus"></i> <span>Add Container</span></div>';
 
         this.root.append(addContainerButtonHTML);
     };
@@ -621,6 +674,18 @@ The usage scenario is the following (for now):
         this.settings.containers.push(c);
 
         return c;
+    };
+    Squares.prototype.deleteContainer = function(id) {
+        // Find out the index of the container
+        var index = 0;
+
+        for (var i=0; i<this.settings.containers.length; i++) {
+            if (this.settings.containers[i].id == id) {
+                index = i;
+            }
+        }
+
+        this.settings.containers.splice(index, 1);
     };
     Squares.prototype.addElement = function(containerIndex, elementIndex, elementCatalogIndex, elementControlOptions) {
         var self = this;
@@ -673,6 +738,12 @@ The usage scenario is the following (for now):
 
         return html;
     }
+    Squares.prototype.selectElement = function(elementID) {
+        this.selectedElementID = elementID;
+
+        $('.sq-element-selected').removeClass('sq-element-selected');
+        $('#' + this.selectedElementID).addClass('sq-element-selected');
+    }
 
     // The "Container" class servs literally as a container
     // for Element objects, similar to Bootstrap's "row" class.
@@ -692,12 +763,11 @@ The usage scenario is the following (for now):
     Container.prototype.insertElement = function(elementCatalogIndex, index, options) {
         var e = new Element(registeredElements[elementCatalogIndex], options);
         this.settings.elements.splice(index, 0, e);
-
-        // Assign a unique ID
-        e.id = 'sq-element-' + Math.floor(Math.random() * 99999) + 1;
     }
     Container.prototype.removeElementAtIndex = function(i) {
         this.settings.elements.splice(i, 1);
+        editorWindow.openFirstTab();
+        editorWindow.removeElementSettings();
     }
     Container.prototype.render = function() {
         // Nothing to render for now
@@ -705,6 +775,8 @@ The usage scenario is the following (for now):
     Container.prototype.appendEditorControls = function() {
         var html = '';
         html += '     <div class="sq-container-move"></div>';
+        html += '     <div class="sq-container-delete"><i class="fa fa-times" aria-hidden="true"></i></div>';
+        html += '     <div class="sq-container-confirm-delete" data-container-id="'+ this.id +'">Delete</div>';
 
         $('#' + this.id).append(html);
     }
@@ -842,7 +914,8 @@ The usage scenario is the following (for now):
                 },
                 border_width: {
                     name: 'Border Width',
-                    type: 'int',
+                    type: 'slider',
+                    options: { min: 0, max: 20, type: 'int' },
                     default: '0'
                 },
                 border_style: {
@@ -867,7 +940,8 @@ The usage scenario is the following (for now):
                 },
                 border_radius: {
                     name: 'Border Radius',
-                    type: 'int',
+                    type: 'slider',
+                    options: { min: 0, max: 100, type: 'int' },
                     default: '0'
                 },
             },
@@ -961,7 +1035,7 @@ The usage scenario is the following (for now):
     function Element(settings, options) {
         // this.root is the highest element in the container's hierarchy.
         // it will contain data-index attribute, used to reference this element
-        this.id = undefined;
+        this.id = 'sq-element-' + Math.floor(Math.random() * 99999) + 1;
 
         // Settings are used only for initialization
         this.settings = $.extend(true, {}, elementDefaultSettings, settings);
@@ -1360,6 +1434,12 @@ The usage scenario is the following (for now):
         }
     }
     Element.prototype.render = function() {
+        // Preserve selection
+        var selected = false;
+        if ($('#' + this.id).hasClass('sq-element-selected')) {
+            selected = true;
+        }
+
         // Update the element's user set content
         $('#' + this.id).html(this.content());
 
@@ -1368,6 +1448,10 @@ The usage scenario is the following (for now):
 
         // Add layout classes to the element
         $('#' + this.id).attr('class', 'sq-element ' + this.generateLayoutClass());
+
+        if (selected) {
+            $('#' + this.id).addClass('sq-element-selected');
+        }
     }
     Element.prototype.appendEditorControls = function() {
         var html = '';
@@ -1468,9 +1552,7 @@ The usage scenario is the following (for now):
         // Settings tab
         WindowHTML += '         <div class="sq-window-tab-content" data-tab-group="sq-window-main-tab-group" data-tab-index="1" data-tab-content id="sq-window-settings-tab-content">';
         WindowHTML += '             <div class="sq-window-main-tab-header"><h1>Settings</h1></div>';
-        WindowHTML += '             <div id="sq-window-settings-tab-inner-content">';
-
-        WindowHTML += '             </div>';
+        WindowHTML += '             <div id="sq-window-settings-tab-inner-content"></div>';
         WindowHTML += '         </div>';
 
         WindowHTML += '     </div>';
@@ -1480,9 +1562,12 @@ The usage scenario is the following (for now):
             $('body').prepend('<div class="sq-windows-root"></div>');
         }
 
-        $('.sq-windows-root').append(WindowHTML);
+        $('.sq-windows-root').html(WindowHTML);
 
         this.root = $('#sq-window-' + this.id);
+
+        this.openFirstTab();
+        this.removeElementSettings();
     }
     EditorWindow.prototype.events = function() {
         var self = this;
@@ -1542,6 +1627,9 @@ The usage scenario is the following (for now):
 
             // Highlight the first tab button
             $('[data-tab-button][data-tab-group="sq-element-settings-tab-group"]').removeClass('active').first().addClass('active');
+
+            // Select the element
+            editor.selectElement(el.id);
         });
 
         // Open the window when clicked on the add elements button
@@ -1621,7 +1709,6 @@ The usage scenario is the following (for now):
         // =====================================================================
         // Needs tidying up
         // Drag elements from window to container functionality
-
         var shouldStartDraggingElementToContainer = false,
         didStartDraggingElementToContainer = false,
         draggingElementToContainer = false,
@@ -1690,6 +1777,7 @@ The usage scenario is the following (for now):
                                 var el = c.find('.sq-element[data-index='+ j +']');
 
                                 el.before('<div id="sq-dummy-element-dragging-from-window-tmp"></div>');
+
                                 var x = $('#sq-dummy-element-dragging-from-window-tmp').offset().left + $('#sq-dummy-element-dragging-from-window-tmp').outerWidth()/2;
                                 var y = $('#sq-dummy-element-dragging-from-window-tmp').offset().top + $('#sq-dummy-element-dragging-from-window-tmp').outerHeight()/2;
                                 elementDragMap.push({ x: x, y: y, elementIndex: j, containerIndex: i, editorIndex: k });
@@ -1705,6 +1793,16 @@ The usage scenario is the following (for now):
                                 }
                             }
                         }
+                    }
+
+                    if (elementDragMap.length == 0) {
+                        // no valid containers found
+                        dummyElementAtMouse.remove();
+                        didStartDraggingElementToContainer = false;
+                        shouldStartDraggingElementToContainer = false;
+                        didStartDraggingElementToContainer = false;
+                        draggingElementToContainer = false;
+                        virtualIndexOfDraggedElement = -1;
                     }
                 }
             }
@@ -1745,10 +1843,10 @@ The usage scenario is the following (for now):
                     // If the index of the dummy element is bigger than the number
                     // of elements in that container, insert the dummy at the end
                     if (elementIndex == editors[editorIndex].settings.containers[containerIndex].settings.elements.length) {
-                        c.append('<div id="sq-dummy-element-dragging-from-window"></div>');
+                        c.append('<div id="sq-dummy-element-dragging-from-window"><div id="sq-dummy-element-dragging-from-window-inner"></div></div>');
                     } else {
                         var e = c.find('.sq-element[data-index='+ elementIndex +']');
-                        e.before('<div id="sq-dummy-element-dragging-from-window"></div>');
+                        e.before('<div id="sq-dummy-element-dragging-from-window"><div id="sq-dummy-element-dragging-from-window-inner"></div></div>');
                     }
                 }
             }
@@ -1789,6 +1887,16 @@ The usage scenario is the following (for now):
     EditorWindow.prototype.hide = function() {
         this.visible = false;
         this.root.hide();
+    }
+    EditorWindow.prototype.openFirstTab = function() {
+        // Open the first tab
+        $('.sq-window-main-nav-button').removeClass('active');
+        $('#sq-window-main-nav-button-elements').addClass('active');
+        $('[data-tab-content][data-tab-group="sq-window-main-tab-group"]').hide();
+        $('[data-tab-content][data-tab-group="sq-window-main-tab-group"][data-tab-index="0"]').show();
+    }
+    EditorWindow.prototype.removeElementSettings = function() {
+        $('#sq-window-settings-tab-inner-content').html('<div id="sq-window-settings-tab-no-element">No element selected. To create an element, open the Elements tab and drag an element into a container.</div>');
     }
 
     function SquaresControl(s, name, group, tabGroup, options, valueUpdated) {

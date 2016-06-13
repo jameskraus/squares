@@ -221,9 +221,13 @@
             var progress = ballPosition / trackWidth;
             v = this.options.min + (this.options.max - this.options.min) * progress;
 
+            if (this.options.type == 'int') v = Math.round(v);
+
             return v;
         },
         setValue: function(v) {
+            if (this.options.type == 'int') v = Math.round(v);
+
             var progress = (v - this.options.min) / (this.options.max - this.options.min);
 
             var ball = $('#' + this.elementID).find('.sq-control-slider-ball');
@@ -235,12 +239,12 @@
             ball.css({
                 left: trackWidth * progress
             });
-
         },
         HTML: function() {
             var html = '';
 
             html += '<div class="sq-control-slider" id="'+ this.elementID +'">';
+            html += '   <div class="sq-control-slider-bubble"></div>';
             html += '   <div class="sq-control-slider-track"></div>';
             html += '   <div class="sq-control-slider-ball"></div>';
             html += '</div>';
@@ -249,16 +253,24 @@
         },
         init: function() {
             var self = this;
-            var ix = 0, iex = 0, dragging = false, ball = undefined, track = undefined;
+            var ix = 0, iex = 0, dragging = false, ball = undefined, track = undefined, bubble = undefined;
 
             // Ball dragging
             $(document).on('mousedown', '#' + self.elementID + ' .sq-control-slider-ball', function(e) {
                 ball = $('#' + self.elementID).find('.sq-control-slider-ball');
                 track = $('#' + self.elementID).find('.sq-control-slider-track');
+                bubble = $('#' + self.elementID).find('.sq-control-slider-bubble');
                 ix = ball.position().left;
                 iex = e.pageX;
 
                 dragging = true;
+
+                if ($.wcpEditorSliderStartedDragging) {
+                    $.wcpEditorSliderStartedDragging();
+                }
+
+                // Show value bubble
+                bubble.show();
             });
             $(document).on('mousemove.' + this.elementID, function(e) {
                 if (dragging) {
@@ -267,17 +279,42 @@
                     if (o < 0) o = 0;
                     if (o > track.outerWidth()) o = track.outerWidth();
 
+                    if (self.options.type == 'int') {
+                        var step = track.outerWidth() / (self.options.max + 1);
+
+                        o = o - (o % step);
+                    }
+
                     ball.css({
                         left: o
                     });
 
                     self.valueChanged();
+
+                    // Update value bubble
+                    var rounded = Math.round(self.getValue() * 10)/10;
+
+                    if (self.options.type == 'int') {
+                        rounded = self.getValue();
+                    }
+
+                    bubble.html(rounded);
+                    bubble.css({
+                        left: o
+                    });
                 }
             });
             $(document).on('mouseup.' + this.elementID, function(e) {
                 if (dragging) {
+                    if ($.wcpEditorSliderFinishedDragging) {
+                        $.wcpEditorSliderFinishedDragging();
+                    }
+
                     dragging = false;
                     self.valueChanged();
+
+                    // Hide value bubble
+                    bubble.hide();
                 }
             });
 
@@ -285,6 +322,7 @@
             $(document).on('mousedown', '#' + self.elementID + ' .sq-control-slider-track', function(e) {
                 ball = $('#' + self.elementID).find('.sq-control-slider-ball');
                 track = $('#' + self.elementID).find('.sq-control-slider-track');
+                bubble = $('#' + self.elementID).find('.sq-control-slider-bubble');
 
                 // Set the ball to the mouse position
                 var o = e.pageX - track.offset().left;
@@ -301,6 +339,9 @@
                 iex = e.pageX;
 
                 dragging = true;
+
+                // Show value bubble
+                bubble.show();
             });
         }
     });
